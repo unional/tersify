@@ -12,7 +12,7 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build-es2015",
+    "build": "npm run clean && npm run build-es5 && npm run build-es2015",
     "build-es5": "tsc -p tsconfig.es5.json",
     "build-es2015": "tsc -p tsconfig.es2015.json",
     "clean": "rimraf dist dist-es5 && rimraf dist-es2015",

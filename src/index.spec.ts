@@ -182,3 +182,10 @@ test('arrow function with too long signature', t => {
   t.is(actual.length, 50)
   t.is(actual, '(a, b, c, d, e, f, g, veryVeryVeryVeryLongArgum...')
 })
+
+test('long single expression arrow trimmed at specified length', t => {
+  const actual = formatFunction((x, y) => 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + x + y, { maxLength: 30 })
+
+  t.is(actual.length, 30)
+  t.is(actual, '(x, y) => 1 + 2 + 3 + 4 + 5...')
+})

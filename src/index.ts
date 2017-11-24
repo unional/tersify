@@ -28,12 +28,7 @@ function formatArrow(str: string, maxLength) {
   }
 
   if (singleLine.length > maxLength) {
-    const trimmedSingle = trimWithBracket(singleLine, maxLength)
-    if (trimmedSingle)
-      singleLine = trimmedSingle
-    else {
-      singleLine = trimWithoutBracket(singleLine, maxLength) || singleLine
-    }
+    singleLine = trimWithBracket(singleLine, maxLength)
   }
   if (singleLine.length > maxLength) {
     // after trimming it is still too long
@@ -45,15 +40,7 @@ function formatArrow(str: string, maxLength) {
 function trimWithBracket(singleLine, maxLength) {
   // https://regex101.com/r/HrkxfW/1
   const parts = /(.* { )(.*)( })/.exec(singleLine)
-  if (!parts) return null
-  return parts[1] + parts[2].slice(0, maxLength - parts[1].length - parts[3].length - 3) + '...' + parts[3]
-}
-
-function trimWithoutBracket(singleLine, maxLength) {
-  // https://regex101.com/r/pscSNR/3
-  const parts = /(.*=> )(.*)/.exec(singleLine)
-  if (!parts) return null
-  return parts[1] + parts[2].slice(0, maxLength - parts[1].length - 3) + '...'
+  return parts ? parts[1] + parts[2].slice(0, maxLength - parts[1].length - parts[3].length - 3) + '...' + parts[3] : singleLine
 }
 
 function formatFn(str: string, maxLength) {
@@ -62,7 +49,7 @@ function formatFn(str: string, maxLength) {
   let singleLine = trimmedlines.join(' ');
 
   if (singleLine.length > maxLength) {
-    singleLine = trimWithBracket(singleLine, maxLength) || singleLine
+    singleLine = trimWithBracket(singleLine, maxLength)
   }
 
   if (singleLine.length > maxLength) {
