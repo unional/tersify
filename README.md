@@ -12,7 +12,7 @@ Format tersely.
 `toString()`, `JSON.stringify()` and even [`stringify-object`](https://github.com/yeoman/stringify-object) can return multieline strings.
 
 This library will return a single line instead.
-If the object or function is too long, it will be trimmed (default to 120).
+You can specify `maxLength` to trim the resulting string.
 
 ```ts
 import { tersify } from 'tersify'
