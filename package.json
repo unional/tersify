@@ -69,5 +69,8 @@
     "tslint": "^5.8.0",
     "tslint-config-unional": "^0.8.0",
     "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "stringify-object": "^3.2.1"
   }
 }
