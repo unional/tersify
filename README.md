@@ -17,15 +17,16 @@ You can specify `maxLength` to trim the resulting string.
 ```ts
 import { tersify } from 'tersify'
 
-// () => 'foo'
+// `() => 'foo'`
 tersify(() => 'foo')
 
-// function (x, y) { return x + y; }
+// `function (x, y) { return x + y; }`
 tersify(function (x, y) { return x + y })
 
 // Change result to 80 character long.
 // result will have `...` to indicate info missing.
-tersify(..., { maxLength: 80 })
+// e.g. `{ a: 'a', ... }`
+tersify({...}, { maxLength: 80 })
 
 // '{ a: 1 }`
 tersify({ a: 1 })
