@@ -26,7 +26,7 @@ test('long object with function', t => {
   t.is(tersify({ a: () => false, c: { b: 1, c: 'c' }, d: true }, { maxLength: 20 }), `{ a: () => fals... }`)
 })
 
-test('object with long function', t => {
+test('object with long function trimmed at specified length', t => {
   t.is(tersify({
     a: function (x, y) {
       console.log(1)

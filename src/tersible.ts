@@ -37,3 +37,7 @@ export function tersible<T>(subject: T, tersify: (this: T) => string): T & Tersi
     }
   )
 }
+
+export function isTersible(obj): obj is Tersible {
+  return typeof obj.tersify === 'function'
+}

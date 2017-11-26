@@ -2,7 +2,7 @@ import stringifyObject = require('stringify-object');
 
 import { tersifyFunction } from './tersifyFunction'
 
-export function tersifyObject(obj, option = { maxLength: 120 }) {
+export function tersifyObject(obj, option = { maxLength: Infinity }) {
   let str: string = stringifyObject(obj, {
     indent: '  ',
     inlineCharacterLimit: Infinity,

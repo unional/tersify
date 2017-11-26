@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { tersify } from './index'
+import { tersify, tersible } from './index'
 
 test('anonymous function', t => {
   t.is(tersify(function () { }), 'function () {}')
@@ -24,22 +24,6 @@ test('multi-lines anonymous function', t => {
     x++
     return y
   }), 'function (x, y) { x++; return y; }')
-})
-
-test('long anonymous function trimmed at 120', t => {
-  const actual = tersify(function (x, y) {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
-    x++
-    return y
-  })
-
-  t.is(actual.length, 120)
-  t.is(actual, 'function (x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console.log(6); x... }')
 })
 
 test('long anonymous function trimmed at specified length', t => {
@@ -81,22 +65,6 @@ test('multi-lines named function', t => {
     x++
     return y
   }), 'function foo(x, y) { x++; return y; }')
-})
-
-test('long named function trimmed at 120', t => {
-  const actual = tersify(function foo(x, y) {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
-    x++
-    return y
-  })
-
-  t.is(actual.length, 120)
-  t.is(actual, 'function foo(x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console.log(6)... }')
 })
 
 test('long named function trimmed at specified length', t => {
@@ -146,22 +114,6 @@ test('multi-lines arrow', t => {
   }), '(x, y) => { x++; return y; }')
 })
 
-test('long arrow trimmed at 120', t => {
-  const actual = tersify((x, y) => {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
-    x++
-    return y
-  })
-
-  t.is(actual.length, 120)
-  t.is(actual, '(x, y) => { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console.log(6); x++; re... }')
-})
-
 test('long arrow trimmed at specified length', t => {
   const actual = tersify((x, y) => {
     console.log(1)
@@ -189,4 +141,8 @@ test('long single expression arrow trimmed at specified length', t => {
 
   t.is(actual.length, 30)
   t.is(actual, '(x, y) => 1 + 2 + 3 + 4 + 5...')
+})
+
+test('use tersify() when available', t => {
+  t.is(tersify(tersible((x, y) => x + y, () => 'x + y')), 'x + y')
 })

@@ -1,6 +1,11 @@
 import os = require('os')
 
-export function tersifyFunction(fn: Function, option = { maxLength: 120 }) {
+import { isTersible } from './tersible'
+
+export function tersifyFunction(fn: Function, option = { maxLength: Infinity }) {
+  if (isTersible(fn))
+    return fn.tersify()
+
   const str = fn.toString()
   if (isArrow(str))
     return formatArrow(str, option.maxLength)
