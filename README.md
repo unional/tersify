@@ -41,6 +41,9 @@ import { tersible } from 'tersify'
 
 const increment = tersible(a => a + 1, () => 'a++')
 increment.tersify() // 'a++'
+
+// `{ a: 1 }`
+tarsible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
 ```
 
 ## Tersiblized
