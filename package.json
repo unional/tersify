@@ -1,6 +1,6 @@
 {
-  "name": "terse-format",
-  "description": "Format object tersely",
+  "name": "tersify",
+  "description": "Format tersely",
   "version": "0.1.0",
   "main": "dist-es5/index.js",
   "module": "dist-es2015/index.js",
@@ -30,12 +30,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/unional/terse-format.git"
+    "url": "https://github.com/unional/tersify.git"
   },
   "bugs": {
-    "url": "https://github.com/unional/terse-format/issues"
+    "url": "https://github.com/unional/tersify/issues"
   },
-  "homepage": "https://github.com/unional/terse-format",
+  "homepage": "https://github.com/unional/tersify",
   "ava": {
     "files": [
       "dist-es2015/**/*.spec.js"

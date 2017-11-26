@@ -1,6 +1,6 @@
 import os = require('os')
 
-export function formatFunction(fn: Function, option = { maxLength: 120 }) {
+export function tersifyFunction(fn: Function, option = { maxLength: 120 }) {
   const str = fn.toString()
   if (isArrow(str))
     return formatArrow(str, option.maxLength)

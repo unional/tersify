@@ -1,14 +1,14 @@
 import stringifyObject = require('stringify-object');
 
-import { formatFunction } from './formatFunction'
+import { tersifyFunction } from './tersifyFunction'
 
-export function formatObject(obj, option = { maxLength: 120 }) {
+export function tersifyObject(obj, option = { maxLength: 120 }) {
   let str: string = stringifyObject(obj, {
     indent: '  ',
     inlineCharacterLimit: Infinity,
     transform: (obj, prop, originalResult) => {
       if (typeof obj[prop] === 'function')
-        return formatFunction(obj[prop], { maxLength: Infinity })
+        return tersifyFunction(obj[prop], { maxLength: Infinity })
       return originalResult
     }
   })

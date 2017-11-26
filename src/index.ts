@@ -1,2 +1,2 @@
-export * from './formatFunction'
-export * from './formatObject'
+export * from './tersify'
+export * from './tersible'
