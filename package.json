@@ -1,7 +1,7 @@
 {
   "name": "function-formatter",
   "description": "Format function to a compact form",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "main": "dist-es5/index.js",
   "module": "dist-es2015/index.js",
   "typings": "dist-es5/index.d.ts",
@@ -56,6 +56,16 @@
   "author": {
     "name": "Homa Wong",
     "email": "homawong@gmail.com"
+  },
+  "release": {
+    "analyzeCommits": {
+      "releaseRules": [
+        {
+          "breaking": true,
+          "release": "minor"
+        }
+      ]
+    }
   },
   "devDependencies": {
     "@types/node": "^8.0.47",
