@@ -1,6 +1,6 @@
 {
-  "name": "function-formatter",
-  "description": "Format function to a compact form",
+  "name": "tarse-format",
+  "description": "Format object tersely",
   "version": "0.0.0-development",
   "main": "dist-es5/index.js",
   "module": "dist-es2015/index.js",
@@ -30,12 +30,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/unional/function-formatter.git"
+    "url": "https://github.com/unional/terse-format.git"
   },
   "bugs": {
-    "url": "https://github.com/unional/function-formatter/issues"
+    "url": "https://github.com/unional/terse-format/issues"
   },
-  "homepage": "https://github.com/unional/function-formatter",
+  "homepage": "https://github.com/unional/terse-format",
   "ava": {
     "files": [
       "dist-es2015/**/*.spec.js"
