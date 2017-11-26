@@ -19,7 +19,7 @@ test('inject to class', t => {
     return `a = ${this.a}`
   })
 
-  let f = new Foo() as Foo & Tersible
+  let f = new Foo() as Tersible<Foo>
   t.is(f.tersify(), 'a = 1')
 
   f.a = 2

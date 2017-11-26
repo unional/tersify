@@ -1,4 +1,4 @@
-export interface Tersible {
+export type Tersible<T> = T & {
   tersify(): string
 }
 
@@ -29,7 +29,7 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
  * but it cannot be done otherwise.
  * How can I "clone" a function or class?
  */
-export function tersible<T>(subject: T, tersify: (this: T) => string): T & Tersible {
+export function tersible<T>(subject: T, tersify: (this: T) => string): Tersible<T> {
   return Object.assign(
     subject,
     {
@@ -38,6 +38,6 @@ export function tersible<T>(subject: T, tersify: (this: T) => string): T & Tersi
   )
 }
 
-export function isTersible(obj): obj is Tersible {
-  return typeof obj.tersify === 'function'
+export function isTersible<T>(obj: T): obj is Tersible<T> {
+  return typeof obj['tersify'] === 'function'
 }
