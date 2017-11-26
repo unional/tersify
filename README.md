@@ -50,7 +50,7 @@ Mixin `Tersible` to a class.
 import { Tersiblized } from 'tersify'
 
 class Foo { a = 1 }
-class Boo extends Tersible(Foo, function() { return `{ a: ${this.a} }` }) { }
+class Boo extends Tersiblized(Foo, function() { return `{ a: ${this.a} }` }) { }
 
 const boo = new Boo()
 boo.a = 3
