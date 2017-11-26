@@ -1,5 +1,6 @@
 import test from 'ava'
-import { formatFunction } from './index';
+
+import { formatFunction } from './index'
 
 test('anonymous function', t => {
   t.is(formatFunction(function () { }), 'function () {}')
