@@ -31,25 +31,6 @@ tersify(..., { maxLength: 80 })
 tersify({ a: 1 })
 ```
 
-## Contribute
-
-```sh
-# right after fork
-npm install
-
-# begin making changes
-git checkout -b <branch>
-npm run watch
-
-# edit `webpack.config.dev.js` to exclude dependencies for the global build.
-
-# after making change(s)
-git commit -m "<commit message>"
-git push
-
-# create PR
-```
-
 ## tersible
 
 Inject a `tersify()` function to the subject.
@@ -74,6 +55,25 @@ class Boo extends Tersible(Foo, function() { return `{ a: ${this.a} }` }) { }
 const boo = new Boo()
 boo.a = 3
 boo.tersify() // '{ a: 3 }'
+```
+
+## Contribute
+
+```sh
+# right after fork
+npm install
+
+# begin making changes
+git checkout -b <branch>
+npm run watch
+
+# edit `webpack.config.dev.js` to exclude dependencies for the global build.
+
+# after making change(s)
+git commit -m "<commit message>"
+git push
+
+# create PR
 ```
 
 ## Npm Commands
