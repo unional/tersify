@@ -9,10 +9,12 @@
 
 Format tersely.
 
-`toString()`, `JSON.stringify()` and even [`stringify-object`](https://github.com/yeoman/stringify-object) can return multieline strings.
+`toString()`, `JSON.stringify()` and [`stringify-object`](https://github.com/yeoman/stringify-object) can return multiline strings.
 
 This library will return a single line instead.
 You can specify `maxLength` to trim the resulting string.
+
+You can also override the result by providing your own `tersify()` function on the subject.
 
 ```ts
 import { tersify } from 'tersify'
@@ -43,7 +45,7 @@ const increment = tersible(a => a + 1, () => 'a++')
 increment.tersify() // 'a++'
 
 // `{ a: 1 }`
-tarsible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
+tersible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
 ```
 
 ## Tersiblized
