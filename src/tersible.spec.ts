@@ -35,3 +35,8 @@ test('mixin to class', t => {
   b.a = 2
   t.is(b.tersify(), 'a = 2')
 })
+
+test('allow string as tersify()', t => {
+  const x = tersible((a) => a++, 'a++')
+  t.is(x.tersify(), 'a++')
+})
