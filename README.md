@@ -46,6 +46,9 @@ increment.tersify() // 'a++'
 
 // `{ a: 1 }`
 tersible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
+
+const decrement = tersible(a => a--, 'a--')
+decrement.tersify() // 'a--'
 ```
 
 ## Tersiblized
