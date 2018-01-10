@@ -84,38 +84,44 @@ test('long named function trimmed at specified length', t => {
 })
 
 test('named function with too long signature', t => {
-  const actual = tersify(/*istanbul ignore next*/ function veryVeryVeryVeryLongNameFunction(a, b, c, d, e, f, g) { return a + b + c + d + e + f + g }, { maxLength: 50 })
+  const actual = tersify(/*istanbul ignore next*/ function veryVeryVeryVeryLongNameFunction(a, b, c, d, e, f, g) {
+    return a + b + c + d + e + f + g
+  }, { maxLength: 50 })
 
   t.is(actual.length, 50)
   t.is(actual, 'function veryVeryVeryVeryLongNameFunction(a, b,...')
 })
 
 test('arrow function', t => {
-  t.is(tersify(/*istanbul ignore next*/ () => { }), '() => {}')
+  t.is(tersify(/*istanbul ignore next*/() => { }), '() => {}')
 })
 
 test('arrow with single param', t => {
   t.is(tersify(/*istanbul ignore next*/ x => false), 'x => false')
-  t.is(tersify(/*istanbul ignore next*/ (x) => false), 'x => false')
+  t.is(tersify(/*istanbul ignore next*/(x) => false), 'x => false')
 })
 
 test('arrow with muliple params', t => {
-  t.is(tersify(/*istanbul ignore next*/ (x, y) => false), '(x, y) => false')
+  t.is(tersify(/*istanbul ignore next*/(x, y) => false), '(x, y) => false')
 })
 
 test('arrow with return', t => {
-  t.is(tersify(/*istanbul ignore next*/ (x, y) => { return false }), '(x, y) => false')
+  t.is(tersify(/*istanbul ignore next*/(x, y) => { return false }), '(x, y) => false')
 })
 
 test('multi-lines arrow', t => {
-  t.is(tersify(/*istanbul ignore next*/ (x, y) => {
+  t.is(tersify(/*istanbul ignore next*/(x, y) => {
     x++
     return y
   }), '(x, y) => { x++; return y; }')
 })
 
+test('arrow with evaluation', t => {
+  t.is(tersify(/*istanbul ignore next*/(x, y) => ({ x, y })), '(x, y) => ({ x, y })')
+})
+
 test('long arrow trimmed at specified length', t => {
-  const actual = tersify(/*istanbul ignore next*/ (x, y) => {
+  const actual = tersify(/*istanbul ignore next*/(x, y) => {
     console.log(1)
     console.log(2)
     console.log(3)
@@ -131,18 +137,18 @@ test('long arrow trimmed at specified length', t => {
 })
 
 test('arrow function with too long signature', t => {
-  const actual = tersify(/*istanbul ignore next*/ (a, b, c, d, e, f, g, veryVeryVeryVeryLongArgument1, veryVeryVeryVeryLongArgument2) => { return a + b + c + d + e + f + g }, { maxLength: 50 })
+  const actual = tersify(/*istanbul ignore next*/(a, b, c, d, e, f, g, veryVeryVeryVeryLongArgument1, veryVeryVeryVeryLongArgument2) => { return a + b + c + d + e + f + g }, { maxLength: 50 })
   t.is(actual.length, 50)
   t.is(actual, '(a, b, c, d, e, f, g, veryVeryVeryVeryLongArgum...')
 })
 
 test('long single expression arrow trimmed at specified length', t => {
-  const actual = tersify(/*istanbul ignore next*/ (x, y) => 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + x + y, { maxLength: 30 })
+  const actual = tersify(/*istanbul ignore next*/(x, y) => 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + x + y, { maxLength: 30 })
 
   t.is(actual.length, 30)
   t.is(actual, '(x, y) => 1 + 2 + 3 + 4 + 5...')
 })
 
 test('use tersify() when available', t => {
-  t.is(tersify(tersible(/*istanbul ignore next*/ (x, y) => x + y, () => 'x + y')), 'x + y')
+  t.is(tersify(tersible(/*istanbul ignore next*/(x, y) => x + y, () => 'x + y')), 'x + y')
 })
