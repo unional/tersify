@@ -15,5 +15,5 @@ test('array with object', t => {
 })
 
 test('object with array', t => {
-  t.is(tersify({ path: [], expected: a => a > 0, actual: 0 }), `{ path: [], expected: a => a > 0, actual: 0 }`)
+  t.is(tersify({ path: [], expected: /*istanbul ignore next*/ a => a > 0, actual: 0 }), `{ path: [], expected: a => a > 0, actual: 0 }`)
 })

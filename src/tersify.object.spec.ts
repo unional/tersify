@@ -15,7 +15,7 @@ test('complex object', t => {
 })
 
 test('object with function', t => {
-  t.is(tersify({ a: () => { return true } }), `{ a: () => true }`)
+  t.is(tersify({ a: /*istanbul ignore next*/ () => { return true } }), `{ a: () => true }`)
 })
 
 test('long object', t => {
@@ -23,12 +23,12 @@ test('long object', t => {
 })
 
 test('long object with function', t => {
-  t.is(tersify({ a: () => false, c: { b: 1, c: 'c' }, d: true }, { maxLength: 20 }), `{ a: () => fals... }`)
+  t.is(tersify({ a: /*istanbul ignore next*/ () => false, c: { b: 1, c: 'c' }, d: true }, { maxLength: 20 }), `{ a: () => fals... }`)
 })
 
 test('object with long function trimmed at specified length', t => {
   t.is(tersify({
-    a: function (x, y) {
+    a: /*istanbul ignore next*/ function (x, y) {
       console.log(1)
       console.log(2)
       console.log(3)

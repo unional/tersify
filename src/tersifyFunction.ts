@@ -39,13 +39,15 @@ function formatArrow(str: string, maxLength) {
     // after trimming it is still too long
     singleLine = singleLine.slice(0, maxLength - 3) + '...'
   }
-  return singleLine
+
+  // trim `{ }` to `{}` in wallaby environment.
+  return singleLine.replace(/{ }/g, '{}')
 }
 
 function trimWithBracket(singleLine, maxLength) {
   // https://regex101.com/r/HrkxfW/1
   const parts = /(.* { )(.*)( })/.exec(singleLine)
-  return parts ? parts[1] + parts[2].slice(0, maxLength - parts[1].length - parts[3].length - 3) + '...' + parts[3] : singleLine
+  return parts ? parts[1] + parts[2].slice(0, maxLength - parts[1].length - parts[3].length - 3) + '...' + parts[3] : singleLine;
 }
 
 function formatFn(str: string, maxLength) {
@@ -61,5 +63,7 @@ function formatFn(str: string, maxLength) {
     // after trimming it is still too long
     singleLine = singleLine.slice(0, maxLength - 3) + '...'
   }
-  return singleLine
+
+  // trim `{ }` to `{}` in wallaby environment.
+  return singleLine.replace(/{ }/g, '{}')
 }
