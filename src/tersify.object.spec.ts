@@ -38,5 +38,9 @@ test('object with long function trimmed at specified length', t => {
       x++
       return y
     }, c: { b: 1, c: 'c' }, d: true
-  }, { maxLength: 100 }), `{ a: function (x, y) {  console.log(1); console.log(2); console.log(3); console.log(4); console... }`)
+  }, { maxLength: 100 }), `{ a: function (x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.... }`)
+})
+
+test('object with error property', t => {
+  t.is(tersify({ a: new Error('err') }), `{ a: { message: 'err' } }`)
 })
