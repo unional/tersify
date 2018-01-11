@@ -21,5 +21,5 @@ test('object with array', t => {
 test('use tersify method for each element in array', t => {
   const a = tersible({ a: 1 }, () => 'a1')
   const b = tersible({ b: 2 }, () => 'b2')
-  t.is(tersify([a, b, { c: 3 }]), `[a1, b2, { c: 3 }]`)
+  t.is(tersify([a, b, { c: 3 }, undefined, null, 1, 'a']), `[a1, b2, { c: 3 }, undefined, null, 1, 'a']`)
 })

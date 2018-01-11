@@ -4,6 +4,8 @@ import { tersifyObject } from './tersifyObject'
 import { tersifyFunction } from './tersifyFunction'
 
 export function tersify(obj, option = { maxLength: 120 }) {
+  if (obj === undefined || obj === null)
+    return obj + ''
   if (typeof obj === 'function')
     return tersifyFunction(obj, option)
   if (obj instanceof Error)
