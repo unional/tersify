@@ -3,8 +3,8 @@ import stringifyObject = require('stringify-object')
 
 import { tersify } from './tersify'
 
-export function tersifyObject(obj, option = { maxLength: Infinity }) {
-  let str: string = obj && typeof obj.tersify === 'function' ?
+export function tersifyObject(obj, option) {
+  let str: string = typeof obj.tersify === 'function' ?
     obj.tersify() :
     stringifyObject(obj, {
       indent: '  ',
