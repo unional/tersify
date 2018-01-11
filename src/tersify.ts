@@ -1,16 +1,24 @@
+import { unpartial } from 'unpartial'
+
+import { defaultOptions } from './constants'
 import { tersifyArray } from './tersifyArray'
 import { tersifyError } from './tersifyError'
 import { tersifyObject } from './tersifyObject'
 import { tersifyFunction } from './tersifyFunction'
 
-export function tersify(obj, option = { maxLength: 120 }) {
+export interface TersifyOptions {
+  maxLength: number
+}
+
+export function tersify(obj, options?: Partial<TersifyOptions>) {
+  const opt = unpartial(defaultOptions, options)
   if (obj === undefined || obj === null)
     return obj + ''
   if (typeof obj === 'function')
-    return tersifyFunction(obj, option)
+    return tersifyFunction(obj, opt)
   if (obj instanceof Error)
-    return tersifyError(obj, option)
+    return tersifyError(obj, opt)
   if (Array.isArray(obj))
-    return tersifyArray(obj, option)
-  return tersifyObject(obj, option)
+    return tersifyArray(obj, opt)
+  return tersifyObject(obj, opt)
 }

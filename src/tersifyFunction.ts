@@ -1,9 +1,9 @@
-import os = require('os')
-
+import { EOL } from './constants'
+import { defaultTersify } from './defaultTersify'
 import { isTersible } from './tersible'
 
 export function tersifyFunction(fn: Function, option) {
-  if (isTersible(fn))
+  if (isTersible(fn) && fn['tersify'] !== defaultTersify)
     return fn.tersify()
 
   const str = fn.toString()
@@ -14,14 +14,14 @@ export function tersifyFunction(fn: Function, option) {
 }
 
 function isArrow(str: string) {
-  const lines = str.split(os.EOL)
+  const lines = str.split(EOL)
 
   // https://regex101.com/r/0HtLzb/1
   return /[\(]?.*[\)]? =>/.test(lines[0])
 }
 
 function formatArrow(str: string, maxLength) {
-  const lines = str.split(os.EOL)
+  const lines = str.split(EOL)
   const trimmedlines = lines.map(l => l.trim())
   let singleLine = trimmedlines.join(' ');
 
@@ -51,7 +51,7 @@ function trimWithBracket(singleLine, maxLength) {
 }
 
 function formatFn(str: string, maxLength) {
-  const lines = str.split(os.EOL)
+  const lines = str.split(EOL)
   const trimmedlines = lines.map(l => l.trim())
   let singleLine = trimmedlines.join(' ');
 

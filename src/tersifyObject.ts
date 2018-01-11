@@ -1,11 +1,13 @@
 // NOTE: May not need stringify-object anymore, just iterate and repeat
 import stringifyObject = require('stringify-object')
 
+import { defaultTersify } from './defaultTersify'
+import { isTersible } from './tersible'
 import { tersify } from './tersify'
 
 export function tersifyObject(obj, option) {
-  let str: string = typeof obj.tersify === 'function' ?
-    obj.tersify() :
+  let str: string = isTersible(obj) && obj['tersify'] !== defaultTersify ?
+    obj.tersify(option) :
     stringifyObject(obj, {
       indent: '  ',
       inlineCharacterLimit: Infinity,

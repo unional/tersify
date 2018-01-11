@@ -2,9 +2,21 @@ import { test } from 'ava'
 
 import { tersible, Tersiblized, Tersible } from './index'
 
+test('inject to function witout tersify function will get default tersify', t => {
+  let x = 10
+  const tersed = tersible(/* istanbul ignore next */a => a + x)
+  t.is(tersed.tersify(), 'a => a + x')
+  t.is(tersed.tersify({ maxLength: 7 }), 'a =>...')
+})
+
 test('inject to function', t => {
   let x = 10
   t.is(tersible(a => a + x, () => `a+${x}`).tersify(), 'a+10')
+})
+
+test('inject to function with options', t => {
+  let x = 10
+  t.is(tersible(a => a + x, (options) => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
 })
 
 test('inject to object', t => {

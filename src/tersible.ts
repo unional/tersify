@@ -1,6 +1,11 @@
-export type Tersible<T> = T & {
-  tersify(): string
+import { defaultTersify } from './defaultTersify'
+import { TersifyOptions } from './tersify'
+
+export interface Tersify {
+  tersify(options?: Partial<TersifyOptions>): string
 }
+
+export type Tersible<T> = T & Tersify
 
 /**
  * Create a Tersible mixin class
@@ -17,11 +22,12 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
     constructor(...args: any[]) {
       super(...args)
     }
-    tersify() {
-      return tersify.apply(this)
+    tersify(options?: Partial<TersifyOptions>) {
+      return tersify.call(this, options)
     }
   }
 }
+
 /**
  * Inject `tersify()` to subject.
  * NOTE: this does inject directly to `subject`.
@@ -29,19 +35,22 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
  * but it cannot be done otherwise.
  * How can I "clone" a function or class?
  */
-export function tersible<T>(subject: T, tersify: string | ((this: T) => string)): Tersible<T> {
-  const tersifyFn = typeof tersify === 'string' ? function () {
-    return tersify
-  } : tersify
+export function tersible<T>(subject: T, tersify?: string | ((this: T, options: Partial<TersifyOptions>) => string)): Tersible<T> {
+  const tersifyFn = tersify === undefined ?
+    defaultTersify
+    : typeof tersify === 'string' ? function () {
+      return tersify
+    } : tersify
   Object.defineProperty(subject, 'tersify', {
     value: tersifyFn,
     enumerable: false,
     writable: false
   })
 
-  return subject as Tersible<T>
+  return subject as any
 }
 
 export function isTersible<T>(obj: T): obj is Tersible<T> {
-  return typeof obj['tersify'] === 'function'
+  const fn = obj['tersify']
+  return typeof fn === 'function'
 }
