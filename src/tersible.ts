@@ -30,9 +30,16 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
  * How can I "clone" a function or class?
  */
 export function tersible<T>(subject: T, tersify: string | ((this: T) => string)): Tersible<T> {
-  if (typeof tersify === 'string')
-    return Object.assign(subject, { tersify: () => tersify })
-  return Object.assign(subject, { tersify })
+  const tersifyFn = typeof tersify === 'string' ? function () {
+    return tersify
+  } : tersify
+  Object.defineProperty(subject, 'tersify', {
+    value: tersifyFn,
+    enumerable: false,
+    writable: false
+  })
+
+  return subject as Tersible<T>
 }
 
 export function isTersible<T>(obj: T): obj is Tersible<T> {

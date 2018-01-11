@@ -2,7 +2,7 @@ import os = require('os')
 
 import { isTersible } from './tersible'
 
-export function tersifyFunction(fn: Function, option = { maxLength: Infinity }) {
+export function tersifyFunction(fn: Function, option) {
   if (isTersible(fn))
     return fn.tersify()
 
