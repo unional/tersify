@@ -1,9 +1,10 @@
 import os = require('os')
 
+import { defaultTersify } from './defaultTersify'
 import { isTersible } from './tersible'
 
 export function tersifyFunction(fn: Function, option) {
-  if (isTersible(fn))
+  if (isTersible(fn) && fn['tersify'] !== defaultTersify)
     return fn.tersify()
 
   const str = fn.toString()
