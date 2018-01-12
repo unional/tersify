@@ -11,12 +11,12 @@ test('inject to function witout tersify function will get default tersify', t =>
 
 test('inject to function', t => {
   let x = 10
-  t.is(tersible(a => a + x, () => `a+${x}`).tersify(), 'a+10')
+  t.is(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */() => `a+${x}`).tersify(), 'a+10')
 })
 
 test('inject to function with options', t => {
   let x = 10
-  t.is(tersible(a => a + x, (options) => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
+  t.is(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */options => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
 })
 
 test('inject to object', t => {
