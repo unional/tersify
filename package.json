@@ -72,7 +72,6 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "stringify-object": "^3.2.1",
     "unpartial": "^0.4.1"
   }
 }

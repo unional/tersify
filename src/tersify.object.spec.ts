@@ -10,6 +10,10 @@ test('simple object', t => {
   t.is(tersify({ a: 1 }), '{ a: 1 }')
 })
 
+test('undefined property will be skipped', t => {
+  t.is(tersify({ a: 1, b: undefined }), '{ a: 1 }')
+})
+
 test('complex object', t => {
   t.is(tersify({ a: { b: 1, c: 'c' }, d: true }), `{ a: { b: 1, c: 'c' }, d: true }`)
 })

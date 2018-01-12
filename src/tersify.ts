@@ -20,5 +20,10 @@ export function tersify(obj, options?: Partial<TersifyOptions>) {
     return tersifyError(obj, opt)
   if (Array.isArray(obj))
     return tersifyArray(obj, opt)
+  const type = typeof obj
+  if (type === 'string')
+    return `'${obj}'`
+  if (type === 'number' || type === 'boolean')
+    return String(obj)
   return tersifyObject(obj, opt)
 }
