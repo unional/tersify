@@ -14,7 +14,7 @@ function stringifyObject(obj, options) {
 }
 
 export function tersifyObject(obj, option) {
-  let str: string = isTersible(obj) && obj['tersify'] !== defaultTersify ?
+  let str: string = !option.raw && isTersible(obj) && obj['tersify'] !== defaultTersify ?
     obj.tersify(option) :
     stringifyObject(obj, option)
   if (str.length > option.maxLength) {

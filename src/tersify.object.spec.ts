@@ -1,6 +1,6 @@
 import { test } from 'ava'
 
-import { tersify } from './index'
+import { tersify, tersible } from './index'
 
 test('empty object', t => {
   t.is(tersify({}), '{}')
@@ -47,4 +47,8 @@ test('object with long function trimmed at specified length', t => {
 
 test('object with error property', t => {
   t.is(tersify({ a: new Error('err') }), `{ a: { message: 'err' } }`)
+})
+
+test('object.tersify() is skipped when giving raw option', t => {
+  t.is(tersify(tersible({ a: 1, /* istanbul ignore next */b() { return 'b' } }, /* istanbul ignore next */() => 'a1'), { raw: true }), `{ a: 1, b: b() { return 'b'; } }`)
 })
