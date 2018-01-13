@@ -152,3 +152,8 @@ test('long single expression arrow trimmed at specified length', t => {
 test('use tersify() when available', t => {
   t.is(tersify(tersible(/*istanbul ignore next*/(x, y) => x + y, () => 'x + y')), 'x + y')
 })
+
+test('raw will skip tersify() method', t => {
+  t.is(tersify(tersible(/*istanbul ignore next*/(x, y) => x + y, /*istanbul ignore next*/() => 'x + y'), { raw: true }), '(x, y) => x + y')
+  t.is(tersify(tersible(/*istanbul ignore next*/function (x, y) { return x + y }, /*istanbul ignore next*/() => 'x + y'), { raw: true }), 'function (x, y) { return x + y; }')
+})
