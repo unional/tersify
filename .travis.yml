@@ -14,14 +14,16 @@ branches:
     - /^greenkeeper.*$/
 
 before_install:
-  - npm install -g greenkeeper-lockfile@1
+  - ./scripts/run-on-latest-node.sh "npm install -g greenkeeper-lockfile@1"
 
-before_script: greenkeeper-lockfile-update
+before_script:
+  - ./scripts/run-on-latest-node.sh "greenkeeper-lockfile-update"
 
 script:
   - npm run verify
 
-after_script: greenkeeper-lockfile-upload
+after_script:
+  - ./scripts/run-on-latest-node.sh "greenkeeper-lockfile-upload"
 
 after_success:
   - npm install -g travis-deploy-once@4
