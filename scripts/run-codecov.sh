@@ -1,5 +1,5 @@
 #! /bin/bash
-node_version=${node -v};
+node_version=$(node -v);
 if [ ${node_version:1:1} = 9 ]; then
   npm install --no-save codecov && npm run codecov
 fi
