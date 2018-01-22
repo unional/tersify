@@ -14,9 +14,13 @@ function stringifyObject(obj, options) {
 }
 
 export function tersifyObject(obj, option) {
+  if (obj instanceof RegExp) {
+    return obj.toString()
+  }
   let str: string = !option.raw && isTersible(obj) && obj['tersify'] !== defaultTersify ?
     obj.tersify(option) :
     stringifyObject(obj, option)
+  console.log(obj instanceof RegExp)
   if (str.length > option.maxLength) {
     str = str.slice(0, option.maxLength - 5) + '...' + str.slice(-2)
   }
