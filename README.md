@@ -9,12 +9,11 @@
 [![Greenkeeper badge][green-keeper-image]][green-keeper-url]
 [![semantic-release][semantic-release-image]][semantic-release-url]
 
-Format tersely.
+Creates a terse representation of the subject.
 
-`toString()`, `JSON.stringify()` and [`stringify-object`](https://github.com/yeoman/stringify-object) can return multiline strings.
+The subject can be primitive types, functions, objects, arrays, or RegExp.
 
-This library will return a single line instead.
-You can specify `maxLength` to trim the resulting string.
+You can specify `maxLength` to further trim the resulting string.
 
 You can also override the result by providing your own `tersify()` function on the subject.
 
