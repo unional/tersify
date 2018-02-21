@@ -33,16 +33,16 @@ test('long object with function', t => {
 test('object with long function trimmed at specified length', t => {
   t.is(tersify({
     a: /*istanbul ignore next*/ function (x, y) {
-      console.log(1)
-      console.log(2)
-      console.log(3)
-      console.log(4)
-      console.log(5)
-      console.log(6)
+      console.info(1)
+      console.info(2)
+      console.info(3)
+      console.info(4)
+      console.info(5)
+      console.info(6)
       x++
       return y
     }, c: { b: 1, c: 'c' }, d: true
-  }, { maxLength: 100 }), `{ a: function (x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.... }`)
+  }, { maxLength: 100 }), `{ a: function (x, y) { console.info(1); console.info(2); console.info(3); console.info(4); cons... }`)
 })
 
 test('object with error property', t => {

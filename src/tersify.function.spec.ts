@@ -28,18 +28,18 @@ test('multi-lines anonymous function', t => {
 
 test('long anonymous function trimmed at specified length', t => {
   const actual = tersify(/*istanbul ignore next*/ function (x, y) {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
+    console.info(1)
+    console.info(2)
+    console.info(3)
+    console.info(4)
+    console.info(5)
+    console.info(6)
     x++
     return y
   }, { maxLength: 110 })
 
   t.is(actual.length, 110)
-  t.is(actual, 'function (x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console... }')
+  t.is(actual, 'function (x, y) { console.info(1); console.info(2); console.info(3); console.info(4); console.info(5); co... }')
 })
 
 test('named function', t => {
@@ -69,18 +69,18 @@ test('multi-lines named function', t => {
 
 test('long named function trimmed at specified length', t => {
   const actual = tersify(/*istanbul ignore next*/ function foo(x, y) {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
+    console.info(1)
+    console.info(2)
+    console.info(3)
+    console.info(4)
+    console.info(5)
+    console.info(6)
     x++
     return y
   }, { maxLength: 110 })
 
   t.is(actual.length, 110)
-  t.is(actual, 'function foo(x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); cons... }')
+  t.is(actual, 'function foo(x, y) { console.info(1); console.info(2); console.info(3); console.info(4); console.info(5);... }')
 })
 
 test('named function with too long signature', t => {
@@ -122,18 +122,18 @@ test('arrow with evaluation', t => {
 
 test('long arrow trimmed at specified length', t => {
   const actual = tersify(/*istanbul ignore next*/(x, y) => {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
+    console.info(1)
+    console.info(2)
+    console.info(3)
+    console.info(4)
+    console.info(5)
+    console.info(6)
     x++
     return y
   }, { maxLength: 110 })
 
   t.is(actual.length, 110)
-  t.is(actual, '(x, y) => { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console.log(6... }')
+  t.is(actual, '(x, y) => { console.info(1); console.info(2); console.info(3); console.info(4); console.info(5); console.... }')
 })
 
 test('arrow function with too long signature', t => {

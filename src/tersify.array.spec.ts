@@ -32,17 +32,17 @@ test('long array will be trimmed', t => {
 test('maxLength: Infinity will return whole array without trim', t => {
   const a = { aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: 1, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: 2, ccccccccccccccccccccccccc: 3, ddddddddddddddddddddddddddddddddd: 4 }
   t.is(tersify([a, /*istanbul ignore next*/ function (x, y) {
-    console.log(1)
-    console.log(2)
-    console.log(3)
-    console.log(4)
-    console.log(5)
-    console.log(6)
-    console.log(7)
-    console.log(8)
-    console.log(9)
-    console.log(10)
+    console.info(1)
+    console.info(2)
+    console.info(3)
+    console.info(4)
+    console.info(5)
+    console.info(6)
+    console.info(7)
+    console.info(8)
+    console.info(9)
+    console.info(10)
     x++
     return y
-  }], { maxLength: Infinity }), `[{ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: 1, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: 2, ccccccccccccccccccccccccc: 3, ddddddddddddddddddddddddddddddddd: 4 }, function (x, y) { console.log(1); console.log(2); console.log(3); console.log(4); console.log(5); console.log(6); console.log(7); console.log(8); console.log(9); console.log(10); x++; return y; }]`)
+  }], { maxLength: Infinity }), `[{ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: 1, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: 2, ccccccccccccccccccccccccc: 3, ddddddddddddddddddddddddddddddddd: 4 }, function (x, y) { console.info(1); console.info(2); console.info(3); console.info(4); console.info(5); console.info(6); console.info(7); console.info(8); console.info(9); console.info(10); x++; return y; }]`)
 })
