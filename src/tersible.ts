@@ -1,5 +1,5 @@
 import { defaultTersify } from './defaultTersify'
-import { TersifyOptions } from './tersify'
+import { TersifyOptions } from './interfaces'
 
 export interface Tersify {
   tersify(options?: Partial<TersifyOptions>): string
