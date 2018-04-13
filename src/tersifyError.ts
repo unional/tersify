@@ -1,4 +1,4 @@
-import { tersify } from './tersify'
+import { tersifyAny } from './tersifyAny'
 
 /**
  * `stringify-object` doesn't stringify Error instance.
@@ -6,5 +6,5 @@ import { tersify } from './tersify'
  * I need to tersifyError myself.
  */
 export function tersifyError(err: Error, option) {
-  return tersify({ ...err, message: err.message }, option)
+  return tersifyAny({ ...err, message: err.message }, option)
 }

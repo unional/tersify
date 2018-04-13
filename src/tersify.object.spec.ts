@@ -52,3 +52,7 @@ test('object with error property', t => {
 test('object.tersify() is skipped when giving raw option', t => {
   t.is(tersify(tersible({ a: 1, /* istanbul ignore next */b() { return 'b' } }, /* istanbul ignore next */() => 'a1'), { raw: true }), `{ a: 1, b: b() { return 'b'; } }`)
 })
+
+test('object with long string', t => {
+  t.is(tersify({ a: '12345678901234567890123456789012345678901234567890' }, { maxLength: 30 }), `{ a: '1234567890123456789... }`)
+})
