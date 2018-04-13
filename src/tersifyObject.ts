@@ -1,6 +1,6 @@
 import { defaultTersify } from './defaultTersify'
 import { isTersible } from './tersible'
-import { tersify } from './tersify'
+import { tersifyAny } from './tersifyAny'
 
 function stringifyObject(obj, options) {
   const nodes: any[] = []
@@ -8,7 +8,7 @@ function stringifyObject(obj, options) {
     const value = obj[k]
     if (value === undefined)
       return
-    nodes.push(`${k}: ${tersify(value, options)}`)
+    nodes.push(`${k}: ${tersifyAny(value, options)}`)
   })
   return nodes.length === 0 ? '{}' : `{ ${nodes.join(', ')} }`
 }

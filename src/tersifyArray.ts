@@ -1,4 +1,4 @@
-import { tersify } from './tersify'
+import { tersifyAny } from './tersifyAny'
 
 export function tersifyArray(entries: Array<any>, option) {
   let length = 1
@@ -6,7 +6,7 @@ export function tersifyArray(entries: Array<any>, option) {
   entries.forEach(entry => {
     if (length > option.maxLength) return
 
-    const tersifiedEntry = tersify(entry, option)
+    const tersifiedEntry = tersifyAny(entry, option)
     length += tersifiedEntry.length
     tersifiedEntries.push(tersifiedEntry)
   })
