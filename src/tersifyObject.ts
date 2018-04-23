@@ -17,6 +17,10 @@ export function tersifyObject(obj, option) {
   if (obj instanceof RegExp) {
     return obj.toString()
   }
+  if (option.references.find(x => x === obj)) {
+    return `[circular]`
+  }
+  option.references.push(obj)
   let str: string = !option.raw && isTersible(obj) && obj['tersify'] !== defaultTersify ?
     obj.tersify(option) :
     stringifyObject(obj, option)

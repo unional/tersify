@@ -56,3 +56,10 @@ test('object.tersify() is skipped when giving raw option', t => {
 test('object with long string', t => {
   t.is(tersify({ a: '12345678901234567890123456789012345678901234567890' }, { maxLength: 30 }), `{ a: '1234567890123456789... }`)
 })
+
+test('circular', t => {
+  const obj: any = { a: 1 }
+  obj.cir = obj
+
+  t.is(tersify(obj), `{ a: 1, cir: [circular] }`)
+})
