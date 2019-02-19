@@ -9,9 +9,7 @@
 [![Greenkeeper badge][green-keeper-image]][green-keeper-url]
 [![semantic-release][semantic-release-image]][semantic-release-url]
 
-Creates a terse representation of the subject.
-
-The subject can be primitive types, functions, objects, arrays, or RegExp.
+Create a readable terse representation of the subject.
 
 You can specify `maxLength` to further trim the resulting string.
 

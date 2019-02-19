@@ -1,15 +1,15 @@
 import { tersifyArray } from './tersifyArray'
 import { tersifyError } from './tersifyError'
 import { tersifyObject } from './tersifyObject'
-import { tersifyFunction } from './tersifyFunction'
+// import { tersifyFunction } from './tersifyNode/tersifyFunction'
 import { TersifyOptions } from './interfaces';
 
 
 export function tersifyAny(obj, options: TersifyOptions) {
   if (obj === undefined || obj === null)
     return obj + ''
-  if (typeof obj === 'function')
-    return tersifyFunction(obj, options)
+  // if (typeof obj === 'function')
+    // return tersifyFunction(obj, options as any)
   if (obj instanceof Error)
     return tersifyError(obj, options)
   if (Array.isArray(obj))

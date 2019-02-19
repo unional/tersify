@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "esnext",
-    "outDir": "dist-es2015",
+    "outDir": "libm",
     "target": "esnext"
   }
 }

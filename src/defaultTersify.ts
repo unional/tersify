@@ -1,6 +1,6 @@
-import { tersify } from './tersify'
-import { TersifyOptions } from './interfaces'
+import { TersifyOptions } from './interfaces';
+import { tersify } from './tersify';
 
-export function defaultTersify(options: Partial<TersifyOptions>) {
+export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
   return tersify(this, options)
 }

@@ -7,4 +7,4 @@ const isNode = typeof module !== 'undefined' && module['e' + 'xports'] && !modul
 // istanbul ignore next
 // tslint:disable-next-line
 export const EOL = isNode && /^win/.test(process.platform) ? '\r\n' : '\n'
-export const defaultOptions: TersifyOptions = { maxLength: 120 }
+export const defaultOptions = { maxLength: 120 }

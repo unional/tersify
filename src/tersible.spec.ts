@@ -1,29 +1,29 @@
-import { test } from 'ava'
+import t from 'assert'
 
 import { tersible, Tersiblized, Tersible } from './index'
 
-test('inject to function witout tersify function will get default tersify', t => {
+test('inject to function witout tersify function will get default tersify', () => {
   let x = 10
   const tersed = tersible(/* istanbul ignore next */a => a + x)
-  t.is(tersed.tersify(), 'a => a + x')
-  t.is(tersed.tersify({ maxLength: 7 }), 'a =>...')
+  t.strictEqual(tersed.tersify(), 'a => a + x')
+  t.strictEqual(tersed.tersify({ maxLength: 7 }), 'a =>...')
 })
 
-test('inject to function', t => {
+test('inject to function', () => {
   let x = 10
-  t.is(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */() => `a+${x}`).tersify(), 'a+10')
+  t.strictEqual(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */() => `a+${x}`).tersify(), 'a+10')
 })
 
-test('inject to function with options', t => {
+test('inject to function with options', () => {
   let x = 10
-  t.is(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */options => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
+  t.strictEqual(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */options => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
 })
 
-test('inject to object', t => {
-  t.is(tersible({ a: 1 }, function () { return `a = ${this.a}` }).tersify(), 'a = 1')
+test('inject to object', () => {
+  t.strictEqual(tersible({ a: 1 }, function () { return `a = ${this.a}` }).tersify(), 'a = 1')
 })
 
-test('inject to class', t => {
+test('inject to class', () => {
   class Foo {
     a = 1
   }
@@ -32,23 +32,23 @@ test('inject to class', t => {
   })
 
   let f = new Foo() as Tersible<Foo>
-  t.is(f.tersify(), 'a = 1')
+  t.strictEqual(f.tersify(), 'a = 1')
 
   f.a = 2
-  t.is(f.tersify(), 'a = 2')
+  t.strictEqual(f.tersify(), 'a = 2')
 })
 
-test('mixin to class', t => {
+test('mixin to class', () => {
   class Foo {
     a = 1
   }
   class Boo extends Tersiblized(Foo, function () { return `a = ${this.a}` }) { }
   const b = new Boo()
   b.a = 2
-  t.is(b.tersify(), 'a = 2')
+  t.strictEqual(b.tersify(), 'a = 2')
 })
 
-test('allow string as tersify()', t => {
+test('allow string as tersify()', () => {
   const x = tersible((a) => a++, 'a++')
-  t.is(x.tersify(), 'a++')
+  t.strictEqual(x.tersify(), 'a++')
 })
