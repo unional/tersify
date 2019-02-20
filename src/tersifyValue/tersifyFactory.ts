@@ -5,6 +5,7 @@ import { tersifyLiteral } from './tersifyLiteral';
 import { tersifyRegExp } from './tersifyRegExp';
 import { tersifyString } from './tersifyString';
 import { tersifySymbol } from './tersifySymbol';
+import { tersifyObject } from './tersifyObject';
 
 export type TersifyFunc = (context: TersifyContext, value: any, length: number) => string
 export const tersifyFactory: Record<string, TersifyFunc> = {
@@ -16,5 +17,6 @@ export const tersifyFactory: Record<string, TersifyFunc> = {
   'string': tersifyString,
   'symbol': tersifySymbol,
   'function': tersifyFunction,
-  'RegExp': tersifyRegExp
+  'RegExp': tersifyRegExp,
+  'object': tersifyObject
 }

@@ -1,4 +1,5 @@
 import { tersify } from './tersify2';
+import { tersible } from './tersible';
 
 describe('undefined', () => {
   test(`tersify(undefined)`, () => {
@@ -147,6 +148,8 @@ describe('string', () => {
     expect(tersify('abcd', { maxLength: 1 })).toBe(`.`)
     expect(tersify('abcd', { maxLength: 0 })).toBe('')
   })
+
+  test.todo('escape quotes')
 })
 
 describe('Symbol', () => {
@@ -223,7 +226,27 @@ describe('function', () => {
     expect(tersify(function () { return undefined }, { maxLength: 23 })).toBe('fn() { return unde... }')
   })
 
-  test(`returns 1`, () => {
+  test(`returns null`, () => {
+    expect(tersify(function () { return null })).toBe('fn() { return null }')
+    expect(tersify(function () { return null }, { maxLength: 20 })).toBe('fn() { return null }')
+    expect(tersify(function () { return null }, { maxLength: 19 })).toBe('fn() { return ... }')
+    expect(tersify(function () { return null }, { maxLength: 18 })).toBe('fn() { return... }')
+  })
+
+  test(`returns boolean`, () => {
+    expect(tersify(function () { return true })).toBe('fn() { return true }')
+    expect(tersify(function () { return true }, { maxLength: 20 })).toBe('fn() { return true }')
+    expect(tersify(function () { return true }, { maxLength: 19 })).toBe('fn() { return ... }')
+    expect(tersify(function () { return true }, { maxLength: 18 })).toBe('fn() { return... }')
+
+    expect(tersify(function () { return false })).toBe('fn() { return false }')
+    expect(tersify(function () { return false }, { maxLength: 21 })).toBe('fn() { return false }')
+    expect(tersify(function () { return false }, { maxLength: 20 })).toBe('fn() { return f... }')
+    expect(tersify(function () { return false }, { maxLength: 19 })).toBe('fn() { return ... }')
+    expect(tersify(function () { return false }, { maxLength: 18 })).toBe('fn() { return... }')
+  })
+
+  test(`returns number`, () => {
     expect(tersify(function () { return 1 })).toBe('fn() { return 1 }')
     expect(tersify(function () { return 1 }, { maxLength: 17 })).toBe('fn() { return 1 }')
     expect(tersify(function () { return 1 }, { maxLength: 16 })).toBe('fn() { retu... }')
@@ -231,6 +254,34 @@ describe('function', () => {
 
   test(`returns bigint`, () => {
     expect(tersify(function () { return 1n })).toBe('fn() { return 1n }')
+  })
+
+  test(`returns string`, () => {
+    expect(tersify(function () { return 'a' })).toBe(`fn() { return 'a' }`)
+  })
+
+  test(`returns Symbol`, () => {
+    expect(tersify(function () { return Symbol() })).toBe(`fn() { return Sym() }`)
+  })
+
+  test(`returns named Symbol`, () => {
+    expect(tersify(function () { return Symbol.for('abc') })).toBe(`fn() { return Sym(abc) }`)
+  })
+
+  test(`returns RegExp`, () => {
+    expect(tersify(function () { return /foo/g })).toBe(`fn() { return /foo/g }`)
+  })
+
+  test(`returns anomymous function`, () => {
+    expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
+  })
+
+  test(`returns named function`, () => {
+    expect(tersify(function () { return function foo() { } })).toBe(`fn() { return fn foo() {} }`)
+  })
+
+  test(`returns arrow function`, () => {
+    expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
   })
 
   test(`async function`, () => {
@@ -351,11 +402,11 @@ describe('arrow function', () => {
     expect(tersify(() => { return 'a' })).toBe(`() => 'a'`)
   })
 
-  test('return symbol', () => {
+  test('return Symbol', () => {
     expect(tersify(() => { return Symbol() })).toBe(`() => Sym()`)
   })
 
-  test('return named symbol', () => {
+  test('return named Symbol', () => {
     expect(tersify(() => { return Symbol.for('abc') })).toBe(`() => Sym(abc)`)
   })
 
@@ -363,17 +414,85 @@ describe('arrow function', () => {
     expect(tersify(() => { return /foo/ })).toBe(`() => /foo/`)
   })
 
-  test('return function', () => {
+  test('return anomymous function', () => {
     expect(tersify(() => function () { })).toBe(`() => fn() {}`)
     expect(tersify(() => { return function () { } })).toBe(`() => fn() {}`)
-    expect(tersify(() => () => { })).toBe(`() => () => {}`)
+    expect(tersify(() => function (a, b) {
+      console.info(a)
+      console.info(b)
+    })).toBe(`() => fn(a, b) { console.info(a); console.info(b) }`)
+  })
+
+  test('return named function', () => {
+    expect(tersify(() => function foo() { })).toBe(`() => fn foo() {}`)
+    expect(tersify(() => { return function foo() { } })).toBe(`() => fn foo() {}`)
+    expect(tersify(() => function foo(a, b) {
+      console.info(a)
+      console.info(b)
+    })).toBe(`() => fn foo(a, b) { console.info(a); console.info(b) }`)
+  })
+
+  test('return arrow function', () => {
+    expect(tersify(() => () => true)).toBe(`() => () => true`)
+    expect(tersify((a) => (b) => {
+      console.info(a)
+      console.info(b)
+    })).toBe(`(a) => (b) => { console.info(a); console.info(b) }`)
   })
 })
 
-describe.skip('object', () => {
-  test('show as-is', () => {
+describe('object', () => {
+  test('empty object as {}', () => {
+    expect(tersify({})).toBe('{}')
+  })
+
+  test('primitive type properties', () => {
     expect(tersify({ a: undefined })).toBe('{ a: undefined }')
+    expect(tersify({ a: null })).toBe('{ a: null }')
+    expect(tersify({ a: true })).toBe('{ a: true }')
+    expect(tersify({ a: false })).toBe('{ a: false }')
+    expect(tersify({ a: 12345 })).toBe('{ a: 12345 }')
+    expect(tersify({ a: 12345n })).toBe('{ a: 12345n }')
+    expect(tersify({ a: 'abc' })).toBe(`{ a: 'abc' }`)
+    expect(tersify({ a: Symbol() })).toBe('{ a: Sym() }')
+    expect(tersify({ a: Symbol.for('abc') })).toBe('{ a: Sym(abc) }')
+    expect(tersify({ a: /abcd/gi })).toBe('{ a: /abcd/gi }')
+    expect(tersify({ a: function() {} })).toBe('{ a() {} }')
+    expect(tersify({ a: function foo() {} })).toBe('{ a() {} }')
+    expect(tersify({ a: () => {} })).toBe('{ a: () => {} }')
+  })
+
+  test('trim', () => {
+    expect(tersify({ abcde: 'abcde' }, { maxLength: 18 })).toBe(`{ abcde: 'abcde' }`)
+    expect(tersify({ abcde: 'abcde' }, { maxLength: 17 })).toBe(`{ abcde: 'ab... }`)
+  })
+
+  test('deep object', () => {
+    expect(tersify({
+      a: {
+        b: {
+          c: 'd'
+        }
+      }
+    })).toBe(`{ a: { b: { c: 'd' } } }`)
+  })
+
+  test('use tersify function if available', () => {
+    const subject = { a: 1 }
+    tersible(subject, () => '{a1}')
+    expect(tersify(subject)).toBe('{a1}')
+
+    const subject2 = { b: 2 }
+    tersible(subject2, 'a2')
+    expect(tersify(subject2)).toBe('a2')
+  })
+  
+  test('skip tersify function if running in raw mode', () => {
+    const subject = { a: 1 }
+    tersible(subject, '{a1}')
+    expect(tersify(subject, { raw: true })).toBe('{ a: 1 }')
   })
 })
+
 describe('array', () => { })
 describe('error', () => { })
