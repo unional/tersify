@@ -457,10 +457,21 @@ describe('object', () => {
     expect(tersify({ a: Symbol() })).toBe('{ a: Sym() }')
     expect(tersify({ a: Symbol.for('abc') })).toBe('{ a: Sym(abc) }')
     expect(tersify({ a: /abcd/gi })).toBe('{ a: /abcd/gi }')
-    expect(tersify({ a: function() {} })).toBe('{ a() {} }')
-    expect(tersify({ a: function foo() {} })).toBe('{ a() {} }')
-    expect(tersify({ a: () => {} })).toBe('{ a: () => {} }')
+    expect(tersify({ a: function () { } })).toBe('{ a() {} }')
+    expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
+    expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
   })
+
+  test.todo('multiple properties')
+  test.todo('async anomymous function')
+  test.todo('generator anomymous function')
+  test.todo('async generator anomymous function')
+  test.todo('async named function')
+  test.todo('generator named function')
+  test.todo('async generator named function')
+  test.todo('async arrow function')
+  test.todo('generator arrow function')
+  test.todo('async generator arrow function')
 
   test('trim', () => {
     expect(tersify({ abcde: 'abcde' }, { maxLength: 18 })).toBe(`{ abcde: 'abcde' }`)
@@ -486,7 +497,7 @@ describe('object', () => {
     tersible(subject2, 'a2')
     expect(tersify(subject2)).toBe('a2')
   })
-  
+
   test('skip tersify function if running in raw mode', () => {
     const subject = { a: 1 }
     tersible(subject, '{a1}')

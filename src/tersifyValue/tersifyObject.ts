@@ -12,18 +12,42 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
   if (!context.raw && isTersible(value)) {
     return value.tersify({ maxLength: length })
   }
-  let remaining = length
-  const props = Object.keys(value).reduce((p, k) => {
+  const bracketLen = 4
+  let remaining = length - bracketLen
+  const keys = Object.keys(value)
+  const props = keys.reduce((p, k, i) => {
     if (remaining > 0) {
       const v = value[k]
-      const propValue = tersifyValue(context, v, length)
-
-      if (typeof v === 'function' && !(/^(.*) => /.test(propValue))) {
-        const propStr = `${k}${propValue.slice(propValue.indexOf('('))}` 
-        remaining -= propStr.length
-        p.push(propStr)
+      const isLastKey = i === keys.length - 1
+      const commaAndSpaceLen = isLastKey ? 0 : 2
+      const fnLen = 2
+      const colonAndSpaceLen = 2
+      if (typeof v === 'function') {
+        if ((/^(.*) => /.test(v.toString()))) {
+          const propValue = tersifyValue(
+            context,
+            v,
+            remaining - k.length - commaAndSpaceLen - colonAndSpaceLen)
+          const propStr = `${k}: ${propValue.slice(propValue.indexOf('('))}`
+          remaining -= propStr.length
+          p.push(propStr)
+        }
+        else {
+          const propValue = tersifyValue(
+            context,
+            v,
+            remaining - k.length - commaAndSpaceLen + fnLen)
+          const propStr = `${k}${propValue.slice(propValue.indexOf('('))}`
+          remaining -= propStr.length
+          p.push(propStr)
+        }
       }
       else {
+        // console.log(remaining, k.length, colonAndSpaceLen, commaAndSpaceLen, remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
+        const propValue = tersifyValue(
+          context,
+          v,
+          remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
         const propStr = `${k}: ${propValue}`
         remaining -= propStr.length
         p.push(propStr)
@@ -31,6 +55,6 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
     }
     return p
   }, [] as string[])
-
-  return props.length === 0 ? '{}' : `{ ${trim(props.join(', '), length - 4)} }`
+  // console.log(trim(props.join(', '), length - bracketLen))
+  return props.length === 0 ? '{}' : `{ ${trim(props.join(', '), length - bracketLen)} }`
 }
