@@ -4,12 +4,12 @@ import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
 import { AcronNode, ArrowFunctionExpressionNode, AssignmentPatternNode, BlockStatementNode, CallExpressionNode, ExpressionStatementNode, FunctionExpressionNode, IdentifierNode, LiteralNode, MemberExpressionNode, RestElementNode, ReturnStatementNode, SymbolForNode } from './AcornTypes';
 
-export function tersifyAcorn(context: TersifyContext, value: any) {
+export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
 
   if (typeof value === 'function') {
     const node = parser.parseExpressionAt(`(${value.toString()})`, 0) as AcronNode
-    return tersifyAcornNode(context, node, context.maxLength)
+    return tersifyAcornNode(context, node, length)
   }
 }
 

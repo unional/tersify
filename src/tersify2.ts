@@ -4,6 +4,6 @@ import { TersifyOptions } from './interfaces';
 import { TersifyContext, tersifyValue } from './tersifyValue';
 
 export function tersify(obj, options?: Partial<TersifyOptions>): string {
-  const context = required<TersifyContext>(defaultOptions, options, { references: [] })
+  const context = required<TersifyContext>(defaultOptions, options, { path: [], references: [] })
   return tersifyValue(context, obj, context.maxLength)
 }

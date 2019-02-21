@@ -609,6 +609,12 @@ describe('object', () => {
     tersible(subject, '{a1}')
     expect(tersify(subject, { raw: true })).toBe('{ a: 1 }')
   })
+
+  test('circular', () => {
+    const node = { x: 1 }
+    const subject = { a: { b: node }, c: node }
+    expect(tersify(subject)).toBe('{ a: { b: { x: 1 } }, c: cir(a, b) }')
+  })
 })
 
 describe('array', () => { })

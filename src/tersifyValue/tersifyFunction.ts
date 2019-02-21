@@ -11,5 +11,5 @@ export function tersifyFunction(context: TersifyContext, fn: Function, length: n
     return fn.tersify({ maxLength: context.maxLength, raw: context.raw })
   }
 
-  return tersifyAcorn(context, fn)
+  return tersifyAcorn(context, fn, context.maxLength)
 }
