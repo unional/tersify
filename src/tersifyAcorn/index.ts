@@ -67,7 +67,7 @@ function tersifyArrowExpression(context: TersifyContext, node: ArrowFunctionExpr
 
   const params = node.params.length > 0 ? tersifyFunctionParams(context, node.params) : '()'
   const paramsContent = params.slice(1, params.length - 2)
-  const minParam = paramsContent.length > 3 ? `(${trim(paramsContent, 3)})` : params
+  const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
 
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
@@ -77,12 +77,12 @@ function tersifyArrowExpression(context: TersifyContext, node: ArrowFunctionExpr
   // console.log(params, body, minPrebodyLen + body.length > length, prebodyLen + body.length > length)
   // console.log(minPrebodyLen, body.length, length)
   if (minPrebodyLen + body.length > length) {
-    const bodyContent = trim(body.slice(2, body.length - 2), length - minPrebodyLen - 4)
+    const bodyContent = trim(context, body.slice(2, body.length - 2), length - minPrebodyLen - 4)
     const result = `${async}${generator}${minParam}${arrow}${bodyContent.length === 0 ? '{}' : `{ ${bodyContent} }`}`
-    return result.length > length ? trim(result, length) : result
+    return result.length > length ? trim(context, result, length) : result
   }
   else if (prebodyLen + body.length > length) {
-    return `${async}${generator}(${trim(paramsContent, length - body.length - declarationLen - 2)})${arrow}${body}`
+    return `${async}${generator}(${trim(context, paramsContent, length - body.length - declarationLen - 2)})${arrow}${body}`
   }
   else {
     return `${async}${generator}${params}${arrow}${body}`
@@ -156,29 +156,29 @@ function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionEx
   const declarationLen = async.length + token.length + generator.length + id.length + space.length
 
   const paramsContent = params.slice(1, params.length - 2)
-  const minParam = paramsContent.length > 3 ? `(${trim(paramsContent, 3)})` : params
+  const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
   const body = tersifyFunctionBody(context, node.body)
   if (minPrebodyLen + body.length > length) {
     // 5 = length of `{ . }` to indicate there are something in the body
     if (minPrebodyLen + 5 > length) {
-      return trim(`${async}${token}${generator}${id}${minParam}${space}${body}`, length)
+      return trim(context, `${async}${token}${generator}${id}${minParam}${space}${body}`, length)
     }
     else {
       const bodyContent = body.slice(2, body.length - 2)
-      const result = `${async}${token}${generator}${id}${minParam}${space}${bodyContent.length === 0 ? '{}' : `{ ${trim(bodyContent, length - minPrebodyLen - 4)} }`}`
-      return result.length > length ? trim(result, length) : result
+      const result = `${async}${token}${generator}${id}${minParam}${space}${bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`}`
+      return result.length > length ? trim(context, result, length) : result
     }
   }
   else if (prebodyLen + body.length > length) {
     if (minPrebodyLen + body.length < length) {
-      return `${async}${token}${generator}${id}(${trim(paramsContent, length - body.length - declarationLen - 2)})${space}${body}`
+      return `${async}${token}${generator}${id}(${trim(context, paramsContent, length - body.length - declarationLen - 2)})${space}${body}`
     }
-    return trim(`${async}${token}${generator}${id}${minParam}${space}${body}`, length)
+    return trim(context, `${async}${token}${generator}${id}${minParam}${space}${body}`, length)
   }
   else {
-    return trim(`${async}${token}${generator}${id}${params}${space}${body}`, length)
+    return trim(context, `${async}${token}${generator}${id}${params}${space}${body}`, length)
   }
 }
 

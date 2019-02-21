@@ -152,6 +152,9 @@ describe('string', () => {
   test.todo('escape quotes')
 })
 
+test.todo('Date')
+test.todo('Buffer')
+
 describe('Symbol', () => {
   test('unnamed symbol is recorded as "Sym()"', () => {
     expect(tersify(Symbol())).toBe('Sym()')
@@ -457,18 +460,40 @@ describe('object', () => {
     expect(tersify({ a: Symbol() })).toBe('{ a: Sym() }')
     expect(tersify({ a: Symbol.for('abc') })).toBe('{ a: Sym(abc) }')
     expect(tersify({ a: /abcd/gi })).toBe('{ a: /abcd/gi }')
-    expect(tersify({ a: function () { } })).toBe('{ a() {} }')
-    expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
-    expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
+  })
+
+  test('trim content inside the object before triming outside', () => {
+    expect(tersify({ a: /abcd/gi }, { maxLength: 15 })).toBe('{ a: /abcd/gi }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 14 })).toBe('{ a: /abc... }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 9 })).toBe('{ a:... }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 8 })).toBe('{ a:.. }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 7 })).toBe('{ a:. }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 6 })).toBe('{ a. }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 5 })).toBe('{ . }')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 4 })).toBe('{ ..')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 3 })).toBe('{ .')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 2 })).toBe('{.')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 1 })).toBe('.')
+    expect(tersify({ a: /abcd/gi }, { maxLength: 0 })).toBe('')
   })
 
   test.todo('multiple properties')
+
+  test('anomymous function', () => {
+    expect(tersify({ a: function () { } })).toBe('{ a() {} }')
+  })
+  test('named function', () => {
+    expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
+  })
   test.todo('async anomymous function')
   test.todo('generator anomymous function')
   test.todo('async generator anomymous function')
   test.todo('async named function')
   test.todo('generator named function')
   test.todo('async generator named function')
+  test('arrow function', () => {
+    expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
+  })
   test.todo('async arrow function')
   test.todo('generator arrow function')
   test.todo('async generator arrow function')

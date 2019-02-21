@@ -2,7 +2,7 @@ import { TersifyContext } from './interfaces';
 import { isTersible } from '../tersible';
 import { tersifyValue } from './tersifyValue';
 import { trim } from './trim';
-export function tersifyObject(context: TersifyContext, value: object, length: number) {
+export function tersifyObject(context: TersifyContext, value: object, length: number, noDots?: boolean) {
   // if (context.references.find(x => x === value)) {
   //   return `[circular]`
   // }
@@ -45,7 +45,7 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
       else {
         // console.log(remaining, k.length, colonAndSpaceLen, commaAndSpaceLen, remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
         const propValue = tersifyValue(
-          context,
+          { ...context, raw: true },
           v,
           remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
         const propStr = `${k}: ${propValue}`
@@ -56,5 +56,10 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
     return p
   }, [] as string[])
   // console.log(trim(props.join(', '), length - bracketLen))
-  return props.length === 0 ? '{}' : `{ ${trim(props.join(', '), length - bracketLen)} }`
+  const content = trim(context, props.join(', '), length - bracketLen)
+
+  return keys.length === 0 ? '{}' :
+    content.length === 0 ?
+      trim(context, `{   }`, length) :
+      `{ ${content} }`
 }

@@ -1,29 +1,11 @@
+import { TersifyContext } from './interfaces';
 
-export function trim(value: string, length: number) {
-  let result = value
-  switch (true) {
-    case (length >= value.length):
-      break;
-    case (length <= 0):
-      result = ''
-      break
-    case (length === 1):
-      result = '.'
-      break
-    case (length === 2):
-      result = value[0] + '.'
-      break
-    case (length === 3):
-      result = value.slice(0, 2) + '.'
-      break
-    case (length === 4):
-      result = value.slice(0, 2) + '..'
-      break
-    default:
-      result = value.slice(0, length - 3) + '...'
-      break
-  }
+export function trim({ raw }: TersifyContext, value: string, length: number) {
+  if (raw || value.length <= length) return value
+  const trimmed = value.slice(0, length)
 
-  length -= result.length
-  return result
+  const dots = trimmed.length === 0 ? '' :
+    trimmed.length <= 3 ? '.' :
+      trimmed.length === 4 ? '..' : '...'
+  return trimmed.slice(0, trimmed.length - dots.length) + dots
 }
