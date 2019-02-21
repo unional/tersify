@@ -477,40 +477,73 @@ describe('object', () => {
     expect(tersify({ a: /abcd/gi }, { maxLength: 0 })).toBe('')
   })
 
-  test.todo('multiple properties')
+  test('multiple properties and trims', () => {
+    const subject = {
+      abc: 'abc',
+      def: 'def'
+    }
+    expect(tersify(subject)).toBe(`{ abc: 'abc', def: 'def' }`)
+    expect(tersify(subject, { maxLength: 26 })).toBe(`{ abc: 'abc', def: 'def' }`)
+    expect(tersify(subject, { maxLength: 25 })).toBe(`{ abc: 'abc', def: '... }`)
+    expect(tersify(subject, { maxLength: 21 })).toBe(`{ abc: 'abc', de... }`)
+    expect(tersify(subject, { maxLength: 20 })).toBe(`{ abc: 'abc', d... }`)
+    expect(tersify(subject, { maxLength: 19 })).toBe(`{ abc: 'abc', ... }`)
+    expect(tersify(subject, { maxLength: 18 })).toBe(`{ abc: 'abc',... }`)
+    expect(tersify(subject, { maxLength: 17 })).toBe(`{ abc: 'abc'... }`)
+    expect(tersify(subject, { maxLength: 16 })).toBe(`{ abc: 'abc... }`)
+    expect(tersify(subject, { maxLength: 15 })).toBe(`{ abc: 'ab... }`)
+    expect(tersify(subject, { maxLength: 14 })).toBe(`{ abc: 'a... }`)
+    expect(tersify(subject, { maxLength: 13 })).toBe(`{ abc: '... }`)
+    expect(tersify(subject, { maxLength: 12 })).toBe(`{ abc: ... }`)
+  })
 
   test('anomymous function', () => {
     expect(tersify({ a: function () { } })).toBe('{ a() {} }')
+    expect(tersify({ a: function () { } }, { maxLength: 9 })).toBe('{ a(... }')
   })
   test('named function', () => {
     expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
   })
-  test.todo('async anomymous function')
-  test.todo('generator anomymous function')
-  test.todo('async generator anomymous function')
-  test.todo('async named function')
-  test.todo('generator named function')
-  test.todo('async generator named function')
+
+  test('async anomymous function', () => {
+    expect(tersify({ a: async function () { } })).toBe('{ async a() {} }')
+  })
+  test('async named function', () => {
+    expect(tersify({ a: async function foo() { } })).toBe('{ async a() {} }')
+  })
+
+  test('generator anomymous function', () => {
+    expect(tersify({ a: function* () { } })).toBe('{ *a() {} }')
+
+  })
+  test('generator named function', () => {
+    expect(tersify({ a: function* foo() { } })).toBe('{ *a() {} }')
+  })
+
+  test('async generator anomymous function', () => {
+    expect(tersify({ a: async function* () { } })).toBe('{ async *a() {} }')
+  })
+
+  test('async generator named function', () => {
+    expect(tersify({ a: async function* foo() { } })).toBe('{ async *a() {} }')
+  })
   test('arrow function', () => {
     expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
   })
-  test.todo('async arrow function')
-  test.todo('generator arrow function')
-  test.todo('async generator arrow function')
 
-  test('trim', () => {
-    expect(tersify({ abcde: 'abcde' }, { maxLength: 18 })).toBe(`{ abcde: 'abcde' }`)
-    expect(tersify({ abcde: 'abcde' }, { maxLength: 17 })).toBe(`{ abcde: 'ab... }`)
-  })
-
-  test('deep object', () => {
-    expect(tersify({
-      a: {
-        b: {
-          c: 'd'
-        }
-      }
-    })).toBe(`{ a: { b: { c: 'd' } } }`)
+  test('async arrow function', () => {
+    expect(tersify({ a: async () => { } })).toBe('{ a: async () => {} }')
+    expect(tersify({ a: async (a, b, c) => { } })).toBe('{ a: async (a, b, c) => {} }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 28 })).toBe('{ a: async (a, b, c) => {} }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 27 })).toBe('{ a: async (a, b, c) =... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 26 })).toBe('{ a: async (a, b, c) ... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 25 })).toBe('{ a: async (a, b, c)... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 24 })).toBe('{ a: async (a, b, c... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 23 })).toBe('{ a: async (a, b, ... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 17 })).toBe('{ a: async (... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 16 })).toBe('{ a: async ... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 14 })).toBe('{ a: asyn... }')
+    expect(tersify({ a: async (a, b, c) => { } }, { maxLength: 10 })).toBe('{ a: ... }')
   })
 
   test('use tersify function if available', () => {

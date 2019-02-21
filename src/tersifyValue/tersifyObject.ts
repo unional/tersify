@@ -28,7 +28,7 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
             context,
             v,
             remaining - k.length - commaAndSpaceLen - colonAndSpaceLen)
-          const propStr = `${k}: ${propValue.slice(propValue.indexOf('('))}`
+          const propStr = `${k}: ${propValue}`
           remaining -= propStr.length
           p.push(propStr)
         }
@@ -37,7 +37,9 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
             context,
             v,
             remaining - k.length - commaAndSpaceLen + fnLen)
-          const propStr = `${k}${propValue.slice(propValue.indexOf('('))}`
+          const asyncToken = /^async fn/.test(propValue) ? 'async ' : ''
+          const generatorToken = /^(async )?fn\*/.test(propValue) ? '*' : ''
+          const propStr = `${asyncToken}${generatorToken}${k}${propValue.slice(propValue.indexOf('('))}`
           remaining -= propStr.length
           p.push(propStr)
         }
@@ -56,10 +58,12 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
     return p
   }, [] as string[])
   // console.log(trim(props.join(', '), length - bracketLen))
-  const content = trim(context, props.join(', '), length - bracketLen)
+  const hasSkippedProps = keys.length > props.length
+  const content = hasSkippedProps ? props.join(', ') + ' ' : props.join(', ')
+  const trimmedContent = trim(context, content, length - bracketLen)
 
   return keys.length === 0 ? '{}' :
-    content.length === 0 ?
+    trimmedContent.length === 0 ?
       trim(context, `{   }`, length) :
-      `{ ${content} }`
+      `{ ${trimmedContent} }`
 }
