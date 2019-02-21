@@ -149,11 +149,30 @@ describe('string', () => {
     expect(tersify('abcd', { maxLength: 0 })).toBe('')
   })
 
-  test.todo('escape quotes')
+  test('escape single quotes', () => {
+    expect(tersify('a"bc"d')).toBe(`'a"bc"d'`)
+    expect(tersify("a'bc'd")).toBe(`'a\'bc\'d'`)
+  })
 })
 
-test.todo('Date')
-test.todo('Buffer')
+describe('Date', () => {
+  test('represents as ISO string', () => {
+    const subject = new Date('2020-05-14T11:45:27.234Z')
+    expect(tersify(subject)).toBe(`2020-05-14T11:45:27.234Z`)
+    expect(tersify(subject, { maxLength: 24 })).toBe(`2020-05-14T11:45:27.234Z`)
+    expect(tersify(subject, { maxLength: 23 })).toBe(`2020-05-14T11:45:27....`)
+  })
+})
+
+describe('Buffer', () => {
+  test('as simple string prepresentation', () => {
+    const subject = Buffer.from('abcde')
+
+    expect(tersify(subject)).toBe(`<Buffer 61 62 63 64 65>`)
+    expect(tersify(subject, { maxLength: 23 })).toBe(`<Buffer 61 62 63 64 65>`)
+    expect(tersify(subject, { maxLength: 22 })).toBe(`<Buffer 61 62 63 64...`)
+  })
+})
 
 describe('Symbol', () => {
   test('unnamed symbol is recorded as "Sym()"', () => {
@@ -179,7 +198,24 @@ describe('Symbol', () => {
     expect(tersify(Symbol('abc'), { maxLength: 0 })).toBe('')
   })
 
-  test.todo('symbol in raw mode')
+  test(`keyed symbol is recorded as "Sym(<name>)"`, () => {
+    expect(tersify(Symbol.for('abc'))).toBe(`Sym(abc)`)
+    expect(tersify(Symbol.for('abc'), { maxLength: 8 })).toBe(`Sym(abc)`)
+    expect(tersify(Symbol.for('abc'), { maxLength: 7 })).toBe('Sym(...')
+    expect(tersify(Symbol.for('abc'), { maxLength: 6 })).toBe('Sym...')
+    expect(tersify(Symbol.for('abc'), { maxLength: 5 })).toBe('Sy...')
+    expect(tersify(Symbol.for('abc'), { maxLength: 4 })).toBe('Sy..')
+    expect(tersify(Symbol.for('abc'), { maxLength: 3 })).toBe('Sy.')
+    expect(tersify(Symbol.for('abc'), { maxLength: 2 })).toBe('S.')
+    expect(tersify(Symbol.for('abc'), { maxLength: 1 })).toBe('.')
+    expect(tersify(Symbol.for('abc'), { maxLength: 0 })).toBe('')
+  })
+
+  test('symbol in raw mode', () => {
+    expect(tersify(Symbol(), { raw: true })).toBe('Symbol()')
+    expect(tersify(Symbol('abc'), { raw: true })).toBe('Symbol(abc)')
+    expect(tersify(Symbol.for('abc'), { raw: true })).toBe('Symbol(abc)')
+  })
 })
 
 describe('RegExp', () => {
@@ -275,6 +311,9 @@ describe('function', () => {
     expect(tersify(function () { return /foo/g })).toBe(`fn() { return /foo/g }`)
   })
 
+  test.todo('returns Date')
+  test.todo('returns Buffer')
+
   test(`returns anomymous function`, () => {
     expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
   })
@@ -286,6 +325,9 @@ describe('function', () => {
   test(`returns arrow function`, () => {
     expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
   })
+
+  test.todo('returns object')
+  test.todo('returns array')
 
   test(`async function`, () => {
     expect(tersify(async function () { })).toBe('async fn() {}')
@@ -413,6 +455,9 @@ describe('arrow function', () => {
     expect(tersify(() => { return Symbol.for('abc') })).toBe(`() => Sym(abc)`)
   })
 
+  test.todo('returns Date')
+  test.todo('returns Buffer')
+
   test('return RegExp', () => {
     expect(tersify(() => { return /foo/ })).toBe(`() => /foo/`)
   })
@@ -442,6 +487,9 @@ describe('arrow function', () => {
       console.info(b)
     })).toBe(`(a) => (b) => { console.info(a); console.info(b) }`)
   })
+
+  test.todo('returns object')
+  test.todo('returns array')
 })
 
 describe('object', () => {

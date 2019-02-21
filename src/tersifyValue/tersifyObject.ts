@@ -47,7 +47,7 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
       else {
         // console.log(remaining, k.length, colonAndSpaceLen, commaAndSpaceLen, remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
         const propValue = tersifyValue(
-          { ...context, raw: true },
+          { ...context, noTrim: true },
           v,
           remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
         const propStr = `${k}: ${propValue}`

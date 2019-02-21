@@ -1,17 +1,14 @@
 import { TersifyContext } from '.';
 import { tersifyFactory } from './tersifyFactory';
 
-
 export function tersifyValue(context: TersifyContext, value: any, length: number) {
-  const func = getFunc(value)
+  const valueType = getType(value)
+  const func = tersifyFactory[valueType]
   if (!func) throw new Error(`Can't find fn for ${JSON.stringify(value)}`)
+
   return func(context, value, length)
 }
 
-
-function getFunc(value: any) {
-  return tersifyFactory[getType(value)]
-}
 
 function getType(value: any) {
   if (value === undefined || value === null) {
@@ -20,6 +17,14 @@ function getType(value: any) {
 
   if (value instanceof RegExp) {
     return 'RegExp'
+  }
+
+  if (value instanceof Date) {
+    return 'Date'
+  }
+
+  if (value instanceof Buffer) {
+    return 'Buffer'
   }
 
   return typeof value

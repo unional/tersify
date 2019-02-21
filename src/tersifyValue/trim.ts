@@ -1,7 +1,7 @@
 import { TersifyContext } from './interfaces';
 
-export function trim({ raw }: TersifyContext, value: string, length: number) {
-  if (raw || value.length <= length) return value
+export function trim({ raw, noTrim }: TersifyContext, value: string, length: number) {
+  if (noTrim || raw || value.length <= length) return value
   const trimmed = value.slice(0, length)
 
   const dots = trimmed.length === 0 ? '' :

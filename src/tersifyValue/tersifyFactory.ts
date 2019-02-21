@@ -1,11 +1,13 @@
 import { TersifyContext } from './interfaces';
 import { tersifyBigint } from './tersifyBigint';
+import { tersifyBuffer } from './tersifyBuffer';
+import { tersifyDate } from './tersifyDate';
 import { tersifyFunction } from './tersifyFunction';
 import { tersifyLiteral } from './tersifyLiteral';
+import { tersifyObject } from './tersifyObject';
 import { tersifyRegExp } from './tersifyRegExp';
 import { tersifyString } from './tersifyString';
 import { tersifySymbol } from './tersifySymbol';
-import { tersifyObject } from './tersifyObject';
 
 export type TersifyFunc = (context: TersifyContext, value: any, length: number) => string
 export const tersifyFactory: Record<string, TersifyFunc> = {
@@ -17,6 +19,8 @@ export const tersifyFactory: Record<string, TersifyFunc> = {
   'string': tersifyString,
   'symbol': tersifySymbol,
   'function': tersifyFunction,
-  'RegExp': tersifyRegExp,
-  'object': tersifyObject
+  'object': tersifyObject,
+  'Buffer': tersifyBuffer,
+  'Date': tersifyDate,
+  'RegExp': tersifyRegExp
 }
