@@ -1,5 +1,3 @@
-import { TersifyOptions } from './interfaces'
-
 // istanbul ignore next
 // tslint:disable-next-line
 const isNode = typeof module !== 'undefined' && module['e' + 'xports'] && !module['webpackPolyfill']
@@ -7,4 +5,4 @@ const isNode = typeof module !== 'undefined' && module['e' + 'xports'] && !modul
 // istanbul ignore next
 // tslint:disable-next-line
 export const EOL = isNode && /^win/.test(process.platform) ? '\r\n' : '\n'
-export const defaultOptions = { maxLength: 120 }
+export const defaultOptions = { maxLength: 120, references: [] }
