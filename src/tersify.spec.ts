@@ -311,7 +311,86 @@ describe('function', () => {
     expect(tersify(function () { return /foo/g })).toBe(`fn() { return /foo/g }`)
   })
 
-  test.todo('returns Date')
+  test('with variable declaration', () => {
+    const subject: any = function () {
+      const date = new Date('2020-05-14T11:45:27.234Z');
+      return date;
+    };
+    expect(tersify(subject)).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
+    expect(tersify(subject, { maxLength: 71 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
+    expect(tersify(subject, { maxLength: 70 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return ... }`)
+    expect(tersify(subject, { maxLength: 64 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); r... }`)
+    expect(tersify(subject, { maxLength: 63 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); ... }`)
+    expect(tersify(subject, { maxLength: 62 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z');... }`)
+    expect(tersify(subject, { maxLength: 61 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z')... }`)
+    expect(tersify(subject, { maxLength: 54 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27... }`)
+    expect(tersify(subject, { maxLength: 35 })).toBe(`fn() { const date = new Date('... }`)
+    expect(tersify(subject, { maxLength: 34 })).toBe(`fn() { const date = new Date(... }`)
+    expect(tersify(subject, { maxLength: 30 })).toBe(`fn() { const date = new D... }`)
+    expect(tersify(subject, { maxLength: 29 })).toBe(`fn() { const date = new ... }`)
+    expect(tersify(subject, { maxLength: 28 })).toBe(`fn() { const date = new... }`)
+    expect(tersify(subject, { maxLength: 27 })).toBe(`fn() { const date = ne... }`)
+    expect(tersify(subject, { maxLength: 25 })).toBe(`fn() { const date = ... }`)
+    expect(tersify(subject, { maxLength: 24 })).toBe(`fn() { const date =... }`)
+    expect(tersify(subject, { maxLength: 23 })).toBe(`fn() { const date ... }`)
+    expect(tersify(subject, { maxLength: 23 })).toBe(`fn() { const date ... }`)
+    expect(tersify(subject, { maxLength: 21 })).toBe(`fn() { const dat... }`)
+    expect(tersify(subject, { maxLength: 19 })).toBe(`fn() { const d... }`)
+    expect(tersify(subject, { maxLength: 18 })).toBe(`fn() { const ... }`)
+    expect(tersify(subject, { maxLength: 17 })).toBe(`fn() { const... }`)
+    expect(tersify(subject, { maxLength: 13 })).toBe(`fn() { co.. }`)
+  })
+
+  test('with variable declaration but no init', () => {
+    expect(tersify(function () {
+      let x
+      return x
+    })).toBe('fn() { let x; return x }')
+  })
+
+  test('with multi-variable declaration', () => {
+    expect(tersify(function () {
+      let x, y
+      return x + y
+    })).toBe('fn() { let x, y; return x + y }')
+  })
+
+  test('with prefix unary expression', () => {
+    expect(tersify(function () { return !!1 })).toBe(`fn() { return !!1 }`)
+    expect(tersify(function () { return +1 })).toBe(`fn() { return +1 }`)
+  })
+
+  // Can't think of a postfix unary expression. `x++` and `x--` are update expression.
+  test.todo('with postfix unary expression')
+
+  test('with logical expression', () => {
+    expect(tersify(function () { return 1 && 2 })).toBe(`fn() { return 1 && 2 }`)
+  })
+
+  test('with binary expression', () => {
+    expect(tersify(function () { return (1 + 2) * 3 })).toBe(`fn() { return (1 + 2) * 3 }`)
+    expect(tersify(function () { return 3 * (1 + 2) })).toBe(`fn() { return 3 * (1 + 2) }`)
+  })
+
+  test('with update expression', () => {
+    let x
+    expect(tersify(function () { return ++x })).toBe(`fn() { return ++x }`)
+    expect(tersify(function () { return x++ })).toBe(`fn() { return x++ }`)
+  })
+
+  test('with multi-variable declaration and init (and ternary expression)', () => {
+    expect(tersify(function () {
+      let x = 1, y, z = 2
+      return y ? x : z
+    })).toBe('fn() { let x = 1, y, z = 2; return y ? x : z }')
+  })
+
+  test('returns Date', () => {
+    expect(tersify(function () {
+      return new Date('2020-05-14T11:45:27.234Z')
+    })).toBe(`fn() { return new Date('2020-05-14T11:45:27.234Z') }`)
+  })
+
   test.todo('returns Buffer')
 
   test(`returns anomymous function`, () => {
@@ -455,7 +534,56 @@ describe('arrow function', () => {
     expect(tersify(() => { return Symbol.for('abc') })).toBe(`() => Sym(abc)`)
   })
 
-  test.todo('returns Date')
+  test('with variable declaration but no init', () => {
+    expect(tersify(() => {
+      let x
+      return x
+    })).toBe('() => { let x; return x }')
+  })
+
+  test('with multi-variable declaration', () => {
+    expect(tersify(() => {
+      let x, y
+      return x + y
+    })).toBe('() => { let x, y; return x + y }')
+  })
+
+  test('with prefix unary expression', () => {
+    expect(tersify(() => { return !!1 })).toBe(`() => !!1`)
+    expect(tersify(() => { return +1 })).toBe(`() => +1`)
+  })
+
+  // Can't think of a postfix unary expression. `x++` and `x--` are update expression.
+  test.todo('with postfix unary expression')
+
+  test('with logical expression', () => {
+    expect(tersify(() => { return 1 && 2 })).toBe(`() => 1 && 2`)
+  })
+
+  test('with binary expression', () => {
+    expect(tersify(() => { return (1 + 2) * 3 })).toBe(`() => (1 + 2) * 3`)
+    expect(tersify(() => { return 3 * (1 + 2) })).toBe(`() => 3 * (1 + 2)`)
+  })
+
+  test('with update expression', () => {
+    let x
+    expect(tersify(() => { return ++x })).toBe(`() => ++x`)
+    expect(tersify(() => { return x++ })).toBe(`() => x++`)
+  })
+
+  test('with multi-variable declaration and init (and ternary expression)', () => {
+    expect(tersify(() => {
+      let x = 1, y, z = 2
+      return y ? x : z
+    })).toBe('() => { let x = 1, y, z = 2; return y ? x : z }')
+  })
+
+  test('returns Date', () => {
+    expect(tersify(() => {
+      return new Date('2020-05-14T11:45:27.234Z')
+    })).toBe(`() => new Date('2020-05-14T11:45:27.234Z')`)
+  })
+
   test.todo('returns Buffer')
 
   test('return RegExp', () => {

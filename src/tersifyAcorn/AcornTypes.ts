@@ -2,7 +2,9 @@
 export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
   FunctionExpressionNode | BlockStatementNode | ReturnStatementNode |
   AssignmentPatternNode | RestElementNode | ArrowFunctionExpressionNode |
-  MemberExpressionNode | ExpressionStatementNode
+  MemberExpressionNode | ExpressionStatementNode | VariableDeclarationNode |
+  VariableDeclaratorNode | NewExpressionNode | BinaryExpressionNode |
+  ConditionalExpressionNode | UnaryExpressionNode | UpdateExpressionNode | LogicalExpressionNode
 
 export type AcornNodeBase = {
   start: number,
@@ -51,7 +53,6 @@ export type ReturnStatementNode = AcornNodeBase & {
   argument: LiteralNode | IdentifierNode | CallExpressionNode | MemberExpressionNode | null
 }
 
-
 export type AssignmentPatternNode = AcornNodeBase & {
   type: 'AssignmentPattern',
   left: IdentifierNode,
@@ -83,4 +84,57 @@ export type MemberExpressionNode = AcornNodeBase & {
   computed: boolean,
   object: IdentifierNode | MemberExpressionNode,
   property: IdentifierNode
+}
+
+export type VariableDeclarationNode = AcornNodeBase & {
+  type: 'VariableDeclaration'
+  kind: 'const',
+  declarations: VariableDeclaratorNode[]
+}
+
+export type VariableDeclaratorNode = AcornNodeBase & {
+  type: 'VariableDeclarator',
+  id: IdentifierNode
+  init?: NewExpressionNode
+}
+
+export type NewExpressionNode = AcornNodeBase & {
+  type: 'NewExpression',
+  callee: IdentifierNode,
+  arguments: AcronNode[]
+}
+
+export type BinaryExpressionNode = AcornNodeBase & {
+  type: 'BinaryExpression',
+  operator: string,
+  left: AcronNode,
+  right: AcronNode
+}
+
+export type ConditionalExpressionNode = AcornNodeBase & {
+  type: 'ConditionalExpression',
+  test: AcronNode,
+  consequent: AcronNode,
+  alternate: AcronNode
+}
+
+export type UnaryExpressionNode = AcornNodeBase & {
+  type: 'UnaryExpression',
+  operator: string,
+  prefix: boolean
+  argument: AcronNode
+}
+
+export type UpdateExpressionNode = AcornNodeBase & {
+  type: 'UpdateExpression',
+  operator: string,
+  prefix: boolean
+  argument: AcronNode
+}
+
+export type LogicalExpressionNode = AcornNodeBase & {
+  type: 'LogicalExpression',
+  operator: string,
+  left: AcronNode,
+  right: AcronNode
 }
