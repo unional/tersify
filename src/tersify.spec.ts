@@ -350,7 +350,8 @@ describe('function', () => {
 
   test('with multi-variable declaration', () => {
     expect(tersify(function () {
-      let x, y
+      // tslint:disable-next-line: one-variable-per-declaration
+      let x: any, y: any
       return x + y
     })).toBe('fn() { let x, y; return x + y }')
   })
@@ -380,7 +381,8 @@ describe('function', () => {
 
   test('with multi-variable declaration and init (and ternary expression)', () => {
     expect(tersify(function () {
-      let x = 1, y, z = 2
+      // tslint:disable-next-line: one-variable-per-declaration
+      let x = 1, y: any, z = 2
       return y ? x : z
     })).toBe('fn() { let x = 1, y, z = 2; return y ? x : z }')
   })
@@ -543,7 +545,8 @@ describe('arrow function', () => {
 
   test('with multi-variable declaration', () => {
     expect(tersify(() => {
-      let x, y
+      // tslint:disable-next-line: one-variable-per-declaration
+      let x: any, y: any
       return x + y
     })).toBe('() => { let x, y; return x + y }')
   })
@@ -573,7 +576,8 @@ describe('arrow function', () => {
 
   test('with multi-variable declaration and init (and ternary expression)', () => {
     expect(tersify(() => {
-      let x = 1, y, z = 2
+      // tslint:disable-next-line: one-variable-per-declaration
+      let x = 1, y: any, z = 2
       return y ? x : z
     })).toBe('() => { let x = 1, y, z = 2; return y ? x : z }')
   })
