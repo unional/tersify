@@ -1,10 +1,12 @@
-
 export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
   FunctionExpressionNode | BlockStatementNode | ReturnStatementNode |
   AssignmentPatternNode | RestElementNode | ArrowFunctionExpressionNode |
   MemberExpressionNode | ExpressionStatementNode | VariableDeclarationNode |
   VariableDeclaratorNode | NewExpressionNode | BinaryExpressionNode |
-  ConditionalExpressionNode | UnaryExpressionNode | UpdateExpressionNode | LogicalExpressionNode
+  ConditionalExpressionNode | UnaryExpressionNode | UpdateExpressionNode | LogicalExpressionNode |
+  IfStatementNode | WhileStatementNode | DoWhileStatementNode | AssignmentExpressionNode |
+  ForStatementNode | BreakStatementNode | LabeledStatementNode | ContinueStatementNode |
+  SwitchStatementNode | SwitchCaseNode
 
 export type AcornNodeBase = {
   start: number,
@@ -137,4 +139,66 @@ export type LogicalExpressionNode = AcornNodeBase & {
   operator: string,
   left: AcronNode,
   right: AcronNode
+}
+
+export type IfStatementNode = AcornNodeBase & {
+  type: 'IfStatement',
+  test: AcronNode,
+  consequent: AcronNode,
+  alternate: AcronNode
+}
+
+export type WhileStatementNode = AcornNodeBase & {
+  type: 'WhileStatement',
+  test: AcronNode,
+  body: AcronNode
+}
+
+export type DoWhileStatementNode = AcornNodeBase & {
+  type: 'DoWhileStatement'
+  test: AcronNode,
+  body: AcronNode
+}
+
+export type AssignmentExpressionNode = AcornNodeBase & {
+  type: 'AssignmentExpression'
+  operator: string,
+  left: AcronNode,
+  right: AcronNode
+}
+
+export type ForStatementNode = AcornNodeBase & {
+  type: 'ForStatement'
+  body: AcronNode,
+  init: AcronNode,
+  test: AcronNode,
+  update: AcronNode
+}
+
+export type BreakStatementNode = AcornNodeBase & {
+  type: 'BreakStatement',
+  label: null | IdentifierNode
+}
+
+export type LabeledStatementNode = AcornNodeBase & {
+  type: 'LabeledStatement'
+  label: IdentifierNode,
+  body: AcronNode
+}
+
+export type ContinueStatementNode = AcornNodeBase & {
+  type: 'ContinueStatement'
+  label: null | IdentifierNode
+}
+
+export type SwitchStatementNode = AcornNodeBase & {
+  type: 'SwitchStatement'
+  discriminant: AcronNode
+  cases: SwitchCaseNode[]
+}
+
+export type SwitchCaseNode = AcornNodeBase & {
+  type: 'SwitchCase'
+  test: AcronNode | null
+  consequent: AcronNode[]
 }

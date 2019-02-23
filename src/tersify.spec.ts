@@ -254,6 +254,64 @@ describe('function', () => {
     expect(tersify(function () { }, { raw: true })).toBe('function() {}')
   })
 
+  test('single param', () => {
+    expect(tersify(function (a) { })).toBe('fn(a) {}')
+  })
+
+  test('multiple params', () => {
+    expect(tersify(function (a, b, c) { })).toBe('fn(a, b, c) {}')
+  })
+
+  test('not enough length will first trim params', () => {
+    expect(tersify(function (a, b, c) { return undefined })).toBe('fn(a, b, c) { return undefined }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 30 })).toBe('fn(a,...) { return undefined }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 28 })).toBe('fn(a,.) { return undefined }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 27 })).toBe('fn(a,.) { return undef... }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 16 })).toBe('fn(a,.) { re.. }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 15 })).toBe('fn(a,.) { re. }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 14 })).toBe('fn(a,.) { r. }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 13 })).toBe('fn(a,.) { . }')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 12 })).toBe('fn(a,.) {...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 11 })).toBe('fn(a,.) ...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 10 })).toBe('fn(a,.)...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 9 })).toBe('fn(a,....')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 8 })).toBe('fn(a,...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 7 })).toBe('fn(a...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 6 })).toBe('fn(...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 5 })).toBe('fn...')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 4 })).toBe('fn..')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 3 })).toBe('fn.')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 2 })).toBe('f.')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 1 })).toBe('.')
+    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 0 })).toBe('')
+  })
+
+  test('default param', () => {
+    expect(tersify(function (a = '1') { })).toBe(`fn(a = '1') {}`)
+  })
+
+  test('off order default param', () => {
+    expect(tersify(function (a = 1, b) { })).toBe('fn(a = 1, b) {}')
+  })
+
+  test('rest param', () => {
+    expect(tersify(function (a, ...b) { })).toBe(`fn(a, ...b) {}`)
+  })
+
+  test('multiple statements', () => {
+    expect(tersify(function () {
+      console.info('a')
+      return 'b'
+    })).toBe(`fn() { console.info('a'); return 'b' }`)
+  })
+
+  test('deep reference', () => {
+    const a = { b: { c: { d: false } } }
+    expect(tersify(function () {
+      return a.b.c.d
+    })).toBe(`fn() { return a.b.c.d }`)
+  })
+
   test('anomymous returns nothing', () => {
     expect(tersify(function () { return })).toBe('fn() {}')
   })
@@ -310,6 +368,33 @@ describe('function', () => {
   test(`returns RegExp`, () => {
     expect(tersify(function () { return /foo/g })).toBe(`fn() { return /foo/g }`)
   })
+
+  test('returns Date', () => {
+    expect(tersify(function () {
+      return new Date('2020-05-14T11:45:27.234Z')
+    })).toBe(`fn() { return new Date('2020-05-14T11:45:27.234Z') }`)
+  })
+
+  test('returns Buffer', () => {
+    expect(tersify(function () {
+      return Buffer.from('abc')
+    })).toBe(`fn() { return Buffer.from('abc') }`)
+  })
+
+  test(`returns anomymous function`, () => {
+    expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
+  })
+
+  test(`returns named function`, () => {
+    expect(tersify(function () { return function foo() { } })).toBe(`fn() { return fn foo() {} }`)
+  })
+
+  test(`returns arrow function`, () => {
+    expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
+  })
+
+  test.todo('returns object')
+  test.todo('returns array')
 
   test('with variable declaration', () => {
     const subject: any = function () {
@@ -387,28 +472,154 @@ describe('function', () => {
     })).toBe('fn() { let x = 1, y, z = 2; return y ? x : z }')
   })
 
-  test('returns Date', () => {
+  test('with if statement', () => {
+    expect(tersify(function (x) {
+      if (x) {
+        return true
+      }
+      else {
+        return false
+      }
+    })).toBe('fn(x) { if (x) { return true } else { return false } }')
+
+    expect(tersify(function (x) {
+      if (x) return true
+      else return false
+    })).toBe('fn(x) { if (x) return true; else return false }')
+    expect(tersify(function (x) {
+      if (x) return true
+      else {
+        return false
+      }
+    })).toBe('fn(x) { if (x) return true; else { return false } }')
+
+    expect(tersify(function (x) {
+      if (x) {
+        return true
+      }
+      return false
+    })).toBe('fn(x) { if (x) { return true }; return false }')
+
+    expect(tersify(function (x) {
+      if (x) return true
+      return false
+    })).toBe('fn(x) { if (x) return true; return false }')
+  })
+
+  test('with assignment', () => {
+    expect(tersify(function (x) {
+      return x %= 1
+    })).toBe('fn(x) { return x %= 1 }')
+  })
+
+  test('with while loop', () => {
+    expect(tersify(function (x) {
+      while (x) {
+        x -= 1
+      }
+    })).toBe('fn(x) { while (x) { x -= 1 } }')
+
+    expect(tersify(function (x) {
+      while (true) x -= 1
+    })).toBe('fn(x) { while (true) x -= 1 }')
+  })
+
+  test('with do loop', () => {
+    expect(tersify(function (x) {
+      do {
+        x -= 1
+      } while (x)
+    })).toBe('fn(x) { do { x -= 1 } while (x) }')
+
+    expect(tersify(function (x) {
+      do x -= 1
+      while (x)
+    })).toBe('fn(x) { do x -= 1; while (x) }')
+  })
+
+  test('with for loop', () => {
     expect(tersify(function () {
-      return new Date('2020-05-14T11:45:27.234Z')
-    })).toBe(`fn() { return new Date('2020-05-14T11:45:27.234Z') }`)
+      for (let i = 0; i < 10; i++) {
+        console.info(i)
+      }
+    })).toBe('fn() { for (let i = 0; i < 10; i++) { console.info(i) } }')
   })
 
-  test.todo('returns Buffer')
-
-  test(`returns anomymous function`, () => {
-    expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
+  test('with for loop no init', () => {
+    expect(tersify(function () {
+      let i = 0
+      for (; i < 10; i++) {
+        console.info(i)
+      }
+    })).toBe('fn() { let i = 0; for (; i < 10; i++) { console.info(i) } }')
   })
 
-  test(`returns named function`, () => {
-    expect(tersify(function () { return function foo() { } })).toBe(`fn() { return fn foo() {} }`)
+  test('with for loop no test', () => {
+    expect(tersify(function () {
+      for (let i = 0; ; i++) {
+        console.info(i)
+      }
+    })).toBe('fn() { for (let i = 0;; i++) { console.info(i) } }')
   })
 
-  test(`returns arrow function`, () => {
-    expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
+  test('with for loop no update', () => {
+    expect(tersify(function () {
+      for (let i = 0, y = 1; i < 10;) {
+        console.info(i, y)
+      }
+    })).toBe('fn() { for (let i = 0, y = 1; i < 10;) { console.info(i) } }')
   })
 
-  test.todo('returns object')
-  test.todo('returns array')
+  test('with for loop with break', () => {
+    expect(tersify(function () {
+      for (; ;) {
+        break;
+      }
+    })).toBe('fn() { for (;;) { break } }')
+  })
+
+  test('with for loop with labeled break', () => {
+    expect(tersify(function () {
+      label: for (; ;) { break label }
+    })).toBe(`fn() { label: for (;;) { break label } }`)
+  })
+
+  test('with for loop with continue', () => {
+    expect(tersify(function () {
+      for (; ;) { continue }
+    })).toBe(`fn() { for (;;) { continue } }`)
+  })
+
+  test('with for loop with labeled continue', () => {
+    expect(tersify(function () {
+      foo: for (; ;) { continue foo }
+    })).toBe(`fn() { foo: for (;;) { continue foo } }`)
+  })
+
+  test('with switch', () => {
+    expect(tersify(function (x) {
+      switch (x) {
+        case 1:
+          break
+        case 2:
+          return
+        default:
+          return 3
+      }
+    })).toBe(`fn(x) { switch (x) { case 1: break; case 2: return; default: return 3 } }`)
+  })
+
+  test('with switch using expression', () => {
+    expect(tersify(function (x) {
+      switch (true) {
+        case x > 1:
+          break
+      }
+    })).toBe(`fn(x) { switch (true) { case x > 1: break } }`)
+  })
+
+  test.todo('for in')
+  test.todo('for of')
 
   test(`async function`, () => {
     expect(tersify(async function () { })).toBe('async fn() {}')
@@ -420,64 +631,6 @@ describe('function', () => {
 
   test('named function', () => {
     expect(tersify(function name() { })).toBe('fn name() {}')
-  })
-
-  test('single param', () => {
-    expect(tersify(function (a) { })).toBe('fn(a) {}')
-  })
-
-  test('multiple params', () => {
-    expect(tersify(function (a, b, c) { })).toBe('fn(a, b, c) {}')
-  })
-
-  test('not enough length will first trim params', () => {
-    expect(tersify(function (a, b, c) { return undefined })).toBe('fn(a, b, c) { return undefined }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 30 })).toBe('fn(a,...) { return undefined }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 28 })).toBe('fn(a,.) { return undefined }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 27 })).toBe('fn(a,.) { return undef... }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 16 })).toBe('fn(a,.) { re.. }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 15 })).toBe('fn(a,.) { re. }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 14 })).toBe('fn(a,.) { r. }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 13 })).toBe('fn(a,.) { . }')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 12 })).toBe('fn(a,.) {...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 11 })).toBe('fn(a,.) ...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 10 })).toBe('fn(a,.)...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 9 })).toBe('fn(a,....')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 8 })).toBe('fn(a,...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 7 })).toBe('fn(a...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 6 })).toBe('fn(...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 5 })).toBe('fn...')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 4 })).toBe('fn..')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 3 })).toBe('fn.')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 2 })).toBe('f.')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 1 })).toBe('.')
-    expect(tersify(function (a, b, c) { return undefined }, { maxLength: 0 })).toBe('')
-  })
-
-  test('default param', () => {
-    expect(tersify(function (a = '1') { })).toBe(`fn(a = '1') {}`)
-  })
-
-  test('off order default param', () => {
-    expect(tersify(function (a = 1, b) { })).toBe('fn(a = 1, b) {}')
-  })
-
-  test('rest param', () => {
-    expect(tersify(function (a, ...b) { })).toBe(`fn(a, ...b) {}`)
-  })
-
-  test('multiple statements', () => {
-    expect(tersify(function () {
-      console.info('a')
-      return 'b'
-    })).toBe(`fn() { console.info('a'); return 'b' }`)
-  })
-
-  test('deep reference', () => {
-    const a = { b: { c: { d: false } } }
-    expect(tersify(function () {
-      return a.b.c.d
-    })).toBe(`fn() { return a.b.c.d }`)
   })
 })
 
