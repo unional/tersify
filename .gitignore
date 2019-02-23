@@ -42,6 +42,4 @@ node_modules
 typings
 
 # project folders
-dist
-dist-es5
-dist-es2015
+lib*
