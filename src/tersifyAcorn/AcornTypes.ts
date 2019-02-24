@@ -6,7 +6,7 @@ export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ConditionalExpressionNode | UnaryExpressionNode | UpdateExpressionNode | LogicalExpressionNode |
   IfStatementNode | WhileStatementNode | DoWhileStatementNode | AssignmentExpressionNode |
   ForStatementNode | BreakStatementNode | LabeledStatementNode | ContinueStatementNode |
-  SwitchStatementNode | SwitchCaseNode
+  SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode
 
 export type AcornNodeBase = {
   start: number,
@@ -90,7 +90,7 @@ export type MemberExpressionNode = AcornNodeBase & {
 
 export type VariableDeclarationNode = AcornNodeBase & {
   type: 'VariableDeclaration'
-  kind: 'const',
+  kind: 'const' | 'let' | 'var',
   declarations: VariableDeclaratorNode[]
 }
 
@@ -201,4 +201,18 @@ export type SwitchCaseNode = AcornNodeBase & {
   type: 'SwitchCase'
   test: AcronNode | null
   consequent: AcronNode[]
+}
+
+export type ForInStatementNode = AcornNodeBase & {
+  type: 'ForInStatement'
+  left: AcronNode
+  right: AcronNode
+  body: AcronNode
+}
+
+export type ForOfStatementNode = AcornNodeBase & {
+  type: 'ForOfStatement',
+  left: AcronNode
+  right: AcronNode
+  body: AcronNode
 }

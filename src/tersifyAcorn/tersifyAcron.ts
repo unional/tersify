@@ -2,7 +2,7 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
-import { AcronNode, ArrowFunctionExpressionNode, AssignmentPatternNode, BlockStatementNode, CallExpressionNode, ExpressionStatementNode, FunctionExpressionNode, IdentifierNode, LiteralNode, MemberExpressionNode, RestElementNode, ReturnStatementNode, SymbolForNode, VariableDeclarationNode, VariableDeclaratorNode, NewExpressionNode, BinaryExpressionNode, ConditionalExpressionNode, UnaryExpressionNode, UpdateExpressionNode, LogicalExpressionNode, IfStatementNode, WhileStatementNode, AssignmentExpressionNode, DoWhileStatementNode, ForStatementNode, BreakStatementNode, LabeledStatementNode, ContinueStatementNode, SwitchStatementNode, SwitchCaseNode } from './AcornTypes';
+import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode } from './AcornTypes';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
@@ -74,9 +74,27 @@ function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, lengt
       return tersifySwitchStatementNode(context, node, length)
     case 'SwitchCase':
       return tersifySwitchCaseNdoe(context, node, length)
+    case 'ForInStatement':
+      return tersifyForInStatementNode(context, node, length)
+    case 'ForOfStatement':
+      return tersifyForOfStatementNode(context, node, length)
   }
 
   throw node
+}
+
+function tersifyForOfStatementNode(context: TersifyContext, node: ForOfStatementNode, length: number) {
+  const left = tersifyAcornNode(context, node.left, length)
+  const right = tersifyAcornNode(context, node.right, length)
+  const body = tersifyAcornNode(context, node.body, length)
+  return `for (${left} of ${right}) ${body}`
+}
+
+function tersifyForInStatementNode(context: TersifyContext, node: ForInStatementNode, length: number) {
+  const left = tersifyAcornNode(context, node.left, length)
+  const right = tersifyAcornNode(context, node.right, length)
+  const body = tersifyAcornNode(context, node.body, length)
+  return `for (${left} in ${right}) ${body}`
 }
 
 function tersifySwitchCaseNdoe(context: TersifyContext, node: SwitchCaseNode, length: number) {
@@ -312,7 +330,9 @@ function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionEx
     }
     else {
       const bodyContent = body.slice(2, body.length - 2)
-      const result = `${async}${token}${generator}${id}${minParam}${space}${bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`}`
+      const result = `${async}${token}${generator}${id}${minParam}${space}${bodyContent.length === 0 ?
+        '{}' :
+        `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`}`
       return result.length > length ? trim(context, result, length) : result
     }
   }
