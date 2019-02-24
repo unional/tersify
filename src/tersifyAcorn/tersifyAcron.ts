@@ -205,7 +205,31 @@ function tersifyBinaryExpressionNode(context: TersifyContext, node: BinaryExpres
 }
 
 function tersifyNewExpressionNode(context: TersifyContext, node: NewExpressionNode, length: number) {
-  return `new ${node.callee.name}(${node.arguments.map(a => tersifyAcornNode(context, a, length)).join(', ')})`
+  return tersifyNewDate(node) || `new ${node.callee.name}(${node.arguments.map(a => tersifyAcornNode(context, a, length)).join(', ')})`
+}
+
+function tersifyNewDate(node: NewExpressionNode) {
+  if (node.callee.type === 'Identifier' && node.callee.name === 'Date') {
+    const args = node.arguments
+    if (args.length > 0) {
+      const hasNotLiteralArgs = args.some(a => a.type !== 'Literal')
+      if (!hasNotLiteralArgs) {
+        const literalArgs: LiteralNode[] = args as any
+        if (literalArgs.length === 1) {
+          const arg = literalArgs[0]
+          if (typeof arg.value === 'string') {
+            const date = new Date(arg.value)
+            return date.toISOString()
+          }
+        }
+
+        // Assuming all arguments are numbers
+        const dateArgs: [number] = literalArgs.map(a => a.value) as any
+        const date = new Date(...dateArgs)
+        return date.toISOString()
+      }
+    }
+  }
 }
 
 function tersifyVeriableDeclaratorNode(context: TersifyContext, node: VariableDeclaratorNode, length: number) {

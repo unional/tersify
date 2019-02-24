@@ -369,10 +369,34 @@ describe('function', () => {
     expect(tersify(function () { return /foo/g })).toBe(`fn() { return /foo/g }`)
   })
 
-  test('returns Date', () => {
+  test('returns new Date()', () => {
+    expect(tersify(function () {
+      return new Date()
+    })).toBe('fn() { return new Date() }')
+  })
+
+  test('returns Date constructed with string literal', () => {
     expect(tersify(function () {
       return new Date('2020-05-14T11:45:27.234Z')
-    })).toBe(`fn() { return new Date('2020-05-14T11:45:27.234Z') }`)
+    })).toBe(`fn() { return 2020-05-14T11:45:27.234Z }`)
+
+    expect(tersify(function () {
+      const date = new Date('2020-05-14T11:45:27.234Z')
+      return date
+    })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return date }`)
+  })
+
+  test('returns Date constructed with year, month, ...etc', () => {
+    expect(tersify(function () {
+      return new Date(2020, 4, 14)
+    })).toBe(`fn() { return 2020-05-14T07:00:00.000Z }`)
+  })
+
+  test('returns Date with variable in contructor', () => {
+    expect(tersify(function () {
+      let x = 1
+      return new Date(2020, x)
+    })).toBe(`fn() { let x = 1; return new Date(2020, x) }`)
   })
 
   test('returns Buffer', () => {
@@ -401,20 +425,15 @@ describe('function', () => {
       const date = new Date('2020-05-14T11:45:27.234Z');
       return date;
     };
-    expect(tersify(subject)).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
-    expect(tersify(subject, { maxLength: 71 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
-    expect(tersify(subject, { maxLength: 70 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); return ... }`)
-    expect(tersify(subject, { maxLength: 64 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); r... }`)
-    expect(tersify(subject, { maxLength: 63 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z'); ... }`)
-    expect(tersify(subject, { maxLength: 62 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z');... }`)
-    expect(tersify(subject, { maxLength: 61 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27.234Z')... }`)
-    expect(tersify(subject, { maxLength: 54 })).toBe(`fn() { const date = new Date('2020-05-14T11:45:27... }`)
-    expect(tersify(subject, { maxLength: 35 })).toBe(`fn() { const date = new Date('... }`)
-    expect(tersify(subject, { maxLength: 34 })).toBe(`fn() { const date = new Date(... }`)
-    expect(tersify(subject, { maxLength: 30 })).toBe(`fn() { const date = new D... }`)
-    expect(tersify(subject, { maxLength: 29 })).toBe(`fn() { const date = new ... }`)
-    expect(tersify(subject, { maxLength: 28 })).toBe(`fn() { const date = new... }`)
-    expect(tersify(subject, { maxLength: 27 })).toBe(`fn() { const date = ne... }`)
+    expect(tersify(subject)).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return date }`)
+    expect(tersify(subject, { maxLength: 59 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return date }`)
+    expect(tersify(subject, { maxLength: 58 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return ... }`)
+    expect(tersify(subject, { maxLength: 52 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; r... }`)
+    expect(tersify(subject, { maxLength: 51 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; ... }`)
+    expect(tersify(subject, { maxLength: 50 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z;... }`)
+    expect(tersify(subject, { maxLength: 49 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z... }`)
+    expect(tersify(subject, { maxLength: 48 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234... }`)
+    expect(tersify(subject, { maxLength: 26 })).toBe(`fn() { const date = 2... }`)
     expect(tersify(subject, { maxLength: 25 })).toBe(`fn() { const date = ... }`)
     expect(tersify(subject, { maxLength: 24 })).toBe(`fn() { const date =... }`)
     expect(tersify(subject, { maxLength: 23 })).toBe(`fn() { const date ... }`)
@@ -718,7 +737,31 @@ describe('arrow function', () => {
   test('returns Date', () => {
     expect(tersify(() => {
       return new Date('2020-05-14T11:45:27.234Z')
-    })).toBe(`() => new Date('2020-05-14T11:45:27.234Z')`)
+    })).toBe(`() => 2020-05-14T11:45:27.234Z`)
+  })
+
+  test('returns Date constructed with string literal', () => {
+    expect(tersify(() => {
+      return new Date('2020-05-14T11:45:27.234Z')
+    })).toBe(`() => 2020-05-14T11:45:27.234Z`)
+
+    expect(tersify(() => {
+      const date = new Date('2020-05-14T11:45:27.234Z')
+      return date
+    })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return date }`)
+  })
+
+  test('returns Date constructed with year, month, ...etc', () => {
+    expect(tersify(() => {
+      return new Date(2020, 4, 14)
+    })).toBe(`() => 2020-05-14T07:00:00.000Z`)
+  })
+
+  test('returns Date with variable in contructor', () => {
+    expect(tersify(() => {
+      let x = 1
+      return new Date(2020, x)
+    })).toBe(`() => { let x = 1; return new Date(2020, x) }`)
   })
 
   test('returns Buffer', () => {
@@ -761,20 +804,15 @@ describe('arrow function', () => {
       const date = new Date('2020-05-14T11:45:27.234Z');
       return date;
     };
-    expect(tersify(subject)).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
-    expect(tersify(subject, { maxLength: 72 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z'); return date }`)
-    expect(tersify(subject, { maxLength: 71 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z'); return ... }`)
-    expect(tersify(subject, { maxLength: 65 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z'); r... }`)
-    expect(tersify(subject, { maxLength: 64 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z'); ... }`)
-    expect(tersify(subject, { maxLength: 63 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z');... }`)
-    expect(tersify(subject, { maxLength: 62 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27.234Z')... }`)
-    expect(tersify(subject, { maxLength: 55 })).toBe(`() => { const date = new Date('2020-05-14T11:45:27... }`)
-    expect(tersify(subject, { maxLength: 36 })).toBe(`() => { const date = new Date('... }`)
-    expect(tersify(subject, { maxLength: 35 })).toBe(`() => { const date = new Date(... }`)
-    expect(tersify(subject, { maxLength: 31 })).toBe(`() => { const date = new D... }`)
-    expect(tersify(subject, { maxLength: 30 })).toBe(`() => { const date = new ... }`)
-    expect(tersify(subject, { maxLength: 29 })).toBe(`() => { const date = new... }`)
-    expect(tersify(subject, { maxLength: 28 })).toBe(`() => { const date = ne... }`)
+    expect(tersify(subject)).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return date }`)
+    expect(tersify(subject, { maxLength: 60 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return date }`)
+    expect(tersify(subject, { maxLength: 59 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return ... }`)
+    expect(tersify(subject, { maxLength: 53 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; r... }`)
+    expect(tersify(subject, { maxLength: 52 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; ... }`)
+    expect(tersify(subject, { maxLength: 51 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z;... }`)
+    expect(tersify(subject, { maxLength: 50 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z... }`)
+    expect(tersify(subject, { maxLength: 49 })).toBe(`() => { const date = 2020-05-14T11:45:27.234... }`)
+    expect(tersify(subject, { maxLength: 27 })).toBe(`() => { const date = 2... }`)
     expect(tersify(subject, { maxLength: 26 })).toBe(`() => { const date = ... }`)
     expect(tersify(subject, { maxLength: 25 })).toBe(`() => { const date =... }`)
     expect(tersify(subject, { maxLength: 24 })).toBe(`() => { const date ... }`)
@@ -1022,6 +1060,11 @@ describe('object', () => {
     expect(tersify({ a: /abcd/gi })).toBe('{ a: /abcd/gi }')
   })
 
+  test('date object property', () => {
+    expect(tersify({ a: new Date('2020-05-14T11:45:27.234Z') })).toBe(`{ a: 2020-05-14T11:45:27.234Z }`)
+  })
+
+
   test('trim content inside the object before triming outside', () => {
     expect(tersify({ a: /abcd/gi }, { maxLength: 15 })).toBe('{ a: /abcd/gi }')
     expect(tersify({ a: /abcd/gi }, { maxLength: 14 })).toBe('{ a: /abc... }')
@@ -1061,6 +1104,7 @@ describe('object', () => {
     expect(tersify({ a: function () { } })).toBe('{ a() {} }')
     expect(tersify({ a: function () { } }, { maxLength: 9 })).toBe('{ a(... }')
   })
+
   test('named function', () => {
     expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
   })
@@ -1068,6 +1112,7 @@ describe('object', () => {
   test('async anomymous function', () => {
     expect(tersify({ a: async function () { } })).toBe('{ async a() {} }')
   })
+
   test('async named function', () => {
     expect(tersify({ a: async function foo() { } })).toBe('{ async a() {} }')
   })
@@ -1076,6 +1121,7 @@ describe('object', () => {
     expect(tersify({ a: function* () { } })).toBe('{ *a() {} }')
 
   })
+
   test('generator named function', () => {
     expect(tersify({ a: function* foo() { } })).toBe('{ *a() {} }')
   })
@@ -1087,6 +1133,7 @@ describe('object', () => {
   test('async generator named function', () => {
     expect(tersify({ a: async function* foo() { } })).toBe('{ async *a() {} }')
   })
+
   test('arrow function', () => {
     expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
   })
