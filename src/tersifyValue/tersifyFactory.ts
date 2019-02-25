@@ -1,4 +1,5 @@
 import { TersifyContext } from './interfaces';
+import { tersifyArray } from './tersifyArray';
 import { tersifyBigint } from './tersifyBigint';
 import { tersifyBuffer } from './tersifyBuffer';
 import { tersifyDate } from './tersifyDate';
@@ -22,5 +23,6 @@ export const tersifyFactory: Record<string, TersifyFunc> = {
   'object': tersifyObject,
   'Buffer': tersifyBuffer,
   'Date': tersifyDate,
-  'RegExp': tersifyRegExp
+  'RegExp': tersifyRegExp,
+  'Array': tersifyArray
 }

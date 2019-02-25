@@ -27,5 +27,9 @@ function getType(value: any) {
     return 'Buffer'
   }
 
+  if (Array.isArray(value)) {
+    return 'Array'
+  }
+
   return typeof value
 }

@@ -5,7 +5,7 @@ import { trim } from './trim';
 export function tersifyObject(context: TersifyContext, value: object, length: number) {
   const ref = context.references.find(r => r.value === value)
   if (ref) {
-    return `cir(${ref.path.join(', ')})`
+    return `ref(${ref.path.join(', ')})`
   }
 
   context.references.push({ value, path: context.path })

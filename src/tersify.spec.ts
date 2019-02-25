@@ -1,5 +1,5 @@
-import { tersify } from './tersify2';
 import { tersible } from './tersible';
+import { tersify } from './tersify2';
 
 describe('undefined', () => {
   test(`tersify(undefined)`, () => {
@@ -417,6 +417,36 @@ describe('function', () => {
     expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
   })
 
+  test(`returns async anomymous function`, () => {
+    expect(tersify(function () { return async function () { } })).toBe(`fn() { return async fn() {} }`)
+  })
+
+  test(`returns async named function`, () => {
+    expect(tersify(function () { return async function foo() { } })).toBe(`fn() { return async fn foo() {} }`)
+  })
+
+  test(`returns async arrow function`, () => {
+    expect(tersify(function () { return async () => { } })).toBe(`fn() { return async () => {} }`)
+  })
+
+  test(`returns generator anomymous function`, () => {
+    expect(tersify(function () { return function* () { } })).toBe(`fn() { return fn*() {} }`)
+  })
+
+  test(`returns generator named function`, () => {
+    expect(tersify(function () { return function* foo() { } })).toBe(`fn() { return fn* foo() {} }`)
+  })
+
+  test(`returns async generator anomymous function`, () => {
+    expect(tersify(function () { return async function* () { } })).toBe(`fn() { return async fn*() {} }`)
+  })
+
+  test(`returns async generator named function`, () => {
+    expect(tersify(function () { return async function* foo() { } })).toBe(`fn() { return async fn* foo() {} }`)
+  })
+
+  test.todo('await')
+
   test('returns single property object', () => {
     expect(tersify(function () {
       return { a: 1 }
@@ -458,6 +488,12 @@ describe('function', () => {
   test('returns method property object', () => {
     expect(tersify(function () {
       return { m: function () { return 'abc' } }
+    })).toBe(`fn() { return { m() { return 'abc' } } }`)
+  })
+
+  test('returns named method property object', () => {
+    expect(tersify(function () {
+      return { m: function foo() { return 'abc' } }
     })).toBe(`fn() { return { m() { return 'abc' } } }`)
   })
 
@@ -893,6 +929,34 @@ describe('arrow function', () => {
     })).toBe(`(a) => (b) => { console.info(a); console.info(b) }`)
   })
 
+  test(`returns async anomymous function`, () => {
+    expect(tersify(() => { return async function () { } })).toBe(`() => async fn() {}`)
+  })
+
+  test(`returns async named function`, () => {
+    expect(tersify(() => { return async function foo() { } })).toBe(`() => async fn foo() {}`)
+  })
+
+  test(`returns async arrow function`, () => {
+    expect(tersify(() => { return async () => { } })).toBe(`() => async () => {}`)
+  })
+
+  test(`returns generator anomymous function`, () => {
+    expect(tersify(() => { return function* () { } })).toBe(`() => fn*() {}`)
+  })
+
+  test(`returns generator named function`, () => {
+    expect(tersify(() => { return function* foo() { } })).toBe(`() => fn* foo() {}`)
+  })
+
+  test(`returns async generator anomymous function`, () => {
+    expect(tersify(() => { return async function* () { } })).toBe(`() => async fn*() {}`)
+  })
+
+  test(`returns async generator named function`, () => {
+    expect(tersify(() => { return async function* foo() { } })).toBe(`() => async fn* foo() {}`)
+  })
+
   test('returns single property object', () => {
     expect(tersify(() => {
       return { a: 1 }
@@ -934,6 +998,12 @@ describe('arrow function', () => {
   test('returns method property object', () => {
     expect(tersify(() => {
       return { m: function () { return 'abc' } }
+    })).toBe(`() => ({ m() { return 'abc' } })`)
+  })
+
+  test('returns named method property object', () => {
+    expect(tersify(() => {
+      return { m: function foo() { return 'abc' } }
     })).toBe(`() => ({ m() { return 'abc' } })`)
   })
 
@@ -1362,12 +1432,130 @@ describe('object', () => {
     expect(tersify(subject, { raw: true })).toBe('{ a: 1 }')
   })
 
-  test('circular', () => {
+  test('referencing itself', () => {
+    const subject: any = { x: 1 }
+    subject.y = subject
+    expect(tersify(subject)).toBe('{ x: 1, y: ref() }')
+  })
+
+  test('referencing the same sub-node', () => {
     const node = { x: 1 }
     const subject = { a: { b: node }, c: node }
-    expect(tersify(subject)).toBe('{ a: { b: { x: 1 } }, c: cir(a, b) }')
+    expect(tersify(subject)).toBe('{ a: { b: { x: 1 } }, c: ref(a, b) }')
   })
 })
 
-describe('array', () => { })
+describe('array', () => {
+  test('empty array as []', () => {
+    expect(tersify([])).toBe('[]')
+  })
+
+  test('with primitive values', () => {
+    expect(tersify([undefined])).toBe('[undefined]')
+    expect(tersify([null])).toBe('[null]')
+    expect(tersify([true])).toBe('[true]')
+    expect(tersify([false])).toBe('[false]')
+    expect(tersify([12345])).toBe('[12345]')
+    expect(tersify([12345n])).toBe('[12345n]')
+    expect(tersify(['abc'])).toBe(`['abc']`)
+    expect(tersify([Symbol()])).toBe('[Sym()]')
+    expect(tersify([Symbol.for('abc')])).toBe('[Sym(abc)]')
+    expect(tersify([/abcd/gi])).toBe('[/abcd/gi]')
+  })
+
+  test('multiple entries', () => {
+    expect(tersify([1, 2, 3])).toBe('[1, 2, 3]')
+  })
+
+  test('with object entry', () => {
+    expect(tersify([{ a: 1 }])).toBe('[{ a: 1 }]')
+  })
+
+  test('with anomymous function', () => {
+    expect(tersify([function () { return 'a' }])).toBe(`[fn() { return 'a' }]`)
+  })
+
+  test('with named function', () => {
+    expect(tersify([function foo() { return 'a' }])).toBe(`[fn foo() { return 'a' }]`)
+  })
+
+  test('with async function', () => {
+    expect(tersify([async function () { return 'a' }])).toBe(`[async fn() { return 'a' }]`)
+  })
+
+  test('with generator function', () => {
+    expect(tersify([function* () { return 'a' }])).toBe(`[fn*() { return 'a' }]`)
+  })
+
+  test('with async generator function', () => {
+    expect(tersify([async function* () { return 'a' }])).toBe(`[async fn*() { return 'a' }]`)
+  })
+
+  test('trim the entry when exceed maxLength', () => {
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 34 })).toBe(`['123456789012345678901234567890']`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 33 })).toBe(`['123456789012345678901234567...]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 32 })).toBe(`['12345678901234567890123456...]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 8 })).toBe(`['12...]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 7 })).toBe(`['1...]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 6 })).toBe(`['1..]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 5 })).toBe(`['1.]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 4 })).toBe(`['.]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 3 })).toBe(`[.]`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 2 })).toBe(`[.`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 1 })).toBe(`.`)
+    expect(tersify(['123456789012345678901234567890'], { maxLength: 0 })).toBe(``)
+  })
+
+  test('trim last entries first', () => {
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 24 })).toBe(`['abcd', '1234', 'abcd']`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 23 })).toBe(`['abcd', '1234', 'a...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 22 })).toBe(`['abcd', '1234', '...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 21 })).toBe(`['abcd', '1234', ...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 20 })).toBe(`['abcd', '1234',...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 19 })).toBe(`['abcd', '1234'...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 18 })).toBe(`['abcd', '1234...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 14 })).toBe(`['abcd', '...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 13 })).toBe(`['abcd', ...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 12 })).toBe(`['abcd',...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 11 })).toBe(`['abcd'...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 10 })).toBe(`['abcd...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 7 })).toBe(`['a...]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 6 })).toBe(`['a..]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 5 })).toBe(`['a.]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 4 })).toBe(`['.]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 3 })).toBe(`[.]`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 2 })).toBe(`[.`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 1 })).toBe(`.`)
+    expect(tersify(['abcd', '1234', 'abcd'], { maxLength: 0 })).toBe(``)
+  })
+
+  test('use tersify function if available', () => {
+    const subject = [{ a: 1 }]
+    tersible(subject, () => '[{a1}]')
+    expect(tersify(subject)).toBe('[{a1}]')
+
+    const subject2 = [{ b: 2 }]
+    tersible(subject2, '!a2!')
+    expect(tersify(subject2)).toBe('!a2!')
+  })
+
+  test('skip tersify function if running in raw mode', () => {
+    const subject = [{ a: 1 }]
+    tersible(subject, '[{a1}]')
+    expect(tersify(subject, { raw: true })).toBe('[{ a: 1 }]')
+  })
+
+  test('referencing itself', () => {
+    const subject: any[] = ['a']
+    subject.push(subject)
+    expect(tersify(subject)).toBe(`['a', ref()]`)
+  })
+
+  test('multiple reference of the same entry', () => {
+    const node = { a: 1 }
+    const subject = [node, node]
+    expect(tersify(subject)).toBe(`[{ a: 1 }, ref(0)]`)
+  })
+})
+
 describe('error', () => { })
