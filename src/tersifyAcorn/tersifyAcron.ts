@@ -2,7 +2,7 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
-import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode } from './AcornTypes';
+import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode } from './AcornTypes';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
@@ -83,9 +83,15 @@ function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, lengt
       return tersifyPropertyNode(context, node, length)
     case 'YieldExpression':
       return tersifyYieldExpressionNode(context, node, length)
+    case 'AwaitExpression':
+      return tersifyAwaitExpressionNode(context, node, length)
   }
 
   throw node
+}
+
+function tersifyAwaitExpressionNode(context: TersifyContext, node: AwaitExpressionNode, length: number) {
+  return `await ${tersifyAcornNode(context, node.argument, length)}`
 }
 
 function tersifyYieldExpressionNode(context: TersifyContext, node: YieldExpressionNode, length: number) {

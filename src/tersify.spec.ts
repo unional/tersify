@@ -445,8 +445,6 @@ describe('function', () => {
     expect(tersify(function () { return async function* foo() { } })).toBe(`fn() { return async fn* foo() {} }`)
   })
 
-  test.todo('await')
-
   test('returns single property object', () => {
     expect(tersify(function () {
       return { a: 1 }
@@ -796,7 +794,8 @@ describe('function', () => {
   })
 
   test(`async function`, () => {
-    expect(tersify(async function () { })).toBe('async fn() {}')
+    const x = Promise.resolve()
+    expect(tersify(async function () { await x })).toBe('async fn() { await x }')
   })
 
   test('anomymous generator function', () => {
@@ -1304,6 +1303,11 @@ describe('arrow function', () => {
       }
     })).toBe(`(x) => { for (let y of x) { console.info(y + 1); console.info(y) } }`)
   })
+
+  test(`async arrow function`, () => {
+    const x = Promise.resolve()
+    expect(tersify(async () => { await x })).toBe('async () => { await x }')
+  })
 })
 
 describe('object', () => {
@@ -1558,4 +1562,37 @@ describe('array', () => {
   })
 })
 
-describe('error', () => { })
+describe('error', () => {
+  test('empty error', () => {
+    expect(tersify(new Error())).toBe('Err()')
+  })
+
+  test('error with message', () => {
+    expect(tersify(new Error('abc'))).toBe(`Err(abc)`)
+    expect(tersify(new Error(123 as any))).toBe(`Err(123)`)
+  })
+
+  test('custom error shown as error. Properties ignored', () => {
+    class CustErr extends Error {
+      constructor(public x: string) {
+        super(`${x} happened`)
+      }
+    }
+    expect(tersify(new CustErr('abc'))).toBe(`Err(abc happened)`)
+  })
+
+  test('trim message first if longer than maxLength', () => {
+    expect(tersify(new Error('abcdefghi'), { maxLength: 14 })).toBe(`Err(abcdefghi)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 13 })).toBe(`Err(abcde...)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 9 })).toBe(`Err(ab..)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 8 })).toBe(`Err(ab.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 7 })).toBe(`Err(a.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 6 })).toBe(`Err(.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 5 })).toBe(`Er...`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 4 })).toBe(`Er..`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 3 })).toBe(`Er.`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 2 })).toBe(`E.`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 1 })).toBe(`.`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 0 })).toBe(``)
+  })
+})

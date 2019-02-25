@@ -23,13 +23,18 @@ function getType(value: any) {
     return 'Date'
   }
 
+  if (Array.isArray(value)) {
+    return 'Array'
+  }
+
+  if (value instanceof Error) {
+    return 'Error'
+  }
+
   if (value instanceof Buffer) {
     return 'Buffer'
   }
 
-  if (Array.isArray(value)) {
-    return 'Array'
-  }
 
   return typeof value
 }

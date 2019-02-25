@@ -3,6 +3,7 @@ import { tersifyArray } from './tersifyArray';
 import { tersifyBigint } from './tersifyBigint';
 import { tersifyBuffer } from './tersifyBuffer';
 import { tersifyDate } from './tersifyDate';
+import { tersifyError } from './tersifyError';
 import { tersifyFunction } from './tersifyFunction';
 import { tersifyLiteral } from './tersifyLiteral';
 import { tersifyObject } from './tersifyObject';
@@ -24,5 +25,6 @@ export const tersifyFactory: Record<string, TersifyFunc> = {
   'Buffer': tersifyBuffer,
   'Date': tersifyDate,
   'RegExp': tersifyRegExp,
-  'Array': tersifyArray
+  'Array': tersifyArray,
+  'Error': tersifyError
 }

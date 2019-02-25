@@ -7,7 +7,7 @@ export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
   IfStatementNode | WhileStatementNode | DoWhileStatementNode | AssignmentExpressionNode |
   ForStatementNode | BreakStatementNode | LabeledStatementNode | ContinueStatementNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
-  ObjectExpressionNode | PropertyNode | YieldExpressionNode
+  ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode
 
 export type AcornNodeBase = {
   start: number,
@@ -236,5 +236,10 @@ export type PropertyNode = AcornNodeBase & {
 export type YieldExpressionNode = AcornNodeBase & {
   type: 'YieldExpression',
   delegate: boolean,
+  argument: AcronNode
+}
+
+export type AwaitExpressionNode = AcornNodeBase & {
+  type: 'AwaitExpression',
   argument: AcronNode
 }
