@@ -2,7 +2,7 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
-import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode } from './AcornTypes';
+import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode } from './AcornTypes';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
@@ -13,8 +13,7 @@ export function tersifyAcorn(context: TersifyContext, value: any, length: number
   }
 }
 
-function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, length: number) {
-  // console.log(node)
+function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, length: number): string {
   if (!node) return ''
   switch (node.type) {
     case 'Identifier':
@@ -78,9 +77,44 @@ function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, lengt
       return tersifyForInStatementNode(context, node, length)
     case 'ForOfStatement':
       return tersifyForOfStatementNode(context, node, length)
+    case 'ObjectExpression':
+      return tersifyObjectExpressionNode(context, node, length)
+    case 'Property':
+      return tersifyPropertyNode(context, node, length)
+    case 'YieldExpression':
+      return tersifyYieldExpressionNode(context, node, length)
   }
 
   throw node
+}
+
+function tersifyYieldExpressionNode(context: TersifyContext, node: YieldExpressionNode, length: number) {
+  const argument = tersifyAcornNode(context, node.argument, length)
+  return `yield ${argument}`
+}
+
+function tersifyPropertyNode(context: TersifyContext, node: PropertyNode, length: number) {
+  const key = tersifyAcornNode(context, node.key, length)
+  const valueNode = node.value
+  if (valueNode.type === 'FunctionExpression') {
+    const async = valueNode.async ? 'async ' : ''
+    const generator = valueNode.generator ? '*' : ''
+    const params = tersifyFunctionParams(context, valueNode.params)
+    const body = tersifyFunctionBody(context, valueNode.body)
+    return `${async}${generator}${key}${params} ${body}`
+  }
+
+  const value = tersifyAcornNode(context, valueNode, length)
+  if (node.computed) {
+    return `[${key}]: ${value}`
+  }
+
+  return `${key}: ${value}`
+}
+
+function tersifyObjectExpressionNode(context: TersifyContext, node: ObjectExpressionNode, length: number) {
+  const properties = node.properties.map(p => tersifyAcornNode(context, p, length))
+  return `{ ${properties.join(', ')} }`
 }
 
 function tersifyForOfStatementNode(context: TersifyContext, node: ForOfStatementNode, length: number) {
@@ -287,13 +321,13 @@ function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunction
   }
 }
 
-function tersifyArrowBody(context: TersifyContext, body: AcronNode) {
-  const returnNode = getReturnStatementOfSingleStatmentBody(context, body)
+function tersifyArrowBody(context: TersifyContext, node: AcronNode) {
+  const returnNode = getReturnStatementOfSingleStatmentBody(context, node)
   if (returnNode) {
     return tersifyArrowBodyAsSingleStatement(context, returnNode)
   }
 
-  return tersifyFunctionBody(context, body)
+  return tersifyFunctionBody(context, node)
 }
 
 function getReturnStatementOfSingleStatmentBody(context: TersifyContext, node: AcronNode) {
@@ -304,6 +338,10 @@ function getReturnStatementOfSingleStatmentBody(context: TersifyContext, node: A
 
 function tersifyArrowBodyAsSingleStatement(context: TersifyContext, node: ReturnStatementNode) {
   if (!node.argument) return `{}`
+
+  if (node.argument.type === 'ObjectExpression') {
+    return `(${tersifyAcornNode(context, node.argument, Infinity)})`
+  }
   return tersifyAcornNode(context, node.argument, Infinity)
 }
 

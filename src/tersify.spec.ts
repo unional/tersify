@@ -417,7 +417,104 @@ describe('function', () => {
     expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
   })
 
-  test.todo('returns object')
+  test('returns single property object', () => {
+    expect(tersify(function () {
+      return { a: 1 }
+    })).toBe('fn() { return { a: 1 } }')
+  })
+
+  test('returns multiple property object', () => {
+    expect(tersify(function () {
+      return { a: 1, b: 'b' }
+    })).toBe(`fn() { return { a: 1, b: 'b' } }`)
+  })
+
+  test('returns computed property object', () => {
+    expect(tersify(function () {
+      const x = 'xyz'
+      return { [x]: true }
+    })).toBe(`fn() { const x = 'xyz'; return { [x]: true } }`)
+
+    expect(tersify(function () {
+      return { ['x']: true }
+    })).toBe(`fn() { return { ['x']: true } }`)
+  })
+
+  test('returns symbol property object', () => {
+    expect(tersify(function () {
+      return { [Symbol()]: true }
+    })).toBe(`fn() { return { [Sym()]: true } }`)
+
+    expect(tersify(function () {
+      return { [Symbol.for('abc')]: true }
+    })).toBe(`fn() { return { [Sym(abc)]: true } }`)
+
+    expect(tersify(function () {
+      const tx = Symbol.for('abc')
+      return { [tx]: true }
+    })).toBe(`fn() { const tx = Sym(abc); return { [tx]: true } }`)
+  })
+
+  test('returns method property object', () => {
+    expect(tersify(function () {
+      return { m: function () { return 'abc' } }
+    })).toBe(`fn() { return { m() { return 'abc' } } }`)
+  })
+
+  test('returns async method property object', () => {
+    expect(tersify(function () {
+      return { m: async function () { return 'abc' } }
+    })).toBe(`fn() { return { async m() { return 'abc' } } }`)
+  })
+
+  test('returns generator method property object', () => {
+    expect(tersify(function () {
+      return { m: function* () { yield 'abc' } }
+    })).toBe(`fn() { return { *m() { yield 'abc' } } }`)
+  })
+
+  test('returns async generator method property object', () => {
+    expect(tersify(function () {
+      return { m: async function* () { return 'abc' } }
+    })).toBe(`fn() { return { async *m() { return 'abc' } } }`)
+  })
+
+  test('returns es6 method property object', () => {
+    expect(tersify(function () {
+      return { m() { return 'abc' } }
+    })).toBe(`fn() { return { m() { return 'abc' } } }`)
+  })
+
+  test('returns async es6 method property object', () => {
+    expect(tersify(function () {
+      return { async m() { return 'abc' } }
+    })).toBe(`fn() { return { async m() { return 'abc' } } }`)
+  })
+
+  test('returns generator es6 method property object', () => {
+    expect(tersify(function () {
+      return { *m() { return 'abc' } }
+    })).toBe(`fn() { return { *m() { return 'abc' } } }`)
+  })
+
+  test('returns async generator es6 method property object', () => {
+    expect(tersify(function () {
+      return { async *m() { return 'abc' } }
+    })).toBe(`fn() { return { async *m() { return 'abc' } } }`)
+  })
+
+  test('returns arrow method property object', () => {
+    expect(tersify(function () {
+      return { m: () => { return 'abc' } }
+    })).toBe(`fn() { return { m: () => 'abc' } }`)
+  })
+
+  test('returns async arrow method property object', () => {
+    expect(tersify(function () {
+      return { m: async () => { return 'abc' } }
+    })).toBe(`fn() { return { m: async () => 'abc' } }`)
+  })
+
   test.todo('returns array')
 
   test('with variable declaration', () => {
@@ -796,7 +893,104 @@ describe('arrow function', () => {
     })).toBe(`(a) => (b) => { console.info(a); console.info(b) }`)
   })
 
-  test.todo('returns object')
+  test('returns single property object', () => {
+    expect(tersify(() => {
+      return { a: 1 }
+    })).toBe('() => ({ a: 1 })')
+  })
+
+  test('returns multiple property object', () => {
+    expect(tersify(() => {
+      return { a: 1, b: 'b' }
+    })).toBe(`() => ({ a: 1, b: 'b' })`)
+  })
+
+  test('returns computed property object', () => {
+    expect(tersify(() => {
+      const x = 'xyz'
+      return { [x]: true }
+    })).toBe(`() => { const x = 'xyz'; return { [x]: true } }`)
+
+    expect(tersify(() => {
+      return { ['x']: true }
+    })).toBe(`() => ({ ['x']: true })`)
+  })
+
+  test('returns symbol property object', () => {
+    expect(tersify(() => {
+      return { [Symbol()]: true }
+    })).toBe(`() => ({ [Sym()]: true })`)
+
+    expect(tersify(() => {
+      return { [Symbol.for('abc')]: true }
+    })).toBe(`() => ({ [Sym(abc)]: true })`)
+
+    expect(tersify(() => {
+      const tx = Symbol.for('abc')
+      return { [tx]: true }
+    })).toBe(`() => { const tx = Sym(abc); return { [tx]: true } }`)
+  })
+
+  test('returns method property object', () => {
+    expect(tersify(() => {
+      return { m: function () { return 'abc' } }
+    })).toBe(`() => ({ m() { return 'abc' } })`)
+  })
+
+  test('returns async method property object', () => {
+    expect(tersify(() => {
+      return { m: async function () { return 'abc' } }
+    })).toBe(`() => ({ async m() { return 'abc' } })`)
+  })
+
+  test('returns generator method property object', () => {
+    expect(tersify(() => {
+      return { m: function* () { yield 'abc' } }
+    })).toBe(`() => ({ *m() { yield 'abc' } })`)
+  })
+
+  test('returns async generator method property object', () => {
+    expect(tersify(() => {
+      return { m: async function* () { return 'abc' } }
+    })).toBe(`() => ({ async *m() { return 'abc' } })`)
+  })
+
+  test('returns es6 method property object', () => {
+    expect(tersify(() => {
+      return { m() { return 'abc' } }
+    })).toBe(`() => ({ m() { return 'abc' } })`)
+  })
+
+  test('returns async es6 method property object', () => {
+    expect(tersify(() => {
+      return { async m() { return 'abc' } }
+    })).toBe(`() => ({ async m() { return 'abc' } })`)
+  })
+
+  test('returns generator es6 method property object', () => {
+    expect(tersify(() => {
+      return { *m() { return 'abc' } }
+    })).toBe(`() => ({ *m() { return 'abc' } })`)
+  })
+
+  test('returns async generator es6 method property object', () => {
+    expect(tersify(() => {
+      return { async *m() { return 'abc' } }
+    })).toBe(`() => ({ async *m() { return 'abc' } })`)
+  })
+
+  test('returns arrow method property object', () => {
+    expect(tersify(() => {
+      return { m: () => { return 'abc' } }
+    })).toBe(`() => ({ m: () => 'abc' })`)
+  })
+
+  test('returns async arrow method property object', () => {
+    expect(tersify(() => {
+      return { m: async () => { return 'abc' } }
+    })).toBe(`() => ({ m: async () => 'abc' })`)
+  })
+
   test.todo('returns array')
 
   test('with variable declaration', () => {
@@ -1063,7 +1257,6 @@ describe('object', () => {
   test('date object property', () => {
     expect(tersify({ a: new Date('2020-05-14T11:45:27.234Z') })).toBe(`{ a: 2020-05-14T11:45:27.234Z }`)
   })
-
 
   test('trim content inside the object before triming outside', () => {
     expect(tersify({ a: /abcd/gi }, { maxLength: 15 })).toBe('{ a: /abcd/gi }')
