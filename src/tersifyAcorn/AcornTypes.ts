@@ -1,4 +1,4 @@
-export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
+export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   FunctionExpressionNode | BlockStatementNode | ReturnStatementNode |
   AssignmentPatternNode | RestElementNode | ArrowFunctionExpressionNode |
   MemberExpressionNode | ExpressionStatementNode | VariableDeclarationNode |
@@ -7,7 +7,8 @@ export type AcronNode = IdentifierNode | LiteralNode | CallExpressionNode |
   IfStatementNode | WhileStatementNode | DoWhileStatementNode | AssignmentExpressionNode |
   ForStatementNode | BreakStatementNode | LabeledStatementNode | ContinueStatementNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
-  ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode
+  ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
+  ArrayExpression
 
 export type AcornNodeBase = {
   start: number,
@@ -43,12 +44,12 @@ export type FunctionExpressionNode = {
   generator: boolean,
   async: boolean,
   params: IdentifierNode[],
-  body: AcronNode
+  body: AcornNode
 } & AcornNodeBase
 
 export type BlockStatementNode = AcornNodeBase & {
   type: 'BlockStatement',
-  body: AcronNode[]
+  body: AcornNode[]
 }
 
 export type ReturnStatementNode = AcornNodeBase & {
@@ -59,7 +60,7 @@ export type ReturnStatementNode = AcornNodeBase & {
 export type AssignmentPatternNode = AcornNodeBase & {
   type: 'AssignmentPattern',
   left: IdentifierNode,
-  right: AcronNode
+  right: AcornNode
 }
 
 export type RestElementNode = AcornNodeBase & {
@@ -74,7 +75,7 @@ export type ArrowFunctionExpressionNode = AcornNodeBase & {
   generator: boolean,
   async: boolean,
   params: IdentifierNode[],
-  body: AcronNode
+  body: AcornNode
 }
 
 export type ExpressionStatementNode = AcornNodeBase & {
@@ -104,76 +105,76 @@ export type VariableDeclaratorNode = AcornNodeBase & {
 export type NewExpressionNode = AcornNodeBase & {
   type: 'NewExpression',
   callee: IdentifierNode,
-  arguments: AcronNode[]
+  arguments: AcornNode[]
 }
 
 export type BinaryExpressionNode = AcornNodeBase & {
   type: 'BinaryExpression',
   operator: string,
-  left: AcronNode,
-  right: AcronNode
+  left: AcornNode,
+  right: AcornNode
 }
 
 export type ConditionalExpressionNode = AcornNodeBase & {
   type: 'ConditionalExpression',
-  test: AcronNode,
-  consequent: AcronNode,
-  alternate: AcronNode
+  test: AcornNode,
+  consequent: AcornNode,
+  alternate: AcornNode
 }
 
 export type UnaryExpressionNode = AcornNodeBase & {
   type: 'UnaryExpression',
   operator: string,
   prefix: boolean
-  argument: AcronNode
+  argument: AcornNode
 }
 
 export type UpdateExpressionNode = AcornNodeBase & {
   type: 'UpdateExpression',
   operator: string,
   prefix: boolean
-  argument: AcronNode
+  argument: AcornNode
 }
 
 export type LogicalExpressionNode = AcornNodeBase & {
   type: 'LogicalExpression',
   operator: string,
-  left: AcronNode,
-  right: AcronNode
+  left: AcornNode,
+  right: AcornNode
 }
 
 export type IfStatementNode = AcornNodeBase & {
   type: 'IfStatement',
-  test: AcronNode,
-  consequent: AcronNode,
-  alternate: AcronNode
+  test: AcornNode,
+  consequent: AcornNode,
+  alternate: AcornNode
 }
 
 export type WhileStatementNode = AcornNodeBase & {
   type: 'WhileStatement',
-  test: AcronNode,
-  body: AcronNode
+  test: AcornNode,
+  body: AcornNode
 }
 
 export type DoWhileStatementNode = AcornNodeBase & {
   type: 'DoWhileStatement'
-  test: AcronNode,
-  body: AcronNode
+  test: AcornNode,
+  body: AcornNode
 }
 
 export type AssignmentExpressionNode = AcornNodeBase & {
   type: 'AssignmentExpression'
   operator: string,
-  left: AcronNode,
-  right: AcronNode
+  left: AcornNode,
+  right: AcornNode
 }
 
 export type ForStatementNode = AcornNodeBase & {
   type: 'ForStatement'
-  body: AcronNode,
-  init: AcronNode,
-  test: AcronNode,
-  update: AcronNode
+  body: AcornNode,
+  init: AcornNode,
+  test: AcornNode,
+  update: AcornNode
 }
 
 export type BreakStatementNode = AcornNodeBase & {
@@ -184,7 +185,7 @@ export type BreakStatementNode = AcornNodeBase & {
 export type LabeledStatementNode = AcornNodeBase & {
   type: 'LabeledStatement'
   label: IdentifierNode,
-  body: AcronNode
+  body: AcornNode
 }
 
 export type ContinueStatementNode = AcornNodeBase & {
@@ -194,28 +195,28 @@ export type ContinueStatementNode = AcornNodeBase & {
 
 export type SwitchStatementNode = AcornNodeBase & {
   type: 'SwitchStatement'
-  discriminant: AcronNode
+  discriminant: AcornNode
   cases: SwitchCaseNode[]
 }
 
 export type SwitchCaseNode = AcornNodeBase & {
   type: 'SwitchCase'
-  test: AcronNode | null
-  consequent: AcronNode[]
+  test: AcornNode | null
+  consequent: AcornNode[]
 }
 
 export type ForInStatementNode = AcornNodeBase & {
   type: 'ForInStatement'
-  left: AcronNode
-  right: AcronNode
-  body: AcronNode
+  left: AcornNode
+  right: AcornNode
+  body: AcornNode
 }
 
 export type ForOfStatementNode = AcornNodeBase & {
   type: 'ForOfStatement',
-  left: AcronNode
-  right: AcronNode
-  body: AcronNode
+  left: AcornNode
+  right: AcornNode
+  body: AcornNode
 }
 
 export type ObjectExpressionNode = AcornNodeBase & {
@@ -230,16 +231,21 @@ export type PropertyNode = AcornNodeBase & {
   computed: boolean,
   method: boolean,
   shorthand: boolean,
-  value: AcronNode
+  value: AcornNode
 }
 
 export type YieldExpressionNode = AcornNodeBase & {
   type: 'YieldExpression',
   delegate: boolean,
-  argument: AcronNode
+  argument: AcornNode
 }
 
 export type AwaitExpressionNode = AcornNodeBase & {
   type: 'AwaitExpression',
-  argument: AcronNode
+  argument: AcornNode
+}
+
+export type ArrayExpression = AcornNodeBase & {
+  type: 'ArrayExpression',
+  elements: AcornNode[]
 }

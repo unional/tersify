@@ -549,7 +549,10 @@ describe('function', () => {
     })).toBe(`fn() { return { m: async () => 'abc' } }`)
   })
 
-  test.todo('returns array')
+  test('returns array', () => {
+    expect(tersify(function () { return [] })).toBe(`fn() { return [] }`)
+    expect(tersify(function () { return [1, undefined, 'a'] })).toBe(`fn() { return [1, undefined, 'a'] }`)
+  })
 
   test('with variable declaration', () => {
     const subject: any = function () {
@@ -1060,7 +1063,10 @@ describe('arrow function', () => {
     })).toBe(`() => ({ m: async () => 'abc' })`)
   })
 
-  test.todo('returns array')
+  test('returns array', () => {
+    expect(tersify(() => { return [] })).toBe(`() => []`)
+    expect(tersify(() => { return [1, undefined, 'a'] })).toBe(`() => [1, undefined, 'a']`)
+  })
 
   test('with variable declaration', () => {
     const subject: any = () => {

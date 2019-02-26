@@ -2,18 +2,18 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
-import { AcronNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression } from './AcornTypes';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
 
   if (typeof value === 'function') {
-    const node = parser.parseExpressionAt(`(${value.toString()})`, 0) as AcronNode
+    const node = parser.parseExpressionAt(`(${value.toString()})`, 0) as AcornNode
     return tersifyAcornNode(context, node, length)
   }
 }
 
-function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, length: number): string {
+function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, length: number): string {
   if (!node) return ''
   switch (node.type) {
     case 'Identifier':
@@ -85,9 +85,16 @@ function tersifyAcornNode(context: TersifyContext, node: AcronNode | null, lengt
       return tersifyYieldExpressionNode(context, node, length)
     case 'AwaitExpression':
       return tersifyAwaitExpressionNode(context, node, length)
+    case 'ArrayExpression':
+      return tersifyArrayExpressionNode(context, node, length)
   }
 
   throw node
+}
+
+function tersifyArrayExpressionNode(context: TersifyContext, node: ArrayExpression, length: number) {
+  const elements = node.elements.map(e => tersifyAcornNode(context, e, length))
+  return trim(context, `[${elements.join(', ')}]`, length)
 }
 
 function tersifyAwaitExpressionNode(context: TersifyContext, node: AwaitExpressionNode, length: number) {
@@ -327,7 +334,7 @@ function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunction
   }
 }
 
-function tersifyArrowBody(context: TersifyContext, node: AcronNode) {
+function tersifyArrowBody(context: TersifyContext, node: AcornNode) {
   const returnNode = getReturnStatementOfSingleStatmentBody(context, node)
   if (returnNode) {
     return tersifyArrowBodyAsSingleStatement(context, returnNode)
@@ -336,7 +343,7 @@ function tersifyArrowBody(context: TersifyContext, node: AcronNode) {
   return tersifyFunctionBody(context, node)
 }
 
-function getReturnStatementOfSingleStatmentBody(context: TersifyContext, node: AcronNode) {
+function getReturnStatementOfSingleStatmentBody(context: TersifyContext, node: AcornNode) {
   return (node.type === 'BlockStatement' && node.body.length === 1 && node.body[0].type === 'ReturnStatement') ?
     node.body[0] as ReturnStatementNode :
     undefined
@@ -423,7 +430,7 @@ function tersifyFunctionParams(context: TersifyContext, params: (IdentifierNode 
   return `(${result.join(', ')})`
 }
 
-function tersifyFunctionBody(context: TersifyContext, value: AcronNode) {
+function tersifyFunctionBody(context: TersifyContext, value: AcornNode) {
   return tersifyAcornNode(context, value, Infinity)
 }
 
