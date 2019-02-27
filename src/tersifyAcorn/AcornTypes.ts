@@ -112,7 +112,8 @@ export type BinaryExpressionNode = AcornNodeBase & {
   type: 'BinaryExpression',
   operator: string,
   left: AcornNode,
-  right: AcornNode
+  right: AcornNode,
+  needParen?: boolean
 }
 
 export type ConditionalExpressionNode = AcornNodeBase & {
@@ -140,7 +141,8 @@ export type LogicalExpressionNode = AcornNodeBase & {
   type: 'LogicalExpression',
   operator: string,
   left: AcornNode,
-  right: AcornNode
+  right: AcornNode,
+  needParen?: boolean
 }
 
 export type IfStatementNode = AcornNodeBase & {

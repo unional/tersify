@@ -1,4 +1,4 @@
-import { defaultTersify } from './defaultTersify'
+import { defaultTersify } from './tersifyValue/defaultTersify'
 import { TersifyOptions } from './interfaces'
 
 export type Tersible<T> = T & {

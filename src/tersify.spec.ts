@@ -1,5 +1,5 @@
 import { tersible } from './tersible';
-import { tersify } from './tersify2';
+import { tersify } from './tersify';
 
 describe('undefined', () => {
   test(`tersify(undefined)`, () => {
@@ -286,6 +286,14 @@ describe('function', () => {
     expect(tersify(function (a, b, c) { return undefined }, { maxLength: 0 })).toBe('')
   })
 
+  test('named function with too long signature', () => {
+    const actual = tersify(function veryVeryVeryVeryLongNameFunction(a, b, c, d, e, f, g) {
+      return a + b + c + d + e + f + g
+    }, { maxLength: 50 })
+
+    expect(actual).toBe('fn veryVeryVeryVeryLongNameFunction(a,.) { re... }')
+  })
+
   test('default param', () => {
     expect(tersify(function (a = '1') { })).toBe(`fn(a = '1') {}`)
   })
@@ -407,6 +415,14 @@ describe('function', () => {
 
   test(`returns anomymous function`, () => {
     expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
+  })
+
+  test('returns anonymous function with single param', () => {
+    expect(tersify(function (x) { })).toBe('fn(x) {}')
+  })
+
+  test('returns anonymous function with multi-params', () => {
+    expect(tersify(function (x, y) { })).toBe('fn(x, y) {}')
   })
 
   test(`returns named function`, () => {
@@ -547,6 +563,10 @@ describe('function', () => {
     expect(tersify(function () {
       return { m: async () => { return 'abc' } }
     })).toBe(`fn() { return { m: async () => 'abc' } }`)
+  })
+
+  test('return es6 simplified object', () => {
+    expect(tersify(function (x, y) { return { x, y } })).toBe('fn(x, y) { return { x, y } }')
   })
 
   test('returns array', () => {
@@ -806,7 +826,9 @@ describe('function', () => {
   })
 
   test('named function', () => {
-    expect(tersify(function name() { })).toBe('fn name() {}')
+    const subject = function name() { }
+    // expect(tersify(subject)).toBe('fn name() {}')
+    expect(tersify(subject, { maxLength: 11 })).toBe('fn name(...')
   })
 })
 
@@ -826,6 +848,7 @@ describe('arrow function', () => {
 
   test('single statement', () => {
     expect(tersify(() => true)).toBe('() => true')
+    expect(tersify(() => true, { maxLength: 9 })).toBe('() => tr.')
   })
 
   test('returns nothing', () => {
@@ -914,6 +937,16 @@ describe('arrow function', () => {
     })).toBe(`() => fn(a, b) { console.info(a); console.info(b) }`)
   })
 
+  test('returns anonymous function with single param', () => {
+    expect(tersify((x) => { })).toBe('x => {}')
+    expect(tersify((abcde) => { })).toBe('abcde => {}')
+    expect(tersify((abcde) => { }, { maxLength: 10 })).toBe('ab.. => {}')
+  })
+
+  test('returns anonymous function with multi-params', () => {
+    expect(tersify((x, y) => { })).toBe('(x, y) => {}')
+  })
+
   test('return named function', () => {
     expect(tersify(() => function foo() { })).toBe(`() => fn foo() {}`)
     expect(tersify(() => { return function foo() { } })).toBe(`() => fn foo() {}`)
@@ -928,7 +961,7 @@ describe('arrow function', () => {
     expect(tersify((a) => (b) => {
       console.info(a)
       console.info(b)
-    })).toBe(`(a) => (b) => { console.info(a); console.info(b) }`)
+    })).toBe(`a => b => { console.info(a); console.info(b) }`)
   })
 
   test(`returns async anomymous function`, () => {
@@ -1051,6 +1084,10 @@ describe('arrow function', () => {
     })).toBe(`() => ({ async *m() { return 'abc' } })`)
   })
 
+  test('returns object', () => {
+    expect(tersify(() => ({ a: 1 }))).toBe(`() => ({ a: 1 })`)
+  })
+
   test('returns arrow method property object', () => {
     expect(tersify(() => {
       return { m: () => { return 'abc' } }
@@ -1061,6 +1098,10 @@ describe('arrow function', () => {
     expect(tersify(() => {
       return { m: async () => { return 'abc' } }
     })).toBe(`() => ({ m: async () => 'abc' })`)
+  })
+
+  test('return es6 simplified object', () => {
+    expect(tersify((x, y) => { return { x, y } })).toBe('(x, y) => ({ x, y })')
   })
 
   test('returns array', () => {
@@ -1146,36 +1187,36 @@ describe('arrow function', () => {
       else {
         return false
       }
-    })).toBe('(x) => { if (x) { return true } else { return false } }')
+    })).toBe('x => { if (x) { return true } else { return false } }')
 
     expect(tersify((x) => {
       if (x) return true
       else return false
-    })).toBe('(x) => { if (x) return true; else return false }')
+    })).toBe('x => { if (x) return true; else return false }')
     expect(tersify((x) => {
       if (x) return true
       else {
         return false
       }
-    })).toBe('(x) => { if (x) return true; else { return false } }')
+    })).toBe('x => { if (x) return true; else { return false } }')
 
     expect(tersify((x) => {
       if (x) {
         return true
       }
       return false
-    })).toBe('(x) => { if (x) { return true }; return false }')
+    })).toBe('x => { if (x) { return true }; return false }')
 
     expect(tersify((x) => {
       if (x) return true
       return false
-    })).toBe('(x) => { if (x) return true; return false }')
+    })).toBe('x => { if (x) return true; return false }')
   })
 
   test('with assignment', () => {
     expect(tersify((x) => {
       return x %= 1
-    })).toBe('(x) => x %= 1')
+    })).toBe('x => x %= 1')
   })
 
   test('with while loop', () => {
@@ -1183,11 +1224,11 @@ describe('arrow function', () => {
       while (x) {
         x -= 1
       }
-    })).toBe('(x) => { while (x) { x -= 1 } }')
+    })).toBe('x => { while (x) { x -= 1 } }')
 
     expect(tersify((x) => {
       while (true) x -= 1
-    })).toBe('(x) => { while (true) x -= 1 }')
+    })).toBe('x => { while (true) x -= 1 }')
   })
 
   test('with do loop', () => {
@@ -1195,12 +1236,12 @@ describe('arrow function', () => {
       do {
         x -= 1
       } while (x)
-    })).toBe('(x) => { do { x -= 1 } while (x) }')
+    })).toBe('x => { do { x -= 1 } while (x) }')
 
     expect(tersify((x) => {
       do x -= 1
       while (x)
-    })).toBe('(x) => { do x -= 1; while (x) }')
+    })).toBe('x => { do x -= 1; while (x) }')
   })
 
   test('with for loop', () => {
@@ -1272,7 +1313,7 @@ describe('arrow function', () => {
         default:
           return 3
       }
-    })).toBe(`(x) => { switch (x) { case 1: break; case 2: return; default: return 3 } }`)
+    })).toBe(`x => { switch (x) { case 1: break; case 2: return; default: return 3 } }`)
   })
 
   test('with switch using expression', () => {
@@ -1281,38 +1322,47 @@ describe('arrow function', () => {
         case x > 1:
           break
       }
-    })).toBe(`(x) => { switch (true) { case x > 1: break } }`)
+    })).toBe(`x => { switch (true) { case x > 1: break } }`)
   })
 
   test('with for in', () => {
     expect(tersify((x) => {
       for (let y in x) console.info(y)
-    })).toBe(`(x) => { for (let y in x) console.info(y) }`)
+    })).toBe(`x => { for (let y in x) console.info(y) }`)
 
     expect(tersify((x) => {
       for (let y in x) {
         console.info(y + 1)
         console.info(y)
       }
-    })).toBe(`(x) => { for (let y in x) { console.info(y + 1); console.info(y) } }`)
+    })).toBe(`x => { for (let y in x) { console.info(y + 1); console.info(y) } }`)
   })
 
   test('with for of', () => {
     expect(tersify((x) => {
       for (let y of x) console.info(y)
-    })).toBe(`(x) => { for (let y of x) console.info(y) }`)
+    })).toBe(`x => { for (let y of x) console.info(y) }`)
 
     expect(tersify((x) => {
       for (let y of x) {
         console.info(y + 1)
         console.info(y)
       }
-    })).toBe(`(x) => { for (let y of x) { console.info(y + 1); console.info(y) } }`)
+    })).toBe(`x => { for (let y of x) { console.info(y + 1); console.info(y) } }`)
   })
 
   test(`async arrow function`, () => {
     const x = Promise.resolve()
     expect(tersify(async () => { await x })).toBe('async () => { await x }')
+  })
+
+  test('use tersify() when available', () => {
+    expect(tersify(tersible((x, y) => x + y, () => 'x + y'))).toBe('x + y')
+  })
+
+  test('raw will skip tersify() method', () => {
+    expect(tersify(tersible((x, y) => x + y, () => 'x + y'), { raw: true })).toBe('(x, y) => x + y')
+    expect(tersify(tersible(function (x, y) { return x + y }, () => 'x + y'), { raw: true })).toBe('function(x, y) { return x + y }')
   })
 })
 
@@ -1336,6 +1386,10 @@ describe('object', () => {
 
   test('date object property', () => {
     expect(tersify({ a: new Date('2020-05-14T11:45:27.234Z') })).toBe(`{ a: 2020-05-14T11:45:27.234Z }`)
+  })
+
+  test('nested object', () => {
+    expect(tersify({ a: { b: 1, c: 'c' }, d: true })).toBe(`{ a: { b: 1, c: 'c' }, d: true }`)
   })
 
   test('trim content inside the object before triming outside', () => {
@@ -1411,6 +1465,10 @@ describe('object', () => {
     expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
   })
 
+  test('trimming object with arrow function', () => {
+    expect(tersify({ a: () => false, c: { b: 1, c: 'c' }, d: true }, { maxLength: 20 })).toBe(`{ a: () => fals... }`)
+  })
+
   test('async arrow function', () => {
     expect(tersify({ a: async () => { } })).toBe('{ a: async () => {} }')
     expect(tersify({ a: async (a, b, c) => { } })).toBe('{ a: async (a, b, c) => {} }')
@@ -1440,6 +1498,13 @@ describe('object', () => {
     const subject = { a: 1 }
     tersible(subject, '{a1}')
     expect(tersify(subject, { raw: true })).toBe('{ a: 1 }')
+  })
+
+  test('object.tersify() is skipped when giving raw option', () => {
+    expect(tersify({
+      a: 1,
+      b() { return 'b' }
+    })).toBe(`{ a: 1, b() { return 'b' } }`)
   })
 
   test('referencing itself', () => {
@@ -1479,6 +1544,12 @@ describe('array', () => {
 
   test('with object entry', () => {
     expect(tersify([{ a: 1 }])).toBe('[{ a: 1 }]')
+  })
+
+  test('with object containing array', () => {
+    expect(tersify({
+      path: [1, 2], expected: a => a > 0, actual: 0
+    })).toBe(`{ path: [1, 2], expected: a => a > 0, actual: 0 }`)
   })
 
   test('with anomymous function', () => {
@@ -1565,6 +1636,12 @@ describe('array', () => {
     const node = { a: 1 }
     const subject = [node, node]
     expect(tersify(subject)).toBe(`[{ a: 1 }, ref(0)]`)
+  })
+
+  test('use tersify method for each element in array', () => {
+    const a = tersible({ a: 1 }, () => 'a1')
+    const b = tersible({ b: 2 }, () => 'b2')
+    expect(tersify([a, b, { c: 3 }, undefined, null, 1, 'a'])).toBe(`[a1, b2, { c: 3 }, undefined, null, 1, 'a']`)
   })
 })
 

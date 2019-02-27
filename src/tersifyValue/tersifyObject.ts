@@ -1,3 +1,4 @@
+import { defaultTersify } from './defaultTersify'
 import { TersifyContext } from './interfaces';
 import { isTersible } from '../tersible';
 import { tersifyValue } from './tersifyValue';
@@ -10,7 +11,7 @@ export function tersifyObject(context: TersifyContext, value: object, length: nu
 
   context.references.push({ value, path: context.path })
 
-  if (!context.raw && isTersible(value)) {
+  if (!context.raw && isTersible(value) && value.tersify !== defaultTersify) {
     return value.tersify({ maxLength: length })
   }
   const bracketLen = 4

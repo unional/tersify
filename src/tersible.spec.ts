@@ -2,21 +2,25 @@ import t from 'assert'
 
 import { tersible, Tersiblized, Tersible } from './index'
 
-test('inject to function witout tersify function will get default tersify', () => {
-  let x = 10
-  const tersed = tersible(/* istanbul ignore next */a => a + x)
-  t.strictEqual(tersed.tersify(), 'a => a + x')
-  t.strictEqual(tersed.tersify({ maxLength: 7 }), 'a =>...')
+test('without tersify function will get default tersify', () => {
+  const date = new Date('2020-05-14T11:45:27.234Z')
+  t.strictEqual(tersible(date).tersify(), `2020-05-14T11:45:27.234Z`)
+  t.strictEqual(tersible(Buffer.from('abc')).tersify(), '<Buffer 61 62 63>')
+  t.strictEqual(tersible(/abc/).tersify(), '/abc/')
+  t.strictEqual(tersible(function (a) { return a + 1 }).tersify(), 'fn(a) { return a + 1 }')
+  t.strictEqual(tersible(a => a + 1).tersify(), 'a => a + 1')
+  t.strictEqual(tersible({ a: 1 }).tersify(), '{ a: 1 }')
+  t.strictEqual(tersible([1, 2, 3]).tersify(), '[1, 2, 3]')
 })
 
 test('inject to function', () => {
   let x = 10
-  t.strictEqual(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */() => `a+${x}`).tersify(), 'a+10')
+  t.strictEqual(tersible(a => a + x, () => `a+${x}`).tersify(), 'a+10')
 })
 
 test('inject to function with options', () => {
   let x = 10
-  t.strictEqual(tersible(/* istanbul ignore next */a => a + x, /* istanbul ignore next */options => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
+  t.strictEqual(tersible(a => a + x, options => `{ maxLength: ${options.maxLength} }`).tersify({ maxLength: 10 }), '{ maxLength: 10 }')
 })
 
 test('inject to object', () => {
@@ -51,4 +55,8 @@ test('mixin to class', () => {
 test('allow string as tersify()', () => {
   const x = tersible((a) => a++, 'a++')
   t.strictEqual(x.tersify(), 'a++')
+})
+
+test(`'this' holds the subject`, () => {
+  expect(tersible({ a: 1 }, function () { return `{ a: ${this.a} }` }).tersify()).toBe(`{ a: 1 }`)
 })

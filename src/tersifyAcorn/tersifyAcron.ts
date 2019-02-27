@@ -3,14 +3,22 @@ import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
 import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression } from './AcornTypes';
+import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
 
-  if (typeof value === 'function') {
-    const node = parser.parseExpressionAt(`(${value.toString()})`, 0) as AcornNode
-    return tersifyAcornNode(context, node, length)
-  }
+  const fnStr = getFunctionString(value)
+  const node = parser.parseExpressionAt(`(${fnStr})`, 0) as AcornNode
+  return tersifyAcornNode(context, node, length)
+}
+
+function getFunctionString(value: Function) {
+  const fnStr: string = value.toString()
+  const matches = /^([^\s]+)\(/.exec(fnStr)
+  return matches && matches[1] !== 'function' ?
+    fnStr.replace(matches[1], 'function') :
+    fnStr
 }
 
 function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, length: number): string {
@@ -89,6 +97,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyArrayExpressionNode(context, node, length)
   }
 
+  // istanbul ignore next
   throw node
 }
 
@@ -120,6 +129,10 @@ function tersifyPropertyNode(context: TersifyContext, node: PropertyNode, length
   const value = tersifyAcornNode(context, valueNode, length)
   if (node.computed) {
     return `[${key}]: ${value}`
+  }
+
+  if (key === value) {
+    return key
   }
 
   return `${key}: ${value}`
@@ -244,11 +257,19 @@ function tersifyIfStatementNode(context: TersifyContext, node: IfStatementNode, 
 }
 
 function tersifyBinaryExpressionNode(context: TersifyContext, node: BinaryExpressionNode | LogicalExpressionNode, length: number) {
+  if ((node.left.type === 'BinaryExpression' || node.left.type === 'LogicalExpression') && isHigherOperatorOrder(node.operator, node.left.operator)) {
+    node.left.needParen = true
+  }
   let left = tersifyAcornNode(context, node.left, length)
-  if (node.left.type === 'BinaryExpression') left = `(${left})`
+
+  if ((node.right.type === 'BinaryExpression' || node.right.type === 'LogicalExpression') && isHigherOperatorOrder(node.operator, node.right.operator)) {
+    node.right.needParen = true
+  }
   let right = tersifyAcornNode(context, node.right, length)
-  if (node.right.type === 'BinaryExpression') right = `(${right})`
-  return `${left} ${node.operator} ${right}`
+
+  return node.needParen ?
+    `(${left} ${node.operator} ${right})` :
+    `${left} ${node.operator} ${right}`
 }
 
 function tersifyNewExpressionNode(context: TersifyContext, node: NewExpressionNode, length: number) {
@@ -310,23 +331,49 @@ function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunction
   const arrow = ` => `
   const declarationLen = async.length + generator.length + arrow.length
 
-  const params = node.params.length > 0 ? tersifyFunctionParams(context, node.params) : '()'
-  const paramsContent = params.slice(1, params.length - 2)
-  const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
+  let params = node.params.length > 0 ? tersifyFunctionParams(context, node.params) : '()'
+  const paramsContent = params.slice(1, params.length - 1)
+
+  if (node.params.length === 1) {
+    params = paramsContent
+  }
+  let minParam = paramsContent.length <= 3 ?
+    params :
+    node.params.length > 1 ?
+      `(${trim(context, paramsContent, 3)})` :
+      trim(context, paramsContent, 3)
 
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
-  // const maxBodyLength = length - minPrebodyLen
-  const body = tersifyArrowBody(context, node.body)
+  const singleBodyNode = getSingleStatementBodyNode(context, node.body)
+  let body = singleBodyNode ?
+    tersifyArrowBodyAsSingleStatement(context, singleBodyNode) :
+    tersifyFunctionBody(context, node.body)
 
-  // console.log(params, body, minPrebodyLen + body.length > length, prebodyLen + body.length > length)
-  // console.log(minPrebodyLen, body.length, length)
+  if (singleBodyNode && singleBodyNode.type === 'ObjectExpression') {
+    body = `(${body})`
+  }
   if (minPrebodyLen + body.length > length) {
-    const bodyContent = trim(context, body.slice(2, body.length - 2), length - minPrebodyLen - 4)
-    const result = `${async}${generator}${minParam}${arrow}${bodyContent.length === 0 ? '{}' : `{ ${bodyContent} }`}`
-    return result.length > length ? trim(context, result, length) : result
+    if (singleBodyNode) {
+      const bodyContent = trim(context, body, length - minPrebodyLen)
+      const result = `${async}${generator}${minParam}${arrow}${bodyContent.length === 0 ?
+        '{}' :
+        singleBodyNode.type === 'ObjectExpression' ?
+          `(${bodyContent})` :
+          bodyContent}`
+      return result.length > length ? trim(context, result, length) : result
+    }
+    else {
+      const paramAndSpaceLen = 2 // '{ ' or ' }'
+      const bodyContent = trim(context, body.slice(2, body.length - paramAndSpaceLen), length - minPrebodyLen - paramAndSpaceLen * 2)
+      const result = `${async}${generator}${minParam}${arrow}${bodyContent.length === 0 ? '{}' : `{ ${bodyContent} }`}`
+      return result.length > length ? trim(context, result, length) : result
+    }
   }
   else if (prebodyLen + body.length > length) {
+    if (node.params.length === 1) {
+      return `${async}${generator}${trim(context, paramsContent, length - body.length - declarationLen)}${arrow}${body}`
+    }
     return `${async}${generator}(${trim(context, paramsContent, length - body.length - declarationLen - 2)})${arrow}${body}`
   }
   else {
@@ -334,28 +381,22 @@ function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunction
   }
 }
 
-function tersifyArrowBody(context: TersifyContext, node: AcornNode) {
-  const returnNode = getReturnStatementOfSingleStatmentBody(context, node)
-  if (returnNode) {
-    return tersifyArrowBodyAsSingleStatement(context, returnNode)
-  }
-
-  return tersifyFunctionBody(context, node)
+function getSingleStatementBodyNode(context: TersifyContext, node: AcornNode) {
+  if (node.type !== 'BlockStatement') return node
+  if (node.body.length === 1 && node.body[0].type === 'ReturnStatement') return node.body[0]
+  return undefined
 }
 
-function getReturnStatementOfSingleStatmentBody(context: TersifyContext, node: AcornNode) {
-  return (node.type === 'BlockStatement' && node.body.length === 1 && node.body[0].type === 'ReturnStatement') ?
-    node.body[0] as ReturnStatementNode :
-    undefined
-}
+function tersifyArrowBodyAsSingleStatement(context: TersifyContext, node: AcornNode) {
+  if (node.type === 'ReturnStatement') {
+    if (!node.argument) return `{}`
 
-function tersifyArrowBodyAsSingleStatement(context: TersifyContext, node: ReturnStatementNode) {
-  if (!node.argument) return `{}`
-
-  if (node.argument.type === 'ObjectExpression') {
-    return `(${tersifyAcornNode(context, node.argument, Infinity)})`
+    if (node.argument.type === 'ObjectExpression') {
+      return `(${tersifyAcornNode(context, node.argument, Infinity)})`
+    }
+    return tersifyAcornNode(context, node.argument, Infinity)
   }
-  return tersifyAcornNode(context, node.argument, Infinity)
+  return tersifyAcornNode(context, node, Infinity)
 }
 
 function tersifyExpressionStatementNode(context: TersifyContext, node: ExpressionStatementNode, length: number) {
@@ -398,6 +439,7 @@ function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionEx
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
   const body = tersifyFunctionBody(context, node.body)
+
   if (minPrebodyLen + body.length > length) {
     // 5 = length of `{ . }` to indicate there are something in the body
     if (minPrebodyLen + 5 > length) {

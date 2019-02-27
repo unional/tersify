@@ -21,7 +21,7 @@ import { tersify } from 'tersify'
 // `() => 'foo'`
 tersify(() => 'foo')
 
-// `function (x, y) { return x + y; }`
+// `fn(x, y) { return x + y; }`
 tersify(function (x, y) { return x + y })
 
 // Change result to 80 character long.
@@ -48,6 +48,9 @@ tersible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
 
 const decrement = tersible(a => a--, 'a--')
 decrement.tersify() // 'a--'
+
+// `a: 10`
+tersible({ a: 1 }, options => `a: ${options.maxLength}`).tersify({ maxLength: 10 })
 ```
 
 ## Tersiblized

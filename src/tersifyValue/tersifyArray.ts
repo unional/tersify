@@ -2,6 +2,7 @@ import { TersifyContext } from './interfaces';
 import { tersifyValue } from './tersifyValue';
 import { trim } from './trim';
 import { isTersible } from '../tersible';
+import { defaultTersify } from './defaultTersify';
 
 export function tersifyArray(context: TersifyContext, value: any[], length: number) {
   const ref = context.references.find(r => r.value === value)
@@ -11,7 +12,7 @@ export function tersifyArray(context: TersifyContext, value: any[], length: numb
 
   context.references.push({ value, path: context.path })
 
-  if (!context.raw && isTersible(value)) {
+  if (!context.raw && isTersible(value) && value.tersify !== defaultTersify) {
     return value.tersify({ maxLength: length })
   }
 
