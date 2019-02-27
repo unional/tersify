@@ -397,7 +397,7 @@ describe('function', () => {
   test('returns Date constructed with year, month, ...etc', () => {
     expect(tersify(function () {
       return new Date(2020, 4, 14)
-    })).toBe(`fn() { return 2020-05-14T07:00:00.000Z }`)
+    })).toMatch(/fn\(\) { return 2020-05-14T\d{2}:00:00.000Z }/)
   })
 
   test('returns Date with variable in contructor', () => {
@@ -912,7 +912,7 @@ describe('arrow function', () => {
   test('returns Date constructed with year, month, ...etc', () => {
     expect(tersify(() => {
       return new Date(2020, 4, 14)
-    })).toBe(`() => 2020-05-14T07:00:00.000Z`)
+    })).toMatch(/\(\) => 2020-05-14T\d{2}:00:00.000Z/)
   })
 
   test('returns Date with variable in contructor', () => {
