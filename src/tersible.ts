@@ -1,11 +1,9 @@
-import { defaultTersify } from './defaultTersify'
+import { defaultTersify } from './tersifyValue/defaultTersify'
 import { TersifyOptions } from './interfaces'
 
-export interface Tersify {
-  tersify(options?: Partial<TersifyOptions>): string
+export type Tersible<T> = T & {
+  tersify(this: T, options?: Partial<TersifyOptions>): string
 }
-
-export type Tersible<T> = T & Tersify
 
 /**
  * Create a Tersible mixin class
@@ -17,12 +15,12 @@ export type Tersible<T> = T & Tersify
  * @param Base Base class
  * @param tersify the tersify function
  */
-export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersify: () => string) {
+export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersify: (this: InstanceType<C>, options?: Partial<TersifyOptions>) => string) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
     }
-    tersify(options?: Partial<TersifyOptions>) {
+    tersify(this: InstanceType<C>, options?: Partial<TersifyOptions>) {
       return tersify.call(this, options)
     }
   }
@@ -37,10 +35,10 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
  */
 export function tersible<T>(subject: T, tersify?: string | ((this: T, options: Partial<TersifyOptions>) => string)): Tersible<T> {
   const tersifyFn = tersify === undefined ?
-    defaultTersify
-    : typeof tersify === 'string' ? function () {
-      return tersify
-    } : tersify
+    defaultTersify :
+    typeof tersify === 'string' ?
+      function () { return tersify } :
+      tersify
   Object.defineProperty(subject, 'tersify', {
     value: tersifyFn,
     enumerable: false,
@@ -51,6 +49,5 @@ export function tersible<T>(subject: T, tersify?: string | ((this: T, options: P
 }
 
 export function isTersible<T>(obj: T): obj is Tersible<T> {
-  const fn = obj['tersify']
-  return typeof fn === 'function'
+  return typeof obj['tersify'] === 'function'
 }

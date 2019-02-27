@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "esModuleInterop": true,
     "lib": [
       "es2015"
     ],
@@ -12,7 +13,7 @@
     "noUnusedParameters": false,
     "removeComments": false,
     "sourceMap": true,
-    "strictNullChecks": true
+    "strict": true
   },
   "files": [
     "src/index.ts"
