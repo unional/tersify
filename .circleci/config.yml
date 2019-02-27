@@ -7,15 +7,15 @@ workflows:
       - node10:
           requires:
             - node-latest
-      - node9:
-          requires:
-            - node-latest
-      - node8:
-          requires:
-            - node-latest
-      - node6:
-          requires:
-            - node-latest
+      # - node9:
+      #     requires:
+      #       - node-latest
+      # - node8:
+      #     requires:
+      #       - node-latest
+      # - node6:
+      #     requires:
+      #       - node-latest
       - release:
           filters:
             branches:
@@ -23,9 +23,9 @@ workflows:
           requires:
             - node-latest
             - node10
-            - node9
-            - node8
-            - node6
+            # - node9
+            # - node8
+            # - node6
 jobs:
   local:
     docker:
@@ -63,7 +63,7 @@ jobs:
           path: .reports/junit
   node10:
     docker:
-      - image: 'circleci/node:9'
+      - image: 'circleci/node:10'
     steps:
       - checkout
       - attach_workspace:
