@@ -38,6 +38,6 @@
     "unpartial": "^0.5.0"
   },
   "devDependencies": {
-    "@unional/devpkg-node": "^1.2.4"
+    "@unional/devpkg-node": "^1.2.5"
   }
 }

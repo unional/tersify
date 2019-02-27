@@ -35,6 +35,5 @@ function getType(value: any) {
     return 'Buffer'
   }
 
-
   return typeof value
 }
