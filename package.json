@@ -33,11 +33,11 @@
     "watch": "jest --watch"
   },
   "dependencies": {
-    "acorn": "^6.1.0",
-    "acorn-bigint": "^0.3.1"
+    "acorn": "^6.1.1",
+    "acorn-bigint": "^0.3.1",
+    "unpartial": "^0.5.0"
   },
   "devDependencies": {
-    "@unional/devpkg-node": "^1.2.4",
-    "unpartial": "^0.5.0"
+    "@unional/devpkg-node": "^1.2.4"
   }
 }
