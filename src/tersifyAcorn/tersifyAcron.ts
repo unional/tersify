@@ -2,13 +2,14 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { TersifyContext, trim } from '../tersifyValue';
-import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
 
   const fnStr = getFunctionString(value)
+
   const node = parser.parseExpressionAt(`(${fnStr})`, 0) as AcornNode
   return tersifyAcornNode(context, node, length)
 }
@@ -95,10 +96,34 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyAwaitExpressionNode(context, node, length)
     case 'ArrayExpression':
       return tersifyArrayExpressionNode(context, node, length)
+    case 'ThrowStatement':
+      return tersifyThrowStatementNode(context, node, length)
+    case 'TryStatement':
+      return tersifyTryStatementNode(context, node, length)
+    case 'CatchClause':
+      return tersifyCatchClauseNode(context, node, length)
   }
 
   // istanbul ignore next
   throw node
+}
+
+function tersifyCatchClauseNode(context: TersifyContext, node: CatchClauseNode, length: number) {
+  const param = tersifyAcornNode(context, node.param, length)
+  const body = tersifyAcornNode(context, node.body, length)
+  return `catch${param ? ` (${param})` : ''}${body ? ` ${body}` : ''}`
+}
+
+function tersifyTryStatementNode(context: TersifyContext, node: TryStatementNode, length: number) {
+  const block = tersifyAcornNode(context, node.block, length)
+  const handler = tersifyAcornNode(context, node.handler, length)
+  const finalizer = tersifyAcornNode(context, node.finalizer, length)
+
+  return `try ${block}${handler ? ` ${handler}` : ''}${finalizer ? ` finally ${finalizer}` : ''}`
+}
+
+function tersifyThrowStatementNode(context: TersifyContext, node: ThrowStatementNode, length: number) {
+  return `throw ${tersifyAcornNode(context, node.argument, length)}`
 }
 
 function tersifyArrayExpressionNode(context: TersifyContext, node: ArrayExpression, length: number) {

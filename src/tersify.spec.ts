@@ -574,6 +574,14 @@ describe('function', () => {
     expect(tersify(function () { return [1, undefined, 'a'] })).toBe(`fn() { return [1, undefined, 'a'] }`)
   })
 
+  test('throws empty error', () => {
+    expect(tersify(function () { throw new Error() })).toBe(`fn() { throw new Error() }`)
+  })
+
+  test('throws with message', () => {
+    expect(tersify(function () { throw new Error('abc') })).toBe(`fn() { throw new Error('abc') }`)
+  })
+
   test('with variable declaration', () => {
     const subject: any = function () {
       const date = new Date('2020-05-14T11:45:27.234Z');
@@ -814,6 +822,36 @@ describe('function', () => {
         console.info(y)
       }
     })).toBe(`fn(x) { for (let y of x) { console.info(y + 1); console.info(y) } }`)
+  })
+
+  test('with try catch finally', () => {
+    expect(tersify(function () {
+      try {
+        return 1
+      }
+      catch (e) {
+        return e
+      }
+      finally {
+        console.info(3)
+      }
+    })).toBe(`fn() { try { return 1 } catch (e) { return e } finally { console.info(3) } }`)
+  })
+
+  // The output of this is not optimal as Acorn does not support es2019
+  // TODO: use Acron for try catch with no error declaration when it is supported
+  test('with try catch finally an no error declaration', () => {
+    expect(tersify(function () {
+      try {
+        return 1
+      }
+      catch {
+        return 2
+      }
+      finally {
+        console.info(3)
+      }
+    })).toBe(`fn() { try { return 1; } catch { return 2; } finally { console.info(3); } }`)
   })
 
   test(`async function`, () => {
@@ -1351,6 +1389,36 @@ describe('arrow function', () => {
     })).toBe(`x => { for (let y of x) { console.info(y + 1); console.info(y) } }`)
   })
 
+  test('with try catch finally', () => {
+    expect(tersify(() => {
+      try {
+        return 1
+      }
+      catch (e) {
+        return e
+      }
+      finally {
+        console.info(3)
+      }
+    })).toBe(`() => { try { return 1 } catch (e) { return e } finally { console.info(3) } }`)
+  })
+
+  // The output of this is not optimal as Acorn does not support es2019
+  // TODO: use Acron for try catch with no error declaration when it is supported
+  test('with try catch finally an no error declaration', () => {
+    expect(tersify(() => {
+      try {
+        return 1
+      }
+      catch {
+        return 2
+      }
+      finally {
+        console.info(3)
+      }
+    })).toBe(`() => { try { return 1; } catch { return 2; } finally { console.info(3); } }`)
+  })
+
   test(`async arrow function`, () => {
     const x = Promise.resolve()
     expect(tersify(async () => { await x })).toBe('async () => { await x }')
@@ -1647,12 +1715,12 @@ describe('array', () => {
 
 describe('error', () => {
   test('empty error', () => {
-    expect(tersify(new Error())).toBe('Err()')
+    expect(tersify(new Error())).toBe('Error()')
   })
 
   test('error with message', () => {
-    expect(tersify(new Error('abc'))).toBe(`Err(abc)`)
-    expect(tersify(new Error(123 as any))).toBe(`Err(123)`)
+    expect(tersify(new Error('abc'))).toBe(`Error('abc')`)
+    expect(tersify(new Error(123 as any))).toBe(`Error('123')`)
   })
 
   test('custom error shown as error. Properties ignored', () => {
@@ -1661,17 +1729,19 @@ describe('error', () => {
         super(`${x} happened`)
       }
     }
-    expect(tersify(new CustErr('abc'))).toBe(`Err(abc happened)`)
+    expect(tersify(new CustErr('abc'))).toBe(`Error('abc happened')`)
   })
 
   test('trim message first if longer than maxLength', () => {
-    expect(tersify(new Error('abcdefghi'), { maxLength: 14 })).toBe(`Err(abcdefghi)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 13 })).toBe(`Err(abcde...)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 9 })).toBe(`Err(ab..)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 8 })).toBe(`Err(ab.)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 7 })).toBe(`Err(a.)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 6 })).toBe(`Err(.)`)
-    expect(tersify(new Error('abcdefghi'), { maxLength: 5 })).toBe(`Er...`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 18 })).toBe(`Error('abcdefghi')`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 17 })).toBe(`Error('abcdef...)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 13 })).toBe(`Error('ab...)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 12 })).toBe(`Error('a...)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 11 })).toBe(`Error('a..)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 10 })).toBe(`Error('a.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 9 })).toBe(`Error('.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 8 })).toBe(`Error(.)`)
+    expect(tersify(new Error('abcdefghi'), { maxLength: 7 })).toBe(`Erro...`)
     expect(tersify(new Error('abcdefghi'), { maxLength: 4 })).toBe(`Er..`)
     expect(tersify(new Error('abcdefghi'), { maxLength: 3 })).toBe(`Er.`)
     expect(tersify(new Error('abcdefghi'), { maxLength: 2 })).toBe(`E.`)
