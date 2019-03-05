@@ -854,6 +854,12 @@ describe('function', () => {
     })).toBe(`fn() { try { return 1; } catch { return 2; } finally { console.info(3); } }`)
   })
 
+  test('with void operator', () => {
+    expect(tersify(function () {
+      return void 0
+    })).toBe(`fn() { return void 0 }`)
+  })
+
   test(`async function`, () => {
     const x = Promise.resolve()
     expect(tersify(async function () { await x })).toBe('async fn() { await x }')

@@ -248,6 +248,7 @@ function tersifyDoWhileStatementNode(context: TersifyContext, node: DoWhileState
 }
 
 function tersifyUnaryExpressionNode(context: TersifyContext, node: UnaryExpressionNode, length: number) {
+  if (node.operator === 'void') return `${node.operator} ${tersifyAcornNode(context, node.argument, length)}`
   return node.prefix ?
     `${node.operator}${tersifyAcornNode(context, node.argument, length)}` :
     `${tersifyAcornNode(context, node.argument, length)}${node.operator}`
