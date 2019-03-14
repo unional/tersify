@@ -1729,13 +1729,14 @@ describe('error', () => {
     expect(tersify(new Error(123 as any))).toBe(`Error('123')`)
   })
 
-  test('custom error shown as error. Properties ignored', () => {
+  test('custom error properties are ignored', () => {
     class CustErr extends Error {
+      foo = 'foo'
       constructor(public x: string) {
         super(`${x} happened`)
       }
     }
-    expect(tersify(new CustErr('abc'))).toBe(`Error('abc happened')`)
+    expect(tersify(new CustErr('abc'))).toBe(`CustErr('abc happened')`)
   })
 
   test('trim message first if longer than maxLength', () => {
