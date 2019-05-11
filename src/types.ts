@@ -1,4 +1,3 @@
-
 export interface TersifyOptions {
   maxLength: number,
   /**
@@ -6,4 +5,8 @@ export interface TersifyOptions {
    * This ensure the tersify() result can be understand by language (JavaScript) parser.
    */
   raw?: boolean
+}
+
+export type Tersible<T> = T & {
+  tersify(this: T, options?: Partial<TersifyOptions>): string
 }

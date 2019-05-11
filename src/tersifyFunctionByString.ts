@@ -1,26 +1,7 @@
-import { Parser } from 'acorn';
-import bigInt from 'acorn-bigint';
-import { EOL } from '../constants';
-import { isTersible } from '../tersible';
-import { tersifyAcorn } from '../tersifyAcorn';
-import { defaultTersify } from './defaultTersify';
-import { TersifyContext } from './interfaces';
-
-Parser.extend(bigInt)
-
-export function tersifyFunction(context: TersifyContext, fn: Function, length: number): string {
-  if (!context.raw && isTersible(fn) && fn.tersify !== defaultTersify) {
-    return fn.tersify({ maxLength: context.maxLength, raw: context.raw })
-  }
-
-  try {
-    return tersifyAcorn(context, fn, context.maxLength)
-  }
-  catch (e) {
-    if (e.name !== 'SyntaxError') throw e
-    return tersifyFunctionByString(context, fn, context.maxLength)
-  }
-}
+import { EOL } from './constants';
+import { isTersible } from './isTersible';
+import { defaultTersify } from './tersify';
+import { TersifyContext } from './typesInternal';
 
 // Ignore coverage as this is old code just for fallback
 // istanbul ignore next

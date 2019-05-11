@@ -1,9 +1,5 @@
-import { defaultTersify } from './tersifyValue/defaultTersify'
-import { TersifyOptions } from './interfaces'
-
-export type Tersible<T> = T & {
-  tersify(this: T, options?: Partial<TersifyOptions>): string
-}
+import { Tersible, TersifyOptions } from './types';
+import { defaultTersify } from './tersify';
 
 /**
  * Create a Tersible mixin class
@@ -46,8 +42,4 @@ export function tersible<T>(subject: T, tersify?: string | ((this: T, options: P
   })
 
   return subject as any
-}
-
-export function isTersible<T>(obj: T): obj is Tersible<T> {
-  return typeof obj['tersify'] === 'function'
 }

@@ -1,4 +1,4 @@
-import { TersifyContext } from './interfaces';
+import { TersifyContext } from './typesInternal';
 
 export function trim({ raw, noTrim }: TersifyContext, value: string, length: number) {
   if (noTrim || raw || value.length <= length) return value

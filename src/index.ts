@@ -1,3 +1,3 @@
-export * from './interfaces'
-export * from './tersify'
-export * from './tersible'
+export * from './tersible';
+export * from './tersify';
+export * from './types';
