@@ -16,6 +16,7 @@
     "strict": true
   },
   "files": [
-    "src/index.ts"
+    "src/index.ts",
+    "src/tersifyFunction.browser.ts"
   ]
 }

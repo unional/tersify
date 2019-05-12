@@ -1,9 +1,10 @@
 
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { TersifyContext, trim } from '../tersifyValue';
 import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
+import { TersifyContext } from '../typesInternal';
+import { trim } from '../trim';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)

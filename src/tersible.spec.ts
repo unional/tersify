@@ -30,8 +30,7 @@ test('inject to object', () => {
 test('inject to class', () => {
   class Foo {
     a = 1
-  }
-  tersible(Foo.prototype, function () {
+  } tersible(Foo.prototype, function () {
     return `a = ${this.a}`
   })
 
