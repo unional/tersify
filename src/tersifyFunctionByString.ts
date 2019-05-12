@@ -1,77 +1,151 @@
 import { EOL } from './constants';
-import { isTersible } from './isTersible';
-import { defaultTersify } from './tersify';
-import { TersifyContext } from './typesInternal';
+import { TersifyOptions } from './types';
+import { trim } from './trim';
 
-// Ignore coverage as this is old code just for fallback
-// istanbul ignore next
-export function tersifyFunctionByString(context: TersifyContext, fn: Function, length: number) {
-  if (!context.raw && isTersible(fn) && fn['tersify'] !== defaultTersify)
-    return fn.tersify()
-
+export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
   const str = fn.toString()
-
-  if (isArrow(str))
-    return formatArrow(str, length)
+  if (options.raw) return str
+  if (isFunc(str))
+    return formatFn(str, options.maxLength)
   else
-    return formatFn(str, length)
+    return formatArrow(str, options.maxLength)
 }
 
-// istanbul ignore next
-function isArrow(str: string) {
+function isFunc(str: string) {
   const lines = str.split(EOL)
-
-  // https://regex101.com/r/0HtLzb/1
-  return /[\(]?.*[\)]? =>/.test(lines[0])
+  return /^(async\s+)?function[\(]?.*[\)]?/.test(lines[0])
 }
 
-// istanbul ignore next
-function formatArrow(str: string, maxLength) {
-  const lines = str.split(EOL)
-  const trimmedlines = lines.map(l => l.trim())
-  let singleLine = trimmedlines.join(' ');
+function formatArrow(str: string, maxLength: number) {
+  const struct = getArrowStruct(str)
+  const template = `${struct.async ? 'async ' : ''}${
+    struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`} => ${
+    struct.singleLineBody ? '%2' : `{${struct.body ? ' %2 ' : ''}}`}`
+  const baseLength = struct.params && struct.body ? template.length - 4 :
+    struct.params || struct.body ? template.length - 2 : template.length;
 
-  // https://regex101.com/r/1Nv7hN/2
-  const matchSingleExpression = /=> { return (.*); }/.exec(singleLine)
-  if (matchSingleExpression) {
-    const singleExpression = matchSingleExpression[1]
-    singleLine = lines[0].slice(0, lines[0].length - 1) + singleExpression
-  }
-
-  if (singleLine.length > maxLength) {
-    singleLine = trimWithBracket(singleLine, maxLength)
-  }
-  if (singleLine.length > maxLength) {
-    // after trimming it is still too long
-    singleLine = singleLine.slice(0, maxLength - 3) + '...'
-  }
-
-  // trim `{ }` to `{}` in wallaby environment.
-  return singleLine.replace(/{ }/g, '{}')
+  struct.params = trim({ raw: false, noTrim: false }, struct.params, Math.max(3, maxLength - baseLength - struct.body.length))
+  struct.body = trim({ raw: false, noTrim: false }, struct.body, Math.max(3, maxLength - baseLength - struct.params.length))
+  return trim({ raw: false, noTrim: false }, applyTemplate(template, struct), maxLength)
 }
 
-// istanbul ignore next
-function trimWithBracket(singleLine, maxLength) {
-  // https://regex101.com/r/HrkxfW/1
-  const parts = /(.* { )(.*)( })/.exec(singleLine)
-  return parts ? parts[1] + parts[2].slice(0, maxLength - parts[1].length - parts[3].length - 3) + '...' + parts[3] : singleLine;
+function getArrowStruct(str: string) {
+  str = str.trim()
+  const isAsync = str.startsWith('async ')
+  if (isAsync) str = str.slice(5).trim()
+
+  const indexOfOpenParen = str.indexOf('(')
+  const name = str.slice(0, indexOfOpenParen).trim()
+  str = str.slice(indexOfOpenParen)
+  const paramsNotTrimmed = getParams(str)
+  str = str.slice(paramsNotTrimmed.length + 2).trim()
+  str = str.slice(str.indexOf('=>') + 2).trim()
+  let isSingle = isSingleLineBody(str)
+  let body = removeLineBreaks(isSingle ? str : getEnclosedBody(str)).trim()
+  if (!isSingle && body.startsWith('return ') && body.endsWith(';')) {
+    isSingle = true
+    body = body.slice(7, -1)
+    if (body.startsWith('{')) {
+      body = `(${body})`
+    }
+  }
+  return {
+    async: isAsync,
+    generator: false,
+    name,
+    singleParam: paramsNotTrimmed && paramsNotTrimmed.indexOf(',') === -1,
+    params: paramsNotTrimmed.trim(),
+    singleLineBody: isSingle,
+    body
+  }
 }
 
-// istanbul ignore next
-function formatFn(str: string, maxLength) {
-  const lines = str.split(EOL)
-  const trimmedlines = lines.map(l => l.trim())
-  let singleLine = trimmedlines.join(' ');
+function formatFn(str: string, maxLength: number) {
+  const struct = getFuncStruct(str)
+  const template = `${struct.async ? 'async ' : ''}fn${struct.generator ? '*' : ''}${struct.name ? ' ' + struct.name : ''}(${struct.params ? '%1' : ''}) {${struct.body ? ' %2 ' : ''}}`
+  const baseLength = struct.params && struct.body ? template.length - 4 :
+    struct.params || struct.body ? template.length - 2 : template.length;
 
-  if (singleLine.length > maxLength) {
-    singleLine = trimWithBracket(singleLine, maxLength)
+  struct.params = trim({ raw: false, noTrim: false }, struct.params, Math.max(3, maxLength - baseLength - struct.body.length))
+  struct.body = trim({ raw: false, noTrim: false }, struct.body, Math.max(3, maxLength - baseLength - struct.params.length))
+  return trim({ raw: false, noTrim: false }, applyTemplate(template, struct), maxLength)
+}
+
+function getFuncStruct(str: string) {
+  str = str.trim()
+  const isAsync = str.startsWith('async ')
+  if (isAsync) str = str.slice(5).trim()
+
+  const isGenerator = /^function\s*\*/.test(str)
+  if (isGenerator) {
+    str = str.slice(str.indexOf('*') + 1).trim()
+  }
+  else {
+    str = str.slice(8).trim()
   }
 
-  if (singleLine.length > maxLength) {
-    // after trimming it is still too long
-    singleLine = singleLine.slice(0, maxLength - 3) + '...'
-  }
+  const indexOfOpenParen = str.indexOf('(')
+  const name = str.slice(0, indexOfOpenParen).trim()
+  str = str.slice(indexOfOpenParen)
+  const paramsNotTrimmed = getParams(str)
+  str = str.slice(paramsNotTrimmed.length + 2).trim()
+  const body = getEnclosedBody(str).trim()
 
-  // trim `{ }` to `{}` in wallaby environment.
-  return singleLine.replace(/{ }/g, '{}').replace(`function (`, `fn(`)
+  return {
+    async: isAsync,
+    generator: isGenerator,
+    name,
+    params: paramsNotTrimmed.trim(),
+    body
+  }
+}
+
+function getParams(str: string) {
+  let count = 1
+  str = str.slice(1)
+  for (let i = 0; i <= str.length; i++) {
+    if (str[i] === ')') count--
+    if (str[i] === '(') count++
+    if (count === 0) {
+      str = str.slice(0, i)
+      break
+    }
+  }
+  return str
+}
+function isSingleLineBody(str: string) {
+  return !str.startsWith('{')
+}
+
+function getEnclosedBody(str: string) {
+  let count = 1
+  str = str.slice(1)
+  for (let i = 0; i <= str.length; i++) {
+    if (str[i] === '}') count--
+    if (str[i] === '{') count++
+    if (count === 0) {
+      const body = removeLineBreaks(str.slice(0, i))
+      str = body.replace(/return;/g, '')
+        .replace(/([\s\(\[{])Symbol\(\)/g, '$1Sym()')
+        .replace(/([\s\(\[{])Symbol\.for\('([\w_]*)'\)/g, '$1Sym($2)')
+        .replace(/([\s\(\[{])Symbol\.for\("([\w_]*)"\)/g, '$1Sym($2)')
+        .replace(/([\s\(\[{])Symbol\.for\(`([\w_]*)`\)/g, '$1Sym($2)')
+      break
+    }
+  }
+  return str
+}
+
+function removeLineBreaks(value: string) {
+  return value.split('\n').map(x => x.trim()).join(' ')
+}
+
+function applyTemplate(template: string, struct: ReturnType<typeof getFuncStruct>) {
+  if (struct.params) {
+    template = template.replace('%1', struct.params)
+  }
+  if (struct.body) {
+    template = template.replace('%2', struct.body)
+  }
+  return template
 }

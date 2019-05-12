@@ -1,7 +1,7 @@
 import isBuffer from 'is-buffer';
 import { required } from 'unpartial';
 import { defaultOptions } from './constants';
-import { isTersible } from './isTersible';
+import { hasTersifyFn } from './hasTersifyFn';
 import { tersifyFunction } from './tersifyFunction';
 import { trim } from './trim';
 import { TersifyOptions } from './types';
@@ -119,7 +119,7 @@ function tersifyArray(context: TersifyContext, value: any[], length: number) {
 
   context.references.push({ value, path: context.path })
 
-  if (!context.raw && isTersible(value) && value.tersify !== defaultTersify) {
+  if (!context.raw && hasTersifyFn(value) && value.tersify !== defaultTersify) {
     return value.tersify({ maxLength: length })
   }
 
@@ -149,7 +149,7 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
 
   context.references.push({ value, path: context.path })
 
-  if (!context.raw && isTersible(value) && value.tersify !== defaultTersify) {
+  if (!context.raw && hasTersifyFn(value) && value.tersify !== defaultTersify) {
     return value.tersify({ maxLength: length })
   }
 

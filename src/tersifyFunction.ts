@@ -1,6 +1,6 @@
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { isTersible } from './isTersible';
+import { hasTersifyFn } from './hasTersifyFn';
 import { defaultTersify } from './tersify';
 import { tersifyAcorn } from './tersifyAcorn';
 import { tersifyFunctionByString } from './tersifyFunctionByString';
@@ -9,7 +9,7 @@ import { TersifyContext } from './typesInternal';
 Parser.extend(bigInt)
 
 export function tersifyFunction(context: TersifyContext, fn: Function, length: number): string {
-  if (!context.raw && isTersible(fn) && fn.tersify !== defaultTersify) {
+  if (!context.raw && hasTersifyFn(fn) && fn.tersify !== defaultTersify) {
     return fn.tersify({ maxLength: context.maxLength, raw: context.raw })
   }
 
@@ -18,6 +18,6 @@ export function tersifyFunction(context: TersifyContext, fn: Function, length: n
   }
   catch (e) {
     if (e.name !== 'SyntaxError') throw e
-    return tersifyFunctionByString(context, fn, context.maxLength)
+    return tersifyFunctionByString(fn, context)
   }
 }
