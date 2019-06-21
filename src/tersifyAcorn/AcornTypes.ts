@@ -8,7 +8,8 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ForStatementNode | BreakStatementNode | LabeledStatementNode | ContinueStatementNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
-  ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode
+  ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
+  ThisExpressionNode
 
 export type AcornNodeBase = {
   start: number,
@@ -268,4 +269,10 @@ export type CatchClauseNode = AcornNodeBase & {
   type: 'CatchClause',
   param: IdentifierNode,
   body: AcornNode
+}
+
+export type ThisExpressionNode = AcornNodeBase & {
+  type: 'ThisExpression',
+  start: number,
+  end: number
 }

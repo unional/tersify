@@ -1,7 +1,7 @@
 
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 import { TersifyContext } from '../typesInternal';
 import { trim } from '../trim';
@@ -103,6 +103,8 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyTryStatementNode(context, node, length)
     case 'CatchClause':
       return tersifyCatchClauseNode(context, node, length)
+    case 'ThisExpression':
+      return tersifyThisExpression(context, node, length)
   }
 
   // istanbul ignore next
@@ -520,4 +522,8 @@ function tersifyBlockStatementNode(context: TersifyContext, node: BlockStatement
 function tersifyReturnStatementNode(context: TersifyContext, node: ReturnStatementNode, length: number) {
   if (!node.argument) return 'return'
   return `return ${tersifyAcornNode(context, node.argument, length)}`
+}
+
+function tersifyThisExpression(context: TersifyContext, node: ThisExpressionNode, length: number) {
+  return `this`
 }
