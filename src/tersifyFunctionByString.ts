@@ -13,7 +13,7 @@ export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 
 function isFunc(str: string) {
   const lines = str.split(EOL)
-  return /^(async\s+)?function[\(]?.*[\)]?/.test(lines[0])
+  return new RegExp('^(async\\s+)?function[(]?.*[)]?').test(lines[0])
 }
 
 function formatArrow(str: string, maxLength: number) {
