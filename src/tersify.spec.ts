@@ -851,7 +851,7 @@ describe('function', () => {
       finally {
         console.info(3)
       }
-    })).toBe(`fn() { try { return 1; } catch { return 2; } finally { console.info(3); } }`)
+    })).toBe(`fn() { try { return 1 } catch { return 2 } finally { console.info(3) } }`)
   })
 
   test('with void operator', () => {
@@ -1435,7 +1435,7 @@ describe('arrow function', () => {
       finally {
         console.info(3)
       }
-    })).toBe(`() => { try { return 1; } catch { return 2; } finally { console.info(3); } }`)
+    })).toBe(`() => { try { return 1 } catch { return 2 } finally { console.info(3) } }`)
   })
 
   test(`async arrow function`, () => {
