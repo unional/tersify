@@ -129,7 +129,7 @@ describe('function', () => {
 
   test(`returns named Symbol`, () => {
     expect(testFunction(function () { return Symbol.for('abc') })).toBe(`fn() { return Sym(abc); }`)
-    // tslint:disable-next-line: quotemark
+    // eslint-disable-next-line quotes
     expect(testFunction(function () { return Symbol.for("abc") })).toBe(`fn() { return Sym(abc); }`)
     expect(testFunction(function () { return Symbol.for(`abc`) })).toBe(`fn() { return Sym(abc); }`)
   })
@@ -363,12 +363,13 @@ describe('function', () => {
 
   // tslint:disable: one-variable-per-declaration no-var-keyword
   test('with multi-variable declaration', () => {
+    /* eslint-disable no-var */
     expect(testFunction(function () {
       var x: any, y: any
       return x + y
     })).toBe('fn() { var x, y; return x + y; }')
+    /* eslint-enable no-var */
   })
-  // tslint:enable: one-variable-per-declaration no-var-keyword
 
   test('with prefix unary expression', () => {
     expect(testFunction(function () { return !!1 })).toBe(`fn() { return !!1; }`)
@@ -1180,5 +1181,5 @@ describe('arrow function', () => {
 
 function testFunction(fn: Function, options?: Partial<TersifyOptions>) {
   const testContext: TersifyContext = { references: [], path: [], noTrim: false, maxLength: Infinity }
-  return tersifyFunction(unpartial(testContext, options), fn, 0)
+  return tersifyFunction(unpartial<TersifyContext>(testContext, options), fn, 0)
 }

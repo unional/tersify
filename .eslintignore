@@ -1,4 +1,3 @@
-node_modules
 dist
-dist-es5
-dist-es2015
+node_modules
+lib*
