@@ -63,6 +63,7 @@
     "@commitlint/config-conventional": "^8.2.0",
     "@semantic-release/changelog": "^3.0.4",
     "@unional/devpkg-node": "^1.4.1",
+    "codecov": "^3.6.1",
     "commitlint-circle": "^1.0.0",
     "eslint": "6.5.1",
     "eslint-plugin-harmony": "^2.1.7",
