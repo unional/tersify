@@ -8,7 +8,7 @@ import { TersifyContext } from './typesInternal';
 
 Parser.extend(bigInt)
 
-export function tersifyFunction(context: TersifyContext, fn: Function, length: number): string {
+export function tersifyFunction(context: TersifyContext, fn: Function, _length: number): string {
   if (!context.raw && hasTersifyFn(fn) && fn.tersify !== defaultTersify) {
     return fn.tersify({ maxLength: context.maxLength, raw: context.raw })
   }

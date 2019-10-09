@@ -289,12 +289,12 @@ function tersifyBinaryExpressionNode(context: TersifyContext, node: BinaryExpres
   if ((node.left.type === 'BinaryExpression' || node.left.type === 'LogicalExpression') && isHigherOperatorOrder(node.operator, node.left.operator)) {
     node.left.needParen = true
   }
-  let left = tersifyAcornNode(context, node.left, length)
+  const left = tersifyAcornNode(context, node.left, length)
 
   if ((node.right.type === 'BinaryExpression' || node.right.type === 'LogicalExpression') && isHigherOperatorOrder(node.operator, node.right.operator)) {
     node.right.needParen = true
   }
-  let right = tersifyAcornNode(context, node.right, length)
+  const right = tersifyAcornNode(context, node.right, length)
 
   return node.needParen ?
     `(${left} ${node.operator} ${right})` :
@@ -337,15 +337,15 @@ function tersifyVariableDeclarationNode(context: TersifyContext, node: VariableD
   return `${node.kind} ${node.declarations.map(d => tersifyAcornNode(context, d, length)).join(', ')}`
 }
 
-function tersifyIdentifierNode(context: TersifyContext, node: IdentifierNode, length: number) {
+function tersifyIdentifierNode(context: TersifyContext, node: IdentifierNode, _length: number) {
   return node.name === 'Symbol' ? 'Sym' : node.name
 }
 
-function tersifyLiteralNode(context: TersifyContext, node: LiteralNode, length: number) {
+function tersifyLiteralNode(context: TersifyContext, node: LiteralNode, _length: number) {
   return node.raw
 }
 
-function tersifyRestElementNode(context: TersifyContext, node: RestElementNode, length: number) {
+function tersifyRestElementNode(context: TersifyContext, node: RestElementNode, _length: number) {
   return `...${node.argument.name}`
 }
 
@@ -355,8 +355,8 @@ function tersifyAssignmentPatternNode(context: TersifyContext, node: AssignmentP
 }
 
 function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunctionExpressionNode, length: number) {
-  let async = node.async ? 'async ' : ''
-  let generator = node.generator ? '*' : ''
+  const async = node.async ? 'async ' : ''
+  const generator = node.generator ? '*' : ''
   const arrow = ` => `
   const declarationLen = async.length + generator.length + arrow.length
 
@@ -366,7 +366,7 @@ function tersifyArrowExpressionNode(context: TersifyContext, node: ArrowFunction
   if (node.params.length === 1) {
     params = paramsContent
   }
-  let minParam = paramsContent.length <= 3 ?
+  const minParam = paramsContent.length <= 3 ?
     params :
     node.params.length > 1 ?
       `(${trim(context, paramsContent, 3)})` :
@@ -455,10 +455,10 @@ function isSymbolForNode(node: CallExpressionNode): node is SymbolForNode {
 }
 
 function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionExpressionNode, length: number) {
-  let token = context.raw ? `function` : 'fn'
-  let async = node.async ? 'async ' : ''
-  let generator = node.generator ? '*' : ''
-  let id = node.id ? ` ${node.id.name}` : ''
+  const token = context.raw ? `function` : 'fn'
+  const async = node.async ? 'async ' : ''
+  const generator = node.generator ? '*' : ''
+  const id = node.id ? ` ${node.id.name}` : ''
   const params = node.params.length > 0 ? tersifyFunctionParams(context, node.params) : '()'
   const space = ' '
   const declarationLen = async.length + token.length + generator.length + id.length + space.length
@@ -508,7 +508,7 @@ function tersifyFunctionBody(context: TersifyContext, value: AcornNode) {
 function tersifyBlockStatementNode(context: TersifyContext, node: BlockStatementNode, length: number) {
   const bracketAndSpaceLength = 4
   length -= bracketAndSpaceLength
-  let statements: string[] = []
+  const statements: string[] = []
   node.body.forEach(n => {
     if (length) {
       const s = tersifyAcornNode(context, n, length)
@@ -524,6 +524,6 @@ function tersifyReturnStatementNode(context: TersifyContext, node: ReturnStateme
   return `return ${tersifyAcornNode(context, node.argument, length)}`
 }
 
-function tersifyThisExpression(context: TersifyContext, node: ThisExpressionNode, length: number) {
+function tersifyThisExpression(_context: TersifyContext, _node: ThisExpressionNode, _length: number) {
   return `this`
 }

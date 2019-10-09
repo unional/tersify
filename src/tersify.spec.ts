@@ -151,7 +151,7 @@ describe('string', () => {
 
   test('escape single quotes', () => {
     expect(tersify('a"bc"d')).toBe(`'a"bc"d'`)
-    expect(tersify("a'bc'd")).toBe(`'a\'bc\'d'`)
+    expect(tersify("a'bc'd")).toBe(`'a'bc'd'`)
   })
 })
 
@@ -615,7 +615,7 @@ describe('function', () => {
 
   test('with multi-variable declaration', () => {
     expect(tersify(function () {
-      // tslint:disable-next-line: one-variable-per-declaration no-var-keyword
+      // eslint-disable-next-line no-var
       var x: any, y: any
       return x + y
     })).toBe('fn() { var x, y; return x + y }')

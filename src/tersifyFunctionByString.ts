@@ -126,10 +126,10 @@ function getEnclosedBody(str: string) {
     if (count === 0) {
       const body = removeLineBreaks(str.slice(0, i))
       str = body.replace(/return;/g, '')
-        .replace(/([\s\(\[{])Symbol\(\)/g, '$1Sym()')
-        .replace(/([\s\(\[{])Symbol\.for\('([\w_]*)'\)/g, '$1Sym($2)')
-        .replace(/([\s\(\[{])Symbol\.for\("([\w_]*)"\)/g, '$1Sym($2)')
-        .replace(/([\s\(\[{])Symbol\.for\(`([\w_]*)`\)/g, '$1Sym($2)')
+        .replace(/([\s([{])Symbol\(\)/g, '$1Sym()')
+        .replace(/([\s([{])Symbol\.for\('([\w_]*)'\)/g, '$1Sym($2)')
+        .replace(/([\s([{])Symbol\.for\("([\w_]*)"\)/g, '$1Sym($2)')
+        .replace(/([\s([{])Symbol\.for\(`([\w_]*)`\)/g, '$1Sym($2)')
       break
     }
   }
