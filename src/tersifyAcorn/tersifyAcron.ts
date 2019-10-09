@@ -1,7 +1,7 @@
 
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode, FunctionDeclarationNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 import { TersifyContext } from '../typesInternal';
 import { trim } from '../trim';
@@ -42,6 +42,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyCallExpressionNode(context, node, length)
     case 'MemberExpression':
       return tersifyMemberExpressionNode(context, node, length)
+    case 'FunctionDeclaration':
     case 'FunctionExpression':
       return tersifyFunctionExpressionNode(context, node, length)
     case 'BlockStatement':
@@ -454,7 +455,7 @@ function isSymbolForNode(node: CallExpressionNode): node is SymbolForNode {
 
 }
 
-function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionExpressionNode, length: number) {
+function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionExpressionNode | FunctionDeclarationNode, length: number) {
   const token = context.raw ? `function` : 'fn'
   const async = node.async ? 'async ' : ''
   const generator = node.generator ? '*' : ''
