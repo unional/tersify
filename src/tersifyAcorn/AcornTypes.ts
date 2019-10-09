@@ -1,5 +1,5 @@
 export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
-  FunctionExpressionNode | BlockStatementNode | ReturnStatementNode |
+  FunctionExpressionNode | FunctionDeclarationNode | BlockStatementNode | ReturnStatementNode |
   AssignmentPatternNode | RestElementNode | ArrowFunctionExpressionNode |
   MemberExpressionNode | ExpressionStatementNode | VariableDeclarationNode |
   VariableDeclaratorNode | NewExpressionNode | BinaryExpressionNode |
@@ -40,6 +40,16 @@ export type SymbolForNode = AcornNodeBase & {
 
 export type FunctionExpressionNode = {
   type: 'FunctionExpression',
+  id: null | IdentifierNode,
+  expression: boolean,
+  generator: boolean,
+  async: boolean,
+  params: IdentifierNode[],
+  body: AcornNode
+} & AcornNodeBase
+
+export type FunctionDeclarationNode = {
+  type: 'FunctionDeclaration',
   id: null | IdentifierNode,
   expression: boolean,
   generator: boolean,

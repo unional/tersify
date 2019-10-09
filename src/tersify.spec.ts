@@ -879,6 +879,14 @@ describe('function', () => {
     const subject = function withThis(this: any) { return this }
     expect(tersify(subject)).toBe('fn withThis() { return this }')
   })
+
+  test('with function declaration', () => {
+    const subject = function withDeclaration() {
+      function foo() { return 'foo' }
+      return foo()
+    }
+    expect(tersify(subject)).toBe(`fn withDeclaration() { fn foo() { return 'foo' }; return foo() }`)
+  })
 })
 
 describe('arrow function', () => {
