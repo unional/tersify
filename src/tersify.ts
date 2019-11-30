@@ -158,9 +158,8 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
   const keys = Object.keys(value)
   const props = keys.reduce((p, k, i) => {
     if (remaining > 0) {
-      const v = value[k]
       const isLastKey = i === keys.length - 1
-      const propStr = getPropStr(context, k, v, remaining, isLastKey)
+      const propStr = getPropStr(context, value, k, remaining, isLastKey)
       remaining -= propStr.length
       p.push(propStr)
     }
@@ -177,10 +176,20 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
       `{ ${trimmedContent} }`
 }
 
-function getPropStr(context: TersifyContext, key: string, value: any, length: number, isLastKey: boolean) {
+function getPropStr(context: TersifyContext, bag: Record<any,any>, key: string, length: number, isLastKey: boolean) {
   const commaAndSpaceLen = isLastKey ? 0 : 2
   const colonAndSpaceLen = 2
   const path = [...context.path, key]
+
+  const d = Object.getOwnPropertyDescriptor(bag, key)!
+  const accessor: string[] = []
+  if (d.get) accessor.push('Get')
+  if (d.set) accessor.push('Set')
+  if (accessor.length > 0) {
+    return `${key}: [${accessor.join('/')}]`
+  }
+
+  const value = bag[key]
   if (typeof value === 'function') {
     const fnLen = 2
     if ((/^(.*) => /.test(value.toString()))) {
