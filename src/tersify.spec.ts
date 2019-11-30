@@ -1458,6 +1458,53 @@ describe('object', () => {
     expect(tersify({})).toBe('{}')
   })
 
+  test('object with getter', () => {
+    expect(tersify({ get x() { return 1 } })).toBe('{ x: [Get] }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 12 })).toBe('{ x: [Get] }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 11 })).toBe('{ x: [... }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 10 })).toBe('{ x: ... }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 9 })).toBe('{ x:... }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 8 })).toBe('{ x:.. }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 7 })).toBe('{ x:. }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 6 })).toBe('{ x. }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 5 })).toBe('{ . }')
+    expect(tersify({ get x() { return 1 } }, { maxLength: 4 })).toBe('{ ..')
+  })
+
+  test('object with setter', () => {
+    expect(tersify({ set x(_) { } })).toBe('{ x: [Set] }')
+    expect(tersify({ set x(_) { } }, { maxLength: 12 })).toBe('{ x: [Set] }')
+    expect(tersify({ set x(_) { } }, { maxLength: 11 })).toBe('{ x: [... }')
+    expect(tersify({ set x(_) { } }, { maxLength: 10 })).toBe('{ x: ... }')
+    expect(tersify({ set x(_) { } }, { maxLength: 9 })).toBe('{ x:... }')
+    expect(tersify({ set x(_) { } }, { maxLength: 8 })).toBe('{ x:.. }')
+    expect(tersify({ set x(_) { } }, { maxLength: 7 })).toBe('{ x:. }')
+    expect(tersify({ set x(_) { } }, { maxLength: 6 })).toBe('{ x. }')
+    expect(tersify({ set x(_) { } }, { maxLength: 5 })).toBe('{ . }')
+    expect(tersify({ set x(_) { } }, { maxLength: 4 })).toBe('{ ..')
+  })
+
+  test('object with getter and setter', () => {
+    expect(tersify({ get x() { return 1 }, set x(_) { } })).toBe('{ x: [Get/Set] }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 16 })).toBe('{ x: [Get/Set] }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 15 })).toBe('{ x: [Get/... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 14 })).toBe('{ x: [Get... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 13 })).toBe('{ x: [Ge... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 12 })).toBe('{ x: [G... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 11 })).toBe('{ x: [... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 10 })).toBe('{ x: ... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 9 })).toBe('{ x:... }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 8 })).toBe('{ x:.. }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 7 })).toBe('{ x:. }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 6 })).toBe('{ x. }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 5 })).toBe('{ . }')
+    expect(tersify({ get x() { return 1 }, set x(_) { } }, { maxLength: 4 })).toBe('{ ..')
+  })
+
+  test('with throwing getter', () => {
+    expect(tersify({ get x() { throw new Error('throw') } })).toBe('{ x: [Get] }')
+  })
+
   test('primitive type properties', () => {
     expect(tersify({ a: undefined })).toBe('{ a: undefined }')
     expect(tersify({ a: null })).toBe('{ a: null }')
@@ -1767,5 +1814,18 @@ describe('error', () => {
     expect(tersify(new Error('abcdefghi'), { maxLength: 2 })).toBe(`E.`)
     expect(tersify(new Error('abcdefghi'), { maxLength: 1 })).toBe(`.`)
     expect(tersify(new Error('abcdefghi'), { maxLength: 0 })).toBe(``)
+  })
+})
+
+describe('class', () => {
+
+  test('getter parent', () => {
+    class GetterParent {
+      get x() { return 1 }
+    }
+    class Subject extends GetterParent {}
+    const subject = new Subject()
+
+    expect(tersify(subject)).toBe('{}')
   })
 })
