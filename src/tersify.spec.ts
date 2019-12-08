@@ -286,6 +286,14 @@ describe('function', () => {
     expect(tersify(function (a, b, c) { return undefined }, { maxLength: 0 })).toBe('')
   })
 
+  test('object literal method', () => {
+    const subject = {
+      inc(x) { return x + 1 }
+    }
+    const actual = tersify(subject.inc)
+    expect(actual).toBe('fn inc(x) { return x + 1 }')
+  })
+
   test('named function with too long signature', () => {
     const actual = tersify(function veryVeryVeryVeryLongNameFunction(a, b, c, d, e, f, g) {
       return a + b + c + d + e + f + g
