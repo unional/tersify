@@ -10,7 +10,6 @@ export function tersifyAcorn(context: TersifyContext, value: any, length: number
   const parser = Parser.extend(bigInt)
 
   const fnStr = getFunctionString(value)
-
   const node = parser.parseExpressionAt(`(${fnStr})`, 0) as AcornNode
   return tersifyAcornNode(context, node, length)
 }
@@ -19,7 +18,7 @@ function getFunctionString(value: Function) {
   const fnStr: string = value.toString()
   const matches = /^([^\s]+)\(/.exec(fnStr)
   return matches && matches[1] !== 'function' ?
-    fnStr.replace(matches[1], 'function') :
+    `function ${fnStr}` :
     fnStr
 }
 
