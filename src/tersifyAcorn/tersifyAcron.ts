@@ -1,10 +1,11 @@
 
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode, FunctionDeclarationNode } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode, FunctionDeclarationNode, ClassExpressionNode, ClassBodyNode, MethodDefinitionNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 import { TersifyContext } from '../typesInternal';
 import { trim } from '../trim';
+import { FailedToParse } from './FailedToParse';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
   const parser = Parser.extend(bigInt)
@@ -45,6 +46,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
     case 'FunctionExpression':
       return tersifyFunctionExpressionNode(context, node, length)
     case 'BlockStatement':
+    case 'ClassBody':
       return tersifyBlockStatementNode(context, node, length)
     case 'ReturnStatement':
       return tersifyReturnStatementNode(context, node, length)
@@ -105,10 +107,14 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyCatchClauseNode(context, node, length)
     case 'ThisExpression':
       return tersifyThisExpression(context, node, length)
+    case 'ClassExpression':
+      return tersifyClassExpression(context, node, length)
+    case 'MethodDefinition':
+      return tersifyMethodDefinition(context, node, length)
+    default:
+      // istanbul ignore next
+      throw new FailedToParse((node as any).type, node)
   }
-
-  // istanbul ignore next
-  throw node
 }
 
 function tersifyCatchClauseNode(context: TersifyContext, node: CatchClauseNode, length: number) {
@@ -505,7 +511,7 @@ function tersifyFunctionBody(context: TersifyContext, value: AcornNode) {
   return tersifyAcornNode(context, value, Infinity)
 }
 
-function tersifyBlockStatementNode(context: TersifyContext, node: BlockStatementNode, length: number) {
+function tersifyBlockStatementNode(context: TersifyContext, node: BlockStatementNode | ClassBodyNode, length: number) {
   const bracketAndSpaceLength = 4
   length -= bracketAndSpaceLength
   const statements: string[] = []
@@ -526,4 +532,49 @@ function tersifyReturnStatementNode(context: TersifyContext, node: ReturnStateme
 
 function tersifyThisExpression(_context: TersifyContext, _node: ThisExpressionNode, _length: number) {
   return `this`
+}
+
+function tersifyClassExpression(context: TersifyContext, node: ClassExpressionNode, length: number) {
+  return `class${node.id ? ` ${node.id.name}` : ' '}${tersifyAcornNode(context, node.body, length)}`
+}
+
+function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinitionNode, length: number) {
+  const staticStr = node.static ? 'static ' : ''
+  const fnExpNode = node.value
+  const token = context.raw ? `function` : 'fn'
+  const async = fnExpNode.async ? 'async ' : ''
+  const generator = fnExpNode.generator ? '*' : ''
+  const id = node.key.name
+  const params = fnExpNode.params.length > 0 ? tersifyFunctionParams(context, fnExpNode.params) : '()'
+  const space = ' '
+  const declarationLen = async.length + token.length + generator.length + id.length + space.length
+
+  const paramsContent = params.slice(1, params.length - 2)
+  const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
+  const minPrebodyLen = declarationLen + minParam.length
+  const prebodyLen = declarationLen + params.length
+  const body = tersifyFunctionBody(context, fnExpNode.body)
+
+  if (minPrebodyLen + body.length > length) {
+    // 5 = length of `{ . }` to indicate there are something in the body
+    if (minPrebodyLen + 5 > length) {
+      return trim(context, `${staticStr}${async}${generator}${id}${minParam}${space}${body}`, length)
+    }
+    else {
+      const bodyContent = body.slice(2, body.length - 2)
+      const result = `${staticStr}${async}${generator}${id}${minParam}${space}${bodyContent.length === 0 ?
+        '{}' :
+        `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`}`
+      return result.length > length ? trim(context, result, length) : result
+    }
+  }
+  else if (prebodyLen + body.length > length) {
+    if (minPrebodyLen + body.length < length) {
+      return `${staticStr}${async}${generator}${id}(${trim(context, paramsContent, length - body.length - declarationLen - 2)})${space}${body}`
+    }
+    return trim(context, `${staticStr}${async}${generator}${id}${minParam}${space}${body}`, length)
+  }
+  else {
+    return trim(context, `${staticStr}${async}${generator}${id}${params}${space}${body}`, length)
+  }
 }
