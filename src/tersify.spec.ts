@@ -1826,12 +1826,46 @@ describe('error', () => {
 })
 
 describe('class', () => {
+  test('empty class', () => {
+    class Foo { }
+    expect(tersify(Foo)).toBe('class Foo{}')
+  })
+
+  test('anomymous class', () => {
+    const C = class { }
+    expect(tersify(C)).toBe('class {}')
+  })
+
+  test('class with constructor', () => {
+    class Foo { constructor(x) { } }
+    expect(tersify(Foo)).toBe('class Foo{ constructor(x) {} }')
+  })
+
+  test('class with property', () => {
+    class Foo { a = 1 }
+    expect(tersify(Foo)).toBe('class Foo{ constructor() { this.a = 1 } }')
+  })
+
+  test('class with method', () => {
+    class Foo { do() { } }
+    expect(tersify(Foo)).toBe('class Foo{ do() {} }')
+  })
+
+  test.skip('class with static property', () => {
+    class Foo { static a = 1 }
+    expect(tersify(Foo)).toBe('class Foo{ static a = 1 }')
+  })
+
+  test('class with static method', () => {
+    class Foo { static do() { } }
+    expect(tersify(Foo)).toBe('class Foo{ static do() {} }')
+  })
 
   test('getter parent', () => {
     class GetterParent {
       get x() { return 1 }
     }
-    class Subject extends GetterParent {}
+    class Subject extends GetterParent { }
     const subject = new Subject()
 
     expect(tersify(subject)).toBe('{}')

@@ -9,7 +9,7 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
-  ThisExpressionNode
+  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode
 
 export type AcornNodeBase = {
   start: number,
@@ -285,4 +285,25 @@ export type ThisExpressionNode = AcornNodeBase & {
   type: 'ThisExpression',
   start: number,
   end: number
+}
+
+export type ClassExpressionNode = AcornNodeBase & {
+  type: 'ClassExpression',
+  id: null | IdentifierNode,
+  superClass: null | ClassExpressionNode,
+  body: AcornNode,
+}
+
+export type ClassBodyNode = AcornNodeBase & {
+  type: 'ClassBody',
+  body: AcornNode[]
+}
+
+export type MethodDefinitionNode = AcornNodeBase & {
+  type: 'MethodDefinition',
+  kind: 'constructor',
+  static: boolean,
+  computed: boolean,
+  key: IdentifierNode,
+  value: FunctionExpressionNode
 }
