@@ -1,7 +1,7 @@
 
 import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
-import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode, FunctionDeclarationNode, ClassExpressionNode, ClassBodyNode, MethodDefinitionNode } from './AcornTypes';
+import { AcornNode, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, NewExpressionNode, RestElementNode, ReturnStatementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, ObjectExpressionNode, PropertyNode, YieldExpressionNode, AwaitExpressionNode, ArrayExpression, ThrowStatementNode, TryStatementNode, CatchClauseNode, ThisExpressionNode, FunctionDeclarationNode, ClassExpressionNode, ClassBodyNode, MethodDefinitionNode, SpreadElementNode } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 import { TersifyContext } from '../typesInternal';
 import { trim } from '../trim';
@@ -33,6 +33,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
     case 'AssignmentPattern':
       return tersifyAssignmentPatternNode(context, node, length)
     case 'RestElement':
+    case 'SpreadElement':
       return tersifyRestElementNode(context, node, length)
     case 'ArrowFunctionExpression':
       return tersifyArrowExpressionNode(context, node, length)
@@ -351,7 +352,7 @@ function tersifyLiteralNode(context: TersifyContext, node: LiteralNode, _length:
   return node.raw
 }
 
-function tersifyRestElementNode(context: TersifyContext, node: RestElementNode, _length: number) {
+function tersifyRestElementNode(context: TersifyContext, node: RestElementNode | SpreadElementNode, _length: number) {
   return `...${node.argument.name}`
 }
 
@@ -554,7 +555,7 @@ function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinition
   const id = node.key.name
   const params = fnExpNode.params.length > 0 ? tersifyFunctionParams(context, fnExpNode.params) : '()'
   const space = ' '
-  const declarationLen = staticStr.length +  async.length + generator.length + id.length + space.length
+  const declarationLen = staticStr.length + async.length + generator.length + id.length + space.length
 
   const paramsContent = params.slice(1, params.length - 1)
   const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params

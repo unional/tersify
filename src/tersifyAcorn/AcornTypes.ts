@@ -9,7 +9,7 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
-  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode
+  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode
 
 export type AcornNodeBase = {
   start: number,
@@ -306,4 +306,9 @@ export type MethodDefinitionNode = AcornNodeBase & {
   computed: boolean,
   key: IdentifierNode,
   value: FunctionExpressionNode
+}
+
+export type SpreadElementNode = AcornNodeBase & {
+  type: 'SpreadElement',
+  argument: IdentifierNode
 }

@@ -895,6 +895,11 @@ describe('function', () => {
     }
     expect(tersify(subject)).toBe(`fn withDeclaration() { fn foo() { return 'foo' }; return foo() }`)
   })
+
+  test('with spread', () => {
+    const subject = function spread(x) { console.info(...x) }
+    expect(tersify(subject)).toBe(`fn spread(x) { console.info(...x) }`)
+  })
 })
 
 describe('arrow function', () => {
