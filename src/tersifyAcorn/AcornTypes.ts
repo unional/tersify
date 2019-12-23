@@ -9,7 +9,8 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
-  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode
+  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
+  ObjectPatternNode
 
 export type AcornNodeBase = {
   start: number,
@@ -85,7 +86,7 @@ export type ArrowFunctionExpressionNode = AcornNodeBase & {
   expression: boolean,
   generator: boolean,
   async: boolean,
-  params: IdentifierNode[],
+  params: Array<IdentifierNode | ObjectPatternNode>,
   body: AcornNode
 }
 
@@ -311,4 +312,9 @@ export type MethodDefinitionNode = AcornNodeBase & {
 export type SpreadElementNode = AcornNodeBase & {
   type: 'SpreadElement',
   argument: IdentifierNode
+}
+
+export type ObjectPatternNode = AcornNodeBase & {
+  type: 'ObjectPattern',
+  properties: PropertyNode[]
 }
