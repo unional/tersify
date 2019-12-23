@@ -56,7 +56,6 @@
     "acorn": "^7.1.0",
     "acorn-bigint": "^0.4.0",
     "is-buffer": "^2.0.4",
-    "iso-error": "^3.1.1",
     "unpartial": "^0.6.3"
   },
   "devDependencies": {
