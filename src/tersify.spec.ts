@@ -1526,6 +1526,14 @@ describe('arrow function', () => {
     expect(tersify(subject, { maxLength: 17 })).toBe(`({ a ...) => true`)
     expect(tersify(subject, { maxLength: 16 })).toBe(`({ a...) => true`)
   })
+
+  test('sequence expression', () => {
+    const subject = x => (x = 1, 0)
+
+    expect(tersify(subject)).toBe('x => (x = 1, 0)')
+    expect(tersify(subject, { maxLength: 15 })).toBe('x => (x = 1, 0)')
+    expect(tersify(subject, { maxLength: 14 })).toBe('x => (x = 1...')
+  })
 })
 
 describe('object', () => {

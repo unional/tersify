@@ -3,7 +3,7 @@ import { Parser } from 'acorn';
 import bigInt from 'acorn-bigint';
 import { trim } from '../trim';
 import { TersifyContext } from '../typesInternal';
-import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode } from './AcornTypes';
+import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode, SequenceExpression } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
@@ -113,6 +113,8 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyMethodDefinition(context, node, length)
     case 'ObjectPattern':
       return tersifyObjectPattern(context, node, length)
+    case 'SequenceExpression':
+      return tersifySequenceExpression(context, node, length)
     // istanbul ignore next
     default: {
       const nodeType = (node as any).type
@@ -591,4 +593,8 @@ function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinition
 
 function tersifyObjectPattern(context: TersifyContext, node: ObjectPatternNode, length: number) {
   return `${trim(context, `{ ${node.properties.map(p => tersifyAcornNode(context, p, length)).join(', ')} }`, length - 2)}`
+}
+
+function tersifySequenceExpression(context: TersifyContext, node: SequenceExpression, length: number) {
+  return `(${node.expressions.map(n => tersifyAcornNode(context, n, length)).join(', ')})`
 }

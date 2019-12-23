@@ -10,7 +10,7 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
   ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
-  ObjectPatternNode
+  ObjectPatternNode | SequenceExpression
 
 export type AcornNodeBase = {
   start: number,
@@ -317,4 +317,9 @@ export type SpreadElementNode = AcornNodeBase & {
 export type ObjectPatternNode = AcornNodeBase & {
   type: 'ObjectPattern',
   properties: PropertyNode[]
+}
+
+export type SequenceExpression = AcornNodeBase & {
+  type: 'SequenceExpression',
+  expressions: AcornNode[]
 }
