@@ -1839,6 +1839,32 @@ describe('class', () => {
   test('class with constructor', () => {
     class Foo { constructor(x) { } }
     expect(tersify(Foo)).toBe('class Foo{ constructor(x) {} }')
+    expect(tersify(Foo, { maxLength: 30 })).toBe('class Foo{ constructor(x) {} }')
+    expect(tersify(Foo, { maxLength: 29 })).toBe('class Foo{ constructor(x... }')
+    expect(tersify(Foo, { maxLength: 28 })).toBe('class Foo{ constructor(... }')
+    expect(tersify(Foo, { maxLength: 27 })).toBe('class Foo{ constructor... }')
+    expect(tersify(Foo, { maxLength: 26 })).toBe('class Foo{ constructo... }')
+    expect(tersify(Foo, { maxLength: 19 })).toBe('class Foo{ con... }')
+    expect(tersify(Foo, { maxLength: 18 })).toBe('class Foo{ co... }')
+    expect(tersify(Foo, { maxLength: 17 })).toBe('class Foo{ co.. }')
+    expect(tersify(Foo, { maxLength: 16 })).toBe('class Foo{ co. }')
+    expect(tersify(Foo, { maxLength: 15 })).toBe('class Foo{ c. }')
+    expect(tersify(Foo, { maxLength: 14 })).toBe('class Foo{ . }')
+    expect(tersify(Foo, { maxLength: 13 })).toBe('class Foo{...')
+    expect(tersify(Foo, { maxLength: 12 })).toBe('class Foo...')
+    // this is slightly off, but leave it as is.
+    expect(tersify(Foo, { maxLength: 11 })).toBe('class Foo..')
+    expect(tersify(Foo, { maxLength: 10 })).toBe('class F...')
+    expect(tersify(Foo, { maxLength: 9 })).toBe('class ...')
+    expect(tersify(Foo, { maxLength: 8 })).toBe('class...')
+    expect(tersify(Foo, { maxLength: 7 })).toBe('clas...')
+    expect(tersify(Foo, { maxLength: 6 })).toBe('cla...')
+    expect(tersify(Foo, { maxLength: 5 })).toBe('cl...')
+    expect(tersify(Foo, { maxLength: 4 })).toBe('cl..')
+    expect(tersify(Foo, { maxLength: 3 })).toBe('cl.')
+    expect(tersify(Foo, { maxLength: 2 })).toBe('c.')
+    expect(tersify(Foo, { maxLength: 1 })).toBe('.')
+    expect(tersify(Foo, { maxLength: 0 })).toBe('')
   })
 
   test('class with property', () => {
@@ -1847,8 +1873,20 @@ describe('class', () => {
   })
 
   test('class with method', () => {
-    class Foo { do() { } }
-    expect(tersify(Foo)).toBe('class Foo{ do() {} }')
+    class Foo { do() { console.info('do') } }
+    expect(tersify(Foo)).toBe(`class Foo{ do() { console.info('do') } }`)
+    expect(tersify(Foo, { maxLength: 40 })).toBe(`class Foo{ do() { console.info('do') } }`)
+    expect(tersify(Foo, { maxLength: 39 })).toBe(`class Foo{ do() { console.info('... } }`)
+    expect(tersify(Foo, { maxLength: 38 })).toBe(`class Foo{ do() { console.info(... } }`)
+    expect(tersify(Foo, { maxLength: 37 })).toBe(`class Foo{ do() { console.info... } }`)
+    expect(tersify(Foo, { maxLength: 36 })).toBe(`class Foo{ do() { console.inf... } }`)
+    expect(tersify(Foo, { maxLength: 26 })).toBe(`class Foo{ do() { co.. } }`)
+    expect(tersify(Foo, { maxLength: 25 })).toBe(`class Foo{ do() { co. } }`)
+    expect(tersify(Foo, { maxLength: 24 })).toBe(`class Foo{ do() { c. } }`)
+    expect(tersify(Foo, { maxLength: 23 })).toBe(`class Foo{ do() { . } }`)
+    expect(tersify(Foo, { maxLength: 22 })).toBe(`class Foo{ do() {... }`)
+    expect(tersify(Foo, { maxLength: 21 })).toBe(`class Foo{ do() ... }`)
+    expect(tersify(Foo, { maxLength: 20 })).toBe(`class Foo{ do()... }`)
   })
 
   test.skip('class with static property', () => {
@@ -1857,8 +1895,63 @@ describe('class', () => {
   })
 
   test('class with static method', () => {
-    class Foo { static do() { } }
-    expect(tersify(Foo)).toBe('class Foo{ static do() {} }')
+    class Foo { static do(x, y) { return x + y } }
+    expect(tersify(Foo, { maxLength: 44 })).toBe('class Foo{ static do(x,.) { return x + y } }')
+    expect(tersify(Foo, { maxLength: 43 })).toBe('class Foo{ static do(x,.) { return x... } }')
+    expect(tersify(Foo, { maxLength: 42 })).toBe('class Foo{ static do(x,.) { return ... } }')
+    expect(tersify(Foo, { maxLength: 41 })).toBe('class Foo{ static do(x,.) { return... } }')
+    expect(tersify(Foo, { maxLength: 40 })).toBe('class Foo{ static do(x,.) { retur... } }')
+    expect(tersify(Foo, { maxLength: 39 })).toBe('class Foo{ static do(x,.) { retu... } }')
+    expect(tersify(Foo, { maxLength: 38 })).toBe('class Foo{ static do(x,.) { ret... } }')
+    expect(tersify(Foo, { maxLength: 37 })).toBe('class Foo{ static do(x,.) { re... } }')
+    expect(tersify(Foo, { maxLength: 36 })).toBe('class Foo{ static do(x,.) { re.. } }')
+    expect(tersify(Foo, { maxLength: 35 })).toBe('class Foo{ static do(x,.) { re. } }')
+    expect(tersify(Foo, { maxLength: 34 })).toBe('class Foo{ static do(x,.) { r. } }')
+    expect(tersify(Foo, { maxLength: 33 })).toBe('class Foo{ static do(x,.) { . } }')
+    expect(tersify(Foo, { maxLength: 32 })).toBe('class Foo{ static do(x,.) {... }')
+    expect(tersify(Foo, { maxLength: 31 })).toBe('class Foo{ static do(x,.) ... }')
+    expect(tersify(Foo, { maxLength: 30 })).toBe('class Foo{ static do(x,.)... }')
+    expect(tersify(Foo, { maxLength: 29 })).toBe('class Foo{ static do(x,.... }')
+    expect(tersify(Foo, { maxLength: 28 })).toBe('class Foo{ static do(x,... }')
+    expect(tersify(Foo, { maxLength: 27 })).toBe('class Foo{ static do(x... }')
+    expect(tersify(Foo, { maxLength: 26 })).toBe('class Foo{ static do(... }')
+    expect(tersify(Foo, { maxLength: 25 })).toBe('class Foo{ static do... }')
+    expect(tersify(Foo, { maxLength: 24 })).toBe('class Foo{ static d... }')
+    expect(tersify(Foo, { maxLength: 23 })).toBe('class Foo{ static ... }')
+    expect(tersify(Foo, { maxLength: 22 })).toBe('class Foo{ static... }')
+    expect(tersify(Foo, { maxLength: 21 })).toBe('class Foo{ stati... }')
+    expect(tersify(Foo, { maxLength: 20 })).toBe('class Foo{ stat... }')
+    expect(tersify(Foo, { maxLength: 19 })).toBe('class Foo{ sta... }')
+    expect(tersify(Foo, { maxLength: 18 })).toBe('class Foo{ st... }')
+    expect(tersify(Foo, { maxLength: 17 })).toBe('class Foo{ st.. }')
+    expect(tersify(Foo, { maxLength: 16 })).toBe('class Foo{ st. }')
+    expect(tersify(Foo, { maxLength: 15 })).toBe('class Foo{ s. }')
+    expect(tersify(Foo, { maxLength: 14 })).toBe('class Foo{ . }')
+    expect(tersify(Foo, { maxLength: 13 })).toBe('class Foo{...')
+  })
+
+  test('class with async method', () => {
+    class Foo { async do() { } }
+    expect(tersify(Foo)).toBe('class Foo{ async do() {} }')
+    expect(tersify(Foo, { maxLength: 26 })).toBe('class Foo{ async do() {} }')
+    expect(tersify(Foo, { maxLength: 25 })).toBe('class Foo{ async do(... }')
+    expect(tersify(Foo, { maxLength: 24 })).toBe('class Foo{ async do... }')
+    expect(tersify(Foo, { maxLength: 23 })).toBe('class Foo{ async d... }')
+    expect(tersify(Foo, { maxLength: 22 })).toBe('class Foo{ async ... }')
+    expect(tersify(Foo, { maxLength: 21 })).toBe('class Foo{ async... }')
+    expect(tersify(Foo, { maxLength: 20 })).toBe('class Foo{ asyn... }')
+    expect(tersify(Foo, { maxLength: 19 })).toBe('class Foo{ asy... }')
+    expect(tersify(Foo, { maxLength: 18 })).toBe('class Foo{ as... }')
+    expect(tersify(Foo, { maxLength: 17 })).toBe('class Foo{ as.. }')
+    expect(tersify(Foo, { maxLength: 16 })).toBe('class Foo{ as. }')
+    expect(tersify(Foo, { maxLength: 15 })).toBe('class Foo{ a. }')
+    expect(tersify(Foo, { maxLength: 14 })).toBe('class Foo{ . }')
+    expect(tersify(Foo, { maxLength: 13 })).toBe('class Foo{...')
+  })
+
+  test('class with generator method', () => {
+    class Foo { *do() { } }
+    expect(tersify(Foo)).toBe('class Foo{ *do() {} }')
   })
 
   test('getter parent', () => {
