@@ -113,6 +113,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyMethodDefinition(context, node, length)
     case 'ObjectPattern':
       return tersifyObjectPattern(context, node, length)
+    // istanbul ignore next
     default: {
       const nodeType = (node as any).type
       console.warn(`tersify received unsupported type: ${nodeType}. Please open an issue at https://github.com/unional/tersify/issues
