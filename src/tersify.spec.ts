@@ -900,6 +900,25 @@ describe('function', () => {
     const subject = function spread(x) { console.info(...x) }
     expect(tersify(subject)).toBe(`fn spread(x) { console.info(...x) }`)
   })
+  test('argument destructuring', () => {
+    const subject = function ({ a, b, c }) { }
+    expect(tersify(subject)).toBe(`fn({ a, b, c }) {}`)
+    expect(tersify(subject, { maxLength: 18 })).toBe(`fn({ a, b, c }) {}`)
+    expect(tersify(subject, { maxLength: 17 })).toBe(`fn({ a, b,...) {}`)
+    expect(tersify(subject, { maxLength: 16 })).toBe(`fn({ a, b...) {}`)
+    expect(tersify(subject, { maxLength: 15 })).toBe(`fn({ a, ...) {}`)
+    expect(tersify(subject, { maxLength: 14 })).toBe(`fn({ a,...) {}`)
+    expect(tersify(subject, { maxLength: 13 })).toBe(`fn({ a...) {}`)
+    expect(tersify(subject, { maxLength: 12 })).toBe(`fn({ ...) {}`)
+    expect(tersify(subject, { maxLength: 11 })).toBe(`fn({ ..) {}`)
+    expect(tersify(subject, { maxLength: 10 })).toBe(`fn({ .) {}`)
+    expect(tersify(subject, { maxLength: 9 })).toBe(`fn({ ....`)
+  })
+
+  test('argument destructuring with default assignment', () => {
+    const subject = function ({ a = { b: 1 } }) { }
+    expect(tersify(subject)).toBe(`fn({ a = { b: 1 } }) {}`)
+  })
 })
 
 describe('arrow function', () => {
@@ -1463,6 +1482,49 @@ describe('arrow function', () => {
   test('raw will skip tersify() method', () => {
     expect(tersify(tersible((x, y) => x + y, () => 'x + y'), { raw: true })).toBe('(x, y) => x + y')
     expect(tersify(tersible(function (x, y) { return x + y }, () => 'x + y'), { raw: true })).toBe('function(x, y) { return x + y }')
+  })
+
+  test('argument destructuring', () => {
+    const subject = ({ a, b, c }) => true
+    expect(tersify(subject)).toBe(`({ a, b, c }) => true`)
+    expect(tersify(subject, { maxLength: 21 })).toBe(`({ a, b, c }) => true`)
+    expect(tersify(subject, { maxLength: 20 })).toBe(`({ a, b,...) => true`)
+    expect(tersify(subject, { maxLength: 19 })).toBe(`({ a, b...) => true`)
+    expect(tersify(subject, { maxLength: 18 })).toBe(`({ a, ...) => true`)
+    expect(tersify(subject, { maxLength: 17 })).toBe(`({ a,...) => true`)
+    expect(tersify(subject, { maxLength: 16 })).toBe(`({ a...) => true`)
+    expect(tersify(subject, { maxLength: 15 })).toBe(`({ ...) => true`)
+    expect(tersify(subject, { maxLength: 14 })).toBe(`({ ..) => true`)
+    expect(tersify(subject, { maxLength: 13 })).toBe(`({ .) => true`)
+    expect(tersify(subject, { maxLength: 12 })).toBe(`({.) => true`)
+    expect(tersify(subject, { maxLength: 11 })).toBe(`(.) => true`)
+    expect(tersify(subject, { maxLength: 10 })).toBe(`(.) => tr.`)
+    expect(tersify(subject, { maxLength: 9 })).toBe(`(.) =>...`)
+    expect(tersify(subject, { maxLength: 8 })).toBe(`(.) =...`)
+    expect(tersify(subject, { maxLength: 7 })).toBe(`(.) ...`)
+    expect(tersify(subject, { maxLength: 6 })).toBe(`(.)...`)
+    expect(tersify(subject, { maxLength: 5 })).toBe(`(....`)
+    expect(tersify(subject, { maxLength: 4 })).toBe(`(...`)
+    expect(tersify(subject, { maxLength: 3 })).toBe(`(..`)
+    expect(tersify(subject, { maxLength: 2 })).toBe(`(.`)
+    expect(tersify(subject, { maxLength: 1 })).toBe(`.`)
+    expect(tersify(subject, { maxLength: 0 })).toBe(``)
+  })
+
+  test('argument destructuring with default assignment', () => {
+    const subject = ({ a = { b: 1 } }) => true
+    expect(tersify(subject)).toBe(`({ a = { b: 1 } }) => true`)
+    expect(tersify(subject, { maxLength: 26 })).toBe(`({ a = { b: 1 } }) => true`)
+    expect(tersify(subject, { maxLength: 25 })).toBe(`({ a = { b: 1...) => true`)
+    expect(tersify(subject, { maxLength: 24 })).toBe(`({ a = { b: ...) => true`)
+    expect(tersify(subject, { maxLength: 23 })).toBe(`({ a = { b:...) => true`)
+    expect(tersify(subject, { maxLength: 22 })).toBe(`({ a = { b...) => true`)
+    expect(tersify(subject, { maxLength: 21 })).toBe(`({ a = { ...) => true`)
+    expect(tersify(subject, { maxLength: 20 })).toBe(`({ a = {...) => true`)
+    expect(tersify(subject, { maxLength: 19 })).toBe(`({ a = ...) => true`)
+    expect(tersify(subject, { maxLength: 18 })).toBe(`({ a =...) => true`)
+    expect(tersify(subject, { maxLength: 17 })).toBe(`({ a ...) => true`)
+    expect(tersify(subject, { maxLength: 16 })).toBe(`({ a...) => true`)
   })
 })
 
