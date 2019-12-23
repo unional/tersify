@@ -469,7 +469,7 @@ function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionEx
   const space = ' '
   const declarationLen = async.length + token.length + generator.length + id.length + space.length
 
-  const paramsContent = params.slice(1, params.length - 2)
+  const paramsContent = params.slice(1, params.length - 1)
   const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
@@ -512,17 +512,22 @@ function tersifyFunctionBody(context: TersifyContext, value: AcornNode) {
 }
 
 function tersifyBlockStatementNode(context: TersifyContext, node: BlockStatementNode | ClassBodyNode, length: number) {
+  if (length <= 3 && node.body.length > 0) return trim(context, '...', length)
+  if (length <= 4 && node.body.length > 0) return trim(context, '{...', length)
   const bracketAndSpaceLength = 4
-  length -= bracketAndSpaceLength
+  let bodyLen = length - bracketAndSpaceLength
   const statements: string[] = []
   node.body.forEach(n => {
-    if (length) {
-      const s = tersifyAcornNode(context, n, length)
-      length -= s.length
+    if (bodyLen) {
+      const s = tersifyAcornNode(context, n, bodyLen)
+      bodyLen -= s.length
       if (s && s !== 'return') statements.push(s)
     }
   })
-  return `{${statements.length ? ` ${statements.join('; ')} ` : ''}}`
+  const body = statements.join('; ')
+  const result = `{${body ? ` ${body} ` : ''}}`
+
+  return result
 }
 
 function tersifyReturnStatementNode(context: TersifyContext, node: ReturnStatementNode, length: number) {
@@ -535,26 +540,27 @@ function tersifyThisExpression(_context: TersifyContext, _node: ThisExpressionNo
 }
 
 function tersifyClassExpression(context: TersifyContext, node: ClassExpressionNode, length: number) {
-  return `class${node.id ? ` ${node.id.name}` : ' '}${tersifyAcornNode(context, node.body, length)}`
+  const classStr = trim(context, `class${node.id ? ` ${node.id.name}` : ' '}{}`, length)
+  const prefix = classStr.slice(0, Math.max(3, classStr.length - 2))
+  const body = tersifyAcornNode(context, node.body, length - prefix.length)
+  return `${prefix}${length >= prefix.length + body.length || body.length > 3 ? body : trim(context, '...', length - prefix.length)}`
 }
 
 function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinitionNode, length: number) {
   const staticStr = node.static ? 'static ' : ''
   const fnExpNode = node.value
-  const token = context.raw ? `function` : 'fn'
   const async = fnExpNode.async ? 'async ' : ''
   const generator = fnExpNode.generator ? '*' : ''
   const id = node.key.name
   const params = fnExpNode.params.length > 0 ? tersifyFunctionParams(context, fnExpNode.params) : '()'
   const space = ' '
-  const declarationLen = async.length + token.length + generator.length + id.length + space.length
+  const declarationLen = staticStr.length +  async.length + generator.length + id.length + space.length
 
-  const paramsContent = params.slice(1, params.length - 2)
+  const paramsContent = params.slice(1, params.length - 1)
   const minParam = paramsContent.length > 3 ? `(${trim(context, paramsContent, 3)})` : params
   const minPrebodyLen = declarationLen + minParam.length
   const prebodyLen = declarationLen + params.length
   const body = tersifyFunctionBody(context, fnExpNode.body)
-
   if (minPrebodyLen + body.length > length) {
     // 5 = length of `{ . }` to indicate there are something in the body
     if (minPrebodyLen + 5 > length) {
