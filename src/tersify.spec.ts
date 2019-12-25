@@ -919,6 +919,15 @@ describe('function', () => {
     const subject = function ({ a = { b: 1 } }) { }
     expect(tersify(subject)).toBe(`fn({ a = { b: 1 } }) {}`)
   })
+
+  test('create namespaced class', () => {
+    function fool() {
+      // @ts-ignore
+      return new ns.Foo();
+    }
+
+    expect(tersify(fool)).toBe(`fn fool() { return new ns.Foo() }`)
+  })
 })
 
 describe('arrow function', () => {

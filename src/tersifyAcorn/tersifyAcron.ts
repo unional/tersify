@@ -321,7 +321,7 @@ function tersifyBinaryExpressionNode(context: TersifyContext, node: BinaryExpres
 }
 
 function tersifyNewExpressionNode(context: TersifyContext, node: NewExpressionNode, length: number) {
-  return tersifyNewDate(node) || `new ${node.callee.name}(${node.arguments.map(a => tersifyAcornNode(context, a, length)).join(', ')})`
+  return tersifyNewDate(node) || `new ${tersifyAcornNode(context, node.callee, length)}(${node.arguments.map(a => tersifyAcornNode(context, a, length)).join(', ')})`
 }
 
 function tersifyNewDate(node: NewExpressionNode) {

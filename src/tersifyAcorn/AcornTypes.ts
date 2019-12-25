@@ -116,7 +116,7 @@ export type VariableDeclaratorNode = AcornNodeBase & {
 
 export type NewExpressionNode = AcornNodeBase & {
   type: 'NewExpression',
-  callee: IdentifierNode,
+  callee: IdentifierNode | MemberExpressionNode,
   arguments: AcornNode[],
 }
 
