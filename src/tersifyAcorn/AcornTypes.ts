@@ -9,7 +9,8 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   SwitchStatementNode | SwitchCaseNode | ForInStatementNode | ForOfStatementNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
-  ThisExpressionNode
+  ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
+  ObjectPatternNode | SequenceExpression
 
 export type AcornNodeBase = {
   start: number,
@@ -85,7 +86,7 @@ export type ArrowFunctionExpressionNode = AcornNodeBase & {
   expression: boolean,
   generator: boolean,
   async: boolean,
-  params: IdentifierNode[],
+  params: Array<IdentifierNode | ObjectPatternNode>,
   body: AcornNode
 }
 
@@ -115,7 +116,7 @@ export type VariableDeclaratorNode = AcornNodeBase & {
 
 export type NewExpressionNode = AcornNodeBase & {
   type: 'NewExpression',
-  callee: IdentifierNode,
+  callee: IdentifierNode | MemberExpressionNode,
   arguments: AcornNode[],
 }
 
@@ -285,4 +286,40 @@ export type ThisExpressionNode = AcornNodeBase & {
   type: 'ThisExpression',
   start: number,
   end: number
+}
+
+export type ClassExpressionNode = AcornNodeBase & {
+  type: 'ClassExpression',
+  id: null | IdentifierNode,
+  superClass: null | ClassExpressionNode,
+  body: AcornNode,
+}
+
+export type ClassBodyNode = AcornNodeBase & {
+  type: 'ClassBody',
+  body: AcornNode[]
+}
+
+export type MethodDefinitionNode = AcornNodeBase & {
+  type: 'MethodDefinition',
+  kind: 'constructor',
+  static: boolean,
+  computed: boolean,
+  key: IdentifierNode,
+  value: FunctionExpressionNode
+}
+
+export type SpreadElementNode = AcornNodeBase & {
+  type: 'SpreadElement',
+  argument: IdentifierNode
+}
+
+export type ObjectPatternNode = AcornNodeBase & {
+  type: 'ObjectPattern',
+  properties: PropertyNode[]
+}
+
+export type SequenceExpression = AcornNodeBase & {
+  type: 'SequenceExpression',
+  expressions: AcornNode[]
 }
