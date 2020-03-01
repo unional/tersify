@@ -900,6 +900,7 @@ describe('function', () => {
     const subject = function spread(x) { console.info(...x) }
     expect(tersify(subject)).toBe(`fn spread(x) { console.info(...x) }`)
   })
+
   test('argument destructuring', () => {
     const subject = function ({ a, b, c }) { }
     expect(tersify(subject)).toBe(`fn({ a, b, c }) {}`)
@@ -927,6 +928,25 @@ describe('function', () => {
     }
 
     expect(tersify(fool)).toBe(`fn fool() { return new ns.Foo() }`)
+  })
+
+  test('returns template literal', () => {
+    const subject = function templateLiteral() { return `abc` }
+    expect(tersify(subject)).toBe('fn templateLiteral() { return `abc` }')
+  })
+
+  test('returns template literal with expressions', () => {
+    const subject = function templateLiteral() { return `a${123456789}c` }
+    expect(tersify(subject)).toBe('fn templateLiteral() { return `a${123456789}c` }')
+    expect(tersify(subject, { maxLength: 48 })).toBe('fn templateLiteral() { return `a${123456789}c` }')
+    expect(tersify(subject, { maxLength: 47 })).toBe('fn templateLiteral() { return `a${12345678... }')
+  })
+
+  test('returns tagged literal', () => {
+    function tag(...args: any[]) {}
+
+    const subject = function templateLiteral() { return tag`a${123456789}c` }
+    expect(tersify(subject)).toBe('fn templateLiteral() { return tag`a${123456789}c` }')
   })
 })
 
