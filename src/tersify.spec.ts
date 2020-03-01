@@ -2048,3 +2048,42 @@ describe('class', () => {
     expect(tersify(subject)).toBe('{}')
   })
 })
+
+describe('instance', () => {
+  test('empty', () => {
+    class Empty { }
+    const instance = new Empty()
+    expect(tersify(instance)).toBe(`Empty {}`)
+    expect(tersify(instance, { maxLength: 8 })).toBe(`Empty {}`)
+    expect(tersify(instance, { maxLength: 7 })).toBe(`Em.. {}`)
+    expect(tersify(instance, { maxLength: 6 })).toBe(`Em. {}`)
+    expect(tersify(instance, { maxLength: 5 })).toBe(`E. {}`)
+    expect(tersify(instance, { maxLength: 4 })).toBe(`. {}`)
+    expect(tersify(instance, { maxLength: 3 })).toBe(`...`)
+    expect(tersify(instance, { maxLength: 2 })).toBe(`..`)
+    expect(tersify(instance, { maxLength: 1 })).toBe(`.`)
+  })
+
+  test('with property', () => {
+    class Prop { value = 1 }
+    const instance = new Prop()
+    expect(tersify(instance)).toBe(`Prop { value: 1 }`)
+    expect(tersify(instance, { maxLength: 17 })).toBe(`Prop { value: 1 }`)
+    expect(tersify(instance, { maxLength: 16 })).toBe(`Prop { valu... }`)
+    expect(tersify(instance, { maxLength: 15 })).toBe(`Prop { val... }`)
+    expect(tersify(instance, { maxLength: 14 })).toBe(`Prop { va... }`)
+    expect(tersify(instance, { maxLength: 13 })).toBe(`Prop { va.. }`)
+    expect(tersify(instance, { maxLength: 12 })).toBe(`Prop { va. }`)
+    expect(tersify(instance, { maxLength: 11 })).toBe(`Prop { v. }`)
+    expect(tersify(instance, { maxLength: 10 })).toBe(`Prop { . }`)
+    expect(tersify(instance, { maxLength: 9 })).toBe(`Prop {...`)
+    expect(tersify(instance, { maxLength: 8 })).toBe(`Prop ...`)
+    expect(tersify(instance, { maxLength: 7 })).toBe(`Prop...`)
+  })
+
+  test('method are skipped as the class name is sufficient', () => {
+    class Method { foo() {} }
+    const instance = new Method()
+    expect(tersify(instance)).toBe(`Method {}`)
+  })
+})
