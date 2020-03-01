@@ -10,7 +10,7 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
   ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
-  ObjectPatternNode | SequenceExpression
+  ObjectPatternNode | SequenceExpression | TemplateLiteral | TemplateElement | TaggedTemplateExpression
 
 export type AcornNodeBase = {
   start: number,
@@ -322,4 +322,22 @@ export type ObjectPatternNode = AcornNodeBase & {
 export type SequenceExpression = AcornNodeBase & {
   type: 'SequenceExpression',
   expressions: AcornNode[]
+}
+
+export type TemplateLiteral = AcornNodeBase & {
+  type: 'TemplateLiteral',
+  expressions: AcornNode[],
+  quasis: TemplateElement[],
+}
+
+export type TemplateElement = AcornNodeBase & {
+  type: 'TemplateElement',
+  value: { raw: string, cooked: string },
+  tail: boolean,
+}
+
+export type TaggedTemplateExpression = AcornNodeBase & {
+  type: 'TaggedTemplateExpression',
+  tag: IdentifierNode,
+  quasi: TemplateLiteral,
 }
