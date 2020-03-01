@@ -2038,13 +2038,83 @@ describe('class', () => {
     expect(tersify(Foo)).toBe('class Foo{ *do() {} }')
   })
 
-  test('getter parent', () => {
+  test('getter parent are skipped', () => {
+    class GetterParent {
+      get x() { return 1 }
+    }
+    class Subject extends GetterParent { }
+
+    expect(tersify(Subject)).toBe('class Subject{}')
+  })
+})
+
+describe('instance', () => {
+  test('empty', () => {
+    class Empty { }
+    const instance = new Empty()
+    expect(tersify(instance)).toBe(`Empty {}`)
+    expect(tersify(instance, { maxLength: 8 })).toBe(`Empty {}`)
+    expect(tersify(instance, { maxLength: 7 })).toBe(`Em.. {}`)
+    expect(tersify(instance, { maxLength: 6 })).toBe(`Em. {}`)
+    expect(tersify(instance, { maxLength: 5 })).toBe(`E. {}`)
+    expect(tersify(instance, { maxLength: 4 })).toBe(`. {}`)
+    expect(tersify(instance, { maxLength: 3 })).toBe(`...`)
+    expect(tersify(instance, { maxLength: 2 })).toBe(`..`)
+    expect(tersify(instance, { maxLength: 1 })).toBe(`.`)
+    expect(tersify(instance, { maxLength: 0 })).toBe(``)
+  })
+
+  test('with property', () => {
+    class Prop { value = 1 }
+    const instance = new Prop()
+    expect(tersify(instance)).toBe(`Prop { value: 1 }`)
+    expect(tersify(instance, { maxLength: 17 })).toBe(`Prop { value: 1 }`)
+    expect(tersify(instance, { maxLength: 16 })).toBe(`Prop { valu... }`)
+    expect(tersify(instance, { maxLength: 15 })).toBe(`Prop { val... }`)
+    expect(tersify(instance, { maxLength: 14 })).toBe(`Prop { va... }`)
+    expect(tersify(instance, { maxLength: 13 })).toBe(`Prop { va.. }`)
+    expect(tersify(instance, { maxLength: 12 })).toBe(`Prop { va. }`)
+    expect(tersify(instance, { maxLength: 11 })).toBe(`Prop { v. }`)
+    expect(tersify(instance, { maxLength: 10 })).toBe(`Prop { . }`)
+    expect(tersify(instance, { maxLength: 9 })).toBe(`Prop {...`)
+    expect(tersify(instance, { maxLength: 8 })).toBe(`Prop ...`)
+    expect(tersify(instance, { maxLength: 7 })).toBe(`Prop...`)
+  })
+
+  test('method are skipped as the class name is sufficient', () => {
+    class Method { foo() { } }
+    const instance = new Method()
+    expect(tersify(instance)).toBe(`Method {}`)
+  })
+
+  test('getter parent are skipped', () => {
     class GetterParent {
       get x() { return 1 }
     }
     class Subject extends GetterParent { }
     const subject = new Subject()
 
-    expect(tersify(subject)).toBe('{}')
+    expect(tersify(subject)).toBe('Subject {}')
+  })
+
+  test('circular reference', () => {
+    class Circular { instance?: Circular }
+    const instance = new Circular()
+    instance.instance = instance
+
+    expect(tersify(instance)).toBe('Circular { instance: ref() }')
+  })
+
+  test('with tersify function', () => {
+    class Tersify { tersify() { return 'Tsfy {}' } }
+    const instance = new Tersify()
+    expect(tersify(instance)).toBe('Tsfy {}')
+  })
+
+  test('with skipped props', () => {
+    class TwoProps { value1 = 1; value2 = 2 }
+    const instance = new TwoProps()
+
+    expect(tersify(instance, { maxLength: 18 })).toBe(`TwoProps { va... }`)
   })
 })

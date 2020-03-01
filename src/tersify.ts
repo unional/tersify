@@ -26,31 +26,16 @@ function tersifyValue(context: TersifyContext, value: any, length: number) {
 }
 
 function getType(value: any) {
-  if (value === undefined || value === null) {
-    return String(value)
-  }
+  if (value === undefined || value === null) return String(value)
+  if (value instanceof RegExp) return 'RegExp'
+  if (value instanceof Date) return 'Date'
+  if (Array.isArray(value)) return 'Array'
+  if (value instanceof Error) return 'Error'
+  if (isBuffer(value)) return 'Buffer'
 
-  if (value instanceof RegExp) {
-    return 'RegExp'
-  }
-
-  if (value instanceof Date) {
-    return 'Date'
-  }
-
-  if (Array.isArray(value)) {
-    return 'Array'
-  }
-
-  if (value instanceof Error) {
-    return 'Error'
-  }
-
-  if (isBuffer(value)) {
-    return 'Buffer'
-  }
-
-  return typeof value
+  const type = typeof value
+  if (type === 'object' && Object.getPrototypeOf(value) !== Object.prototype) return 'instance'
+  return type
 }
 
 type TersifyFunc = (context: TersifyContext, value: any, length: number) => string
@@ -61,6 +46,7 @@ const tersifyFactory: Record<string, TersifyFunc> = {
   'boolean': tersifyLiteral,
   'number': tersifyLiteral,
   'bigint': tersifyBigint,
+  'instance': tersifyInstance,
   'string': tersifyString,
   'symbol': tersifySymbol,
   'function': tersifyFunction,
@@ -165,7 +151,7 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
     }
     return p
   }, [] as string[])
-  // console.log(trim(props.join(', '), length - bracketLen))
+
   const hasSkippedProps = keys.length > props.length
   const content = hasSkippedProps ? props.join(', ') + ' ' : props.join(', ')
   const trimmedContent = trim(context, content, length - bracketLen)
@@ -176,7 +162,59 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
       `{ ${trimmedContent} }`
 }
 
-function getPropStr(context: TersifyContext, bag: Record<any,any>, key: string, length: number, isLastKey: boolean) {
+function tersifyInstance(context: TersifyContext, value: object, length: number) {
+  const ref = context.references.find(r => r.value === value)
+  if (ref) {
+    return `ref(${ref.path.join(', ')})`
+  }
+
+  context.references.push({ value, path: context.path })
+
+  if (!context.raw && hasTersifyFn(value) && value.tersify !== defaultTersify) {
+    return value.tersify({ maxLength: length })
+  }
+
+  if (length <= 4) switch (length) {
+    case 4: return '. {}'
+    case 3: return '...'
+    case 2: return '..'
+    case 1: return '.'
+    case 0: return ''
+  }
+
+  const proto = Object.getPrototypeOf(value)
+  const name: string = proto.constructor.name
+  const bracketLen = 2 // `{}`
+  const spaceLen = 1 // ' '
+
+  const [nameLength, valueLength] = length < (name.length + spaceLen + bracketLen) ?
+    [length - spaceLen - bracketLen, bracketLen] :
+    [name.length, length - name.length - spaceLen]
+
+  const nameStr = trim(context, name, nameLength)
+
+  let remaining = valueLength
+  const keys = Object.keys(value)
+  const props = keys.reduce((p, k, i) => {
+    if (remaining > 0) {
+      const isLastKey = i === keys.length - 1
+      const propStr = getPropStr(context, value, k, remaining, isLastKey)
+      remaining -= propStr.length
+      p.push(propStr)
+    }
+    return p
+  }, [] as string[])
+
+  const hasSkippedProps = keys.length > props.length
+  const content = hasSkippedProps ? props.join(', ') + ' ' : props.join(', ')
+  const trimmedContent = trim(context, content, valueLength - bracketLen - 2)
+
+  return keys.length === 0 ? `${nameStr} {}` :
+    trimmedContent.length === 0 ?
+      trim(context, `${nameStr} {   }`, length) :
+      `${nameStr} { ${trimmedContent} }`
+}
+function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string, length: number, isLastKey: boolean) {
   const commaAndSpaceLen = isLastKey ? 0 : 2
   const colonAndSpaceLen = 2
   const path = [...context.path, key]
