@@ -2038,14 +2038,13 @@ describe('class', () => {
     expect(tersify(Foo)).toBe('class Foo{ *do() {} }')
   })
 
-  test('getter parent', () => {
+  test('getter parent are skipped', () => {
     class GetterParent {
       get x() { return 1 }
     }
     class Subject extends GetterParent { }
-    const subject = new Subject()
 
-    expect(tersify(subject)).toBe('{}')
+    expect(tersify(Subject)).toBe('class Subject{}')
   })
 })
 
@@ -2085,5 +2084,15 @@ describe('instance', () => {
     class Method { foo() {} }
     const instance = new Method()
     expect(tersify(instance)).toBe(`Method {}`)
+  })
+
+  test('getter parent are skipped', () => {
+    class GetterParent {
+      get x() { return 1 }
+    }
+    class Subject extends GetterParent { }
+    const subject = new Subject()
+
+    expect(tersify(subject)).toBe('Subject {}')
   })
 })
