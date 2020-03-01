@@ -2061,6 +2061,7 @@ describe('instance', () => {
     expect(tersify(instance, { maxLength: 3 })).toBe(`...`)
     expect(tersify(instance, { maxLength: 2 })).toBe(`..`)
     expect(tersify(instance, { maxLength: 1 })).toBe(`.`)
+    expect(tersify(instance, { maxLength: 0 })).toBe(``)
   })
 
   test('with property', () => {
@@ -2081,7 +2082,7 @@ describe('instance', () => {
   })
 
   test('method are skipped as the class name is sufficient', () => {
-    class Method { foo() {} }
+    class Method { foo() { } }
     const instance = new Method()
     expect(tersify(instance)).toBe(`Method {}`)
   })
@@ -2094,5 +2095,26 @@ describe('instance', () => {
     const subject = new Subject()
 
     expect(tersify(subject)).toBe('Subject {}')
+  })
+
+  test('circular reference', () => {
+    class Circular { instance?: Circular }
+    const instance = new Circular()
+    instance.instance = instance
+
+    expect(tersify(instance)).toBe('Circular { instance: ref() }')
+  })
+
+  test('with tersify function', () => {
+    class Tersify { tersify() { return 'Tsfy {}' } }
+    const instance = new Tersify()
+    expect(tersify(instance)).toBe('Tsfy {}')
+  })
+
+  test('with skipped props', () => {
+    class TwoProps { value1 = 1; value2 = 2 }
+    const instance = new TwoProps()
+
+    expect(tersify(instance, { maxLength: 18 })).toBe(`TwoProps { va... }`)
   })
 })
