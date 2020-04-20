@@ -1,12 +1,8 @@
-import { Parser } from 'acorn';
-import bigInt from 'acorn-bigint';
 import { hasTersifyFn } from './hasTersifyFn';
 import { defaultTersify } from './tersify';
 import { tersifyAcorn } from './tersifyAcorn';
 import { tersifyFunctionByString } from './tersifyFunctionByString';
 import { TersifyContext } from './typesInternal';
-
-Parser.extend(bigInt)
 
 export function tersifyFunction(context: TersifyContext, fn: Function, _length: number): string {
   if (!context.raw && hasTersifyFn(fn) && fn.tersify !== defaultTersify) {
