@@ -1,16 +1,12 @@
-
-import { Parser } from 'acorn';
-import bigInt from 'acorn-bigint';
+import { parseExpressionAt } from 'acorn';
 import { trim } from '../trim';
 import { TersifyContext } from '../typesInternal';
 import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode, SequenceExpression, TemplateLiteral, TaggedTemplateExpression } from './AcornTypes';
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder';
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number) {
-  const parser = Parser.extend(bigInt)
-
   const fnStr = getFunctionString(value)
-  const node = parser.parseExpressionAt(`(${fnStr})`, 0) as AcornNode
+  const node = parseExpressionAt(`(${fnStr})`, 0, { ecmaVersion: 2020 }) as AcornNode
   return tersifyAcornNode(context, node, length)
 }
 
