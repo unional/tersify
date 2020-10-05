@@ -11,7 +11,7 @@ export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
   return tersify(this, options)
 }
 
-export function tersify(obj, options?: Partial<TersifyOptions>): string {
+export function tersify(obj: any, options?: Partial<TersifyOptions>): string {
   const context = required<TersifyContext>(defaultOptions, options, { path: [], references: [] })
   return tersifyValue(context, obj, context.maxLength)
 }
