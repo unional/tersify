@@ -11,7 +11,7 @@ export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
   return tersify(this, options)
 }
 
-export function tersify(obj, options?: Partial<TersifyOptions>): string {
+export function tersify(obj: any, options?: Partial<TersifyOptions>): string {
   const context = required<TersifyContext>(defaultOptions, options, { path: [], references: [] })
   return tersifyValue(context, obj, context.maxLength)
 }
@@ -214,6 +214,7 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
       trim(context, `${nameStr} {   }`, length) :
       `${nameStr} { ${trimmedContent} }`
 }
+
 function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string, length: number, isLastKey: boolean) {
   const commaAndSpaceLen = isLastKey ? 0 : 2
   const colonAndSpaceLen = 2
@@ -224,7 +225,7 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
   if (d.get) accessor.push('Get')
   if (d.set) accessor.push('Set')
   if (accessor.length > 0) {
-    return `${key}: [${accessor.join('/')}]`
+    return `${getPropKey(key)}: [${accessor.join('/')}]`
   }
 
   const value = bag[key]
@@ -235,7 +236,7 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
         { ...context, path },
         value,
         length - key.length - commaAndSpaceLen - colonAndSpaceLen)
-      return `${key}: ${propValue}`
+      return `${getPropKey(key)}: ${propValue}`
     }
     else {
       const propValue = tersifyValue(
@@ -244,7 +245,7 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
         length - key.length - commaAndSpaceLen + fnLen)
       const asyncToken = /^async fn/.test(propValue) ? 'async ' : ''
       const generatorToken = /^(async )?fn\*/.test(propValue) ? '*' : ''
-      return `${asyncToken}${generatorToken}${key}${propValue.slice(propValue.indexOf('('))}`
+      return `${asyncToken}${generatorToken}${getPropKey(key)}${propValue.slice(propValue.indexOf('('))}`
     }
   }
   else {
@@ -253,6 +254,10 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
       { ...context, path, noTrim: true },
       value,
       length - key.length - colonAndSpaceLen - commaAndSpaceLen)
-    return `${key}: ${propValue}`
+    return `${getPropKey(key)}: ${propValue}`
   }
+}
+
+function getPropKey(key: string) {
+  return key.indexOf('-') >=0 ? `'${key}'` : key
 }
