@@ -1,5 +1,5 @@
-import { tersible } from './tersible';
-import { tersify } from './tersify';
+import { tersible } from './tersible'
+import { tersify } from './tersify'
 
 describe('undefined', () => {
   test(`tersify(undefined)`, () => {
@@ -592,9 +592,9 @@ describe('function', () => {
 
   test('with variable declaration', () => {
     const subject: any = function () {
-      const date = new Date('2020-05-14T11:45:27.234Z');
-      return date;
-    };
+      const date = new Date('2020-05-14T11:45:27.234Z')
+      return date
+    }
     expect(tersify(subject)).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return date }`)
     expect(tersify(subject, { maxLength: 59 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return date }`)
     expect(tersify(subject, { maxLength: 58 })).toBe(`fn() { const date = 2020-05-14T11:45:27.234Z; return ... }`)
@@ -761,7 +761,7 @@ describe('function', () => {
   test('with for loop with break', () => {
     expect(tersify(function () {
       for (; ;) {
-        break;
+        break
       }
     })).toBe('fn() { for (;;) { break } }')
   })
@@ -924,7 +924,7 @@ describe('function', () => {
   test('create namespaced class', () => {
     function fool() {
       // @ts-ignore
-      return new ns.Foo();
+      return new ns.Foo()
     }
 
     expect(tersify(fool)).toBe(`fn fool() { return new ns.Foo() }`)
@@ -943,10 +943,18 @@ describe('function', () => {
   })
 
   test('returns tagged literal', () => {
-    function tag(...args: any[]) {}
+    function tag(...args: any[]) { }
 
     const subject = function templateLiteral() { return tag`a${123456789}c` }
     expect(tersify(subject)).toBe('fn templateLiteral() { return tag`a${123456789}c` }')
+  })
+
+  test('with comment', () => {
+    function withComment() {
+      // comment
+    }
+
+    expect(tersify(withComment)).toBe('fn withComment() {}')
   })
 })
 
@@ -1229,9 +1237,9 @@ describe('arrow function', () => {
 
   test('with variable declaration', () => {
     const subject: any = () => {
-      const date = new Date('2020-05-14T11:45:27.234Z');
-      return date;
-    };
+      const date = new Date('2020-05-14T11:45:27.234Z')
+      return date
+    }
     expect(tersify(subject)).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return date }`)
     expect(tersify(subject, { maxLength: 60 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return date }`)
     expect(tersify(subject, { maxLength: 59 })).toBe(`() => { const date = 2020-05-14T11:45:27.234Z; return ... }`)
@@ -1398,7 +1406,7 @@ describe('arrow function', () => {
   test('with for loop with break', () => {
     expect(tersify(() => {
       for (; ;) {
-        break;
+        break
       }
     })).toBe('() => { for (;;) { break } }')
   })
@@ -1582,7 +1590,9 @@ describe('object', () => {
     expect(tersify({ get x() { return 1 } }, { maxLength: 5 })).toBe('{ . }')
     expect(tersify({ get x() { return 1 } }, { maxLength: 4 })).toBe('{ ..')
   })
-
+  test('getter with dash', () => {
+    expect(tersify({ get 'a-b'() { return 1 } })).toBe(`{ 'a-b': [Get] }`)
+  })
   test('object with setter', () => {
     expect(tersify({ set x(_) { } })).toBe('{ x: [Set] }')
     expect(tersify({ set x(_) { } }, { maxLength: 12 })).toBe('{ x: [Set] }')
@@ -1628,6 +1638,10 @@ describe('object', () => {
     expect(tersify({ a: Symbol() })).toBe('{ a: Sym() }')
     expect(tersify({ a: Symbol.for('abc') })).toBe('{ a: Sym(abc) }')
     expect(tersify({ a: /abcd/gi })).toBe('{ a: /abcd/gi }')
+  })
+
+  test('property with dash', () => {
+    expect(tersify({ 'a-b': 1 })).toBe(`{ 'a-b': 1 }`)
   })
 
   test('date object property', () => {
@@ -1678,6 +1692,10 @@ describe('object', () => {
     expect(tersify({ a: function () { } }, { maxLength: 9 })).toBe('{ a(... }')
   })
 
+  test('anomyous function with dash', () => {
+    expect(tersify({ 'a-b': function () { } })).toBe(`{ 'a-b'() {} }`)
+  })
+
   test('named function', () => {
     expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
   })
@@ -1709,6 +1727,9 @@ describe('object', () => {
 
   test('arrow function', () => {
     expect(tersify({ a: () => { } })).toBe('{ a: () => {} }')
+  })
+  test('arrow function with dash', () => {
+    expect(tersify({ 'a-b': () => { } })).toBe(`{ 'a-b': () => {} }`)
   })
 
   test('trimming object with arrow function', () => {
