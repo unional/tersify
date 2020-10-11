@@ -956,6 +956,12 @@ describe('function', () => {
 
     expect(tersify(withComment)).toBe('fn withComment() {}')
   })
+
+  test('with typeof', () => {
+    function withTypeof(s) { return typeof s }
+
+    expect(tersify(withTypeof)).toBe('fn withTypeof(s) { return typeof s }')
+  })
 })
 
 describe('arrow function', () => {
