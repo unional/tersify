@@ -25,6 +25,9 @@
   "module": "libm/index.js",
   "jsnext:main": "libm/index.js",
   "browser": {
+    "./lib/constants.js": "./lib/constants.browser.js",
+    "./lib/constants.d.ts": "./lib/constants.browser.d.ts",
+    "./lib/constants.js.map": "./lib/constants.browser.js.map",
     "./lib/tersifyFunction.js": "./lib/tersifyFunction.browser.js",
     "./lib/tersifyFunction.d.ts": "./lib/tersifyFunction.browser.d.ts",
     "./lib/tersifyFunction.js.map": "./lib/tersifyFunction.browser.js.map",
