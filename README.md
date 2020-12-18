@@ -21,10 +21,13 @@ You can also override the result by providing your own `tersify()` function on t
 import { tersify } from 'tersify'
 
 // `() => 'foo'`
-tersify(() => 'foo')
+tersify(() => { return 'foo' })
 
 // `fn(x, y) { return x + y; }`
 tersify(function (x, y) { return x + y })
+
+// `fn foo(y) { return y++; }`
+tersify(function foo(y) { return y++ })
 
 // Change result to 80 character long.
 // result will have `...` to indicate info missing.
@@ -33,6 +36,9 @@ tersify({...}, { maxLength: 80 })
 
 // '{ a: 1 }`
 tersify({ a: 1 })
+
+// `() => Sym(abc)`
+tersify(() => { return Symbol.for(abc) })
 ```
 
 ## tersible
