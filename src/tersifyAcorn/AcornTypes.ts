@@ -30,7 +30,7 @@ export type LiteralNode = {
 export type CallExpressionNode = {
   type: 'CallExpression',
   callee: IdentifierNode | MemberExpressionNode,
-  arguments: (IdentifierNode | LiteralNode)[]
+  arguments: (IdentifierNode | LiteralNode | ThisExpressionNode)[]
 } & AcornNodeBase
 
 export type SymbolForNode = AcornNodeBase & {

@@ -1,1 +1,1 @@
-export * from './tersifyAcron'
+export * from './tersifyAcorn'

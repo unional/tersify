@@ -49,7 +49,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
     case 'VariableDeclaration':
       return tersifyVariableDeclarationNode(context, node, length)
     case 'VariableDeclarator':
-      return tersifyVeriableDeclaratorNode(context, node, length)
+      return tersifyVariableDeclaratorNode(context, node, length)
     case 'NewExpression':
       return tersifyNewExpressionNode(context, node, length)
     case 'BinaryExpression':
@@ -66,7 +66,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
     case 'WhileStatement':
       return tersifyWhileStatementNode(context, node, length)
     case 'AssignmentExpression':
-      return tersifyAssignementExpressionNode(context, node, length)
+      return tersifyAssignmentExpressionNode(context, node, length)
     case 'DoWhileStatement':
       return tersifyDoWhileStatementNode(context, node, length)
     case 'ForStatement':
@@ -80,7 +80,7 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
     case 'SwitchStatement':
       return tersifySwitchStatementNode(context, node, length)
     case 'SwitchCase':
-      return tersifySwitchCaseNdoe(context, node, length)
+      return tersifySwitchCaseNode(context, node, length)
     case 'ForInStatement':
       return tersifyForInStatementNode(context, node, length)
     case 'ForOfStatement':
@@ -204,7 +204,7 @@ function tersifyForInStatementNode(context: TersifyContext, node: ForInStatement
   return `for (${left} in ${right}) ${body}`
 }
 
-function tersifySwitchCaseNdoe(context: TersifyContext, node: SwitchCaseNode, length: number) {
+function tersifySwitchCaseNode(context: TersifyContext, node: SwitchCaseNode, length: number) {
   const test = tersifyAcornNode(context, node.test, length)
   const consequent = node.consequent.map(c => tersifyAcornNode(context, c, length))
 
@@ -248,7 +248,7 @@ function tersifyForStatementNode(context: TersifyContext, node: ForStatementNode
   return `for (${init};${test ? ` ${test}` : ''};${update ? ` ${update}` : ''}) ${body}`
 }
 
-function tersifyAssignementExpressionNode(context: TersifyContext, node: AssignmentExpressionNode, length: number) {
+function tersifyAssignmentExpressionNode(context: TersifyContext, node: AssignmentExpressionNode, length: number) {
   const left = tersifyAcornNode(context, node.left, length)
   const right = tersifyAcornNode(context, node.right, length)
   return `${left} ${node.operator} ${right}`
@@ -348,7 +348,7 @@ function tersifyNewDate(node: NewExpressionNode) {
   }
 }
 
-function tersifyVeriableDeclaratorNode(context: TersifyContext, node: VariableDeclaratorNode, length: number) {
+function tersifyVariableDeclaratorNode(context: TersifyContext, node: VariableDeclaratorNode, length: number) {
   return `${node.id.name}${node.init ? ` = ${tersifyAcornNode(context, node.init, length)}` : ''}`
 }
 
@@ -449,6 +449,10 @@ function tersifyCallExpressionNode(context: TersifyContext, node: CallExpression
   if (isSymbolForNode(node)) {
     return `Sym(${node.arguments[0].value})`
   }
+  if (isDefineThisProperty(node)) {
+    const prop = (node.arguments[1] as LiteralNode).value
+    return `this.${prop} = ${tersifyAcornNode(context, node.arguments[2], length - 5 - prop.length - 3)}`
+  }
   const callee = tersifyAcornNode(context, node.callee, length)
   const params = tersifyFunctionParams(context, node.arguments)
   return `${callee}${params}`
@@ -460,10 +464,16 @@ function isSymbolForNode(node: CallExpressionNode): node is SymbolForNode {
     node.callee.object.name === 'Symbol' &&
     node.callee.property.type === 'Identifier' &&
     node.callee.property.name === 'for'
-
 }
 
-function tersifyParamsBody(context: TersifyContext, params: Array<IdentifierNode | LiteralNode | ObjectPatternNode>) {
+function isDefineThisProperty(node: CallExpressionNode) {
+  return node.callee.type === 'Identifier' &&
+    node.callee.name === '_defineProperty' &&
+    node.arguments.length === 3 &&
+    node.arguments[0].type === 'ThisExpression'
+}
+
+function tersifyParamsBody(context: TersifyContext, params: Array<IdentifierNode | LiteralNode | ObjectPatternNode | ThisExpressionNode>) {
   return params.reduce((p, v) => {
     p.push(tersifyAcornNode(context, v, Infinity))
     return p
@@ -509,7 +519,7 @@ function tersifyFunctionExpressionNode(context: TersifyContext, node: FunctionEx
   }
 }
 
-function tersifyFunctionParams(context: TersifyContext, params: (IdentifierNode | LiteralNode | ObjectPatternNode)[]) {
+function tersifyFunctionParams(context: TersifyContext, params: (IdentifierNode | LiteralNode | ObjectPatternNode | ThisExpressionNode)[]) {
   return `(${tersifyParamsBody(context, params)})`
 }
 

@@ -12,7 +12,7 @@ export function tersifyFunction(context: TersifyContext, fn: Function, _length: 
   try {
     return tersifyAcorn(context, fn, context.maxLength)
   }
-  catch (e) {
+  catch (e: any) {
     // istanbul ignore next
     if (e.name !== 'SyntaxError') throw e
     // istanbul ignore next

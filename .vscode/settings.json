@@ -8,5 +8,11 @@
       "url": "http://json.schemastore.org/tsconfig"
     }
   ],
-  "eslint.enable": true
+  "eslint.enable": true,
+  "cSpell.words": [
+    "tersible",
+    "tersify",
+    "tsbuildinfo",
+    "unpartial"
+  ]
 }

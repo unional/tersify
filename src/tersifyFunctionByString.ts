@@ -18,9 +18,7 @@ function isFunc(str: string) {
 
 function formatArrow(str: string, maxLength: number) {
   const struct = getArrowStruct(str)
-  const template = `${struct.async ? 'async ' : ''}${
-    struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`} => ${
-    struct.singleLineBody ? '%2' : `{${struct.body ? ' %2 ' : ''}}`}`
+  const template = `${struct.async ? 'async ' : ''}${struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`} => ${struct.singleLineBody ? '%2' : `{${struct.body ? ' %2 ' : ''}}`}`
   const baseLength = struct.params && struct.body ? template.length - 4 :
     struct.params || struct.body ? template.length - 2 : template.length;
 
@@ -34,14 +32,18 @@ function getArrowStruct(str: string) {
   const isAsync = str.startsWith('async ')
   if (isAsync) str = str.slice(5).trim()
 
-  const indexOfOpenParen = str.indexOf('(')
-  const name = str.slice(0, indexOfOpenParen).trim()
-  str = str.slice(indexOfOpenParen)
-  const paramsNotTrimmed = getParams(str)
-  str = str.slice(paramsNotTrimmed.length + 2).trim()
-  str = str.slice(str.indexOf('=>') + 2).trim()
-  let isSingle = isSingleLineBody(str)
-  let body = removeLineBreaks(isSingle ? str : getEnclosedBody(str)).trim()
+  const arrowIndex = str.indexOf(' => ')
+  const paramRaw = str.slice(0, arrowIndex).trim()
+  const bodyRaw = str.slice(arrowIndex + 4).trim()
+  const params = getParams(paramRaw.startsWith('(') ? paramRaw : `(${paramRaw})`)
+  // const indexOfOpenParen = str.indexOf('(')
+  // const name = str.slice(0, indexOfOpenParen).trim()
+  // str = str.slice(indexOfOpenParen)
+  // const paramsNotTrimmed = getParams(str)
+  // str = str.slice(paramsNotTrimmed.length + 2).trim()
+  // str = str.slice(str.indexOf('=>') + 2).trim()
+  let isSingle = isSingleLineBody(bodyRaw)
+  let body = removeLineBreaks(isSingle ? bodyRaw : getEnclosedBody(bodyRaw)).trim()
   if (!isSingle && body.startsWith('return ') && body.endsWith(';')) {
     isSingle = true
     body = body.slice(7, -1)
@@ -52,9 +54,9 @@ function getArrowStruct(str: string) {
   return {
     async: isAsync,
     generator: false,
-    name,
-    singleParam: paramsNotTrimmed && paramsNotTrimmed.indexOf(',') === -1,
-    params: paramsNotTrimmed.trim(),
+    name: '',
+    singleParam: params && params.indexOf(',') === -1,
+    params,
     singleLineBody: isSingle,
     body
   }
@@ -137,7 +139,7 @@ function getEnclosedBody(str: string) {
 }
 
 function removeLineBreaks(value: string) {
-  return value.split('\n').map(x => x.trim()).join(' ')
+  return value.split('\n').map(x => x.trim()).filter(x => !!x).join(' ')
 }
 
 function applyTemplate(template: string, struct: ReturnType<typeof getFuncStruct>) {

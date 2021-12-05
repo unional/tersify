@@ -5,7 +5,7 @@ import { TersifyOptions } from './types';
 import { unpartial } from 'unpartial';
 
 describe('function', () => {
-  test('anomymous with no return', () => {
+  test('anonymous with no return', () => {
     expect(testFunction(function () { })).toBe('fn() {}')
     expect(testFunction(function () { }, { maxLength: 7 })).toBe('fn() {}')
     expect(testFunction(function () { }, { maxLength: 6 })).toBe('fn(...')
@@ -18,7 +18,7 @@ describe('function', () => {
   })
 
   test(`raw mode returns using fn.toString()`, () => {
-    expect(testFunction(function () { }, { raw: true })).toBe('function () { }')
+    expect(testFunction(function () { }, { raw: true })).toBe(`function () {}`)
   })
 
   test('single param', () => {
@@ -161,7 +161,7 @@ describe('function', () => {
   //   })).toMatch(/fn\(\) { return 2020-05-14T\d{2}:00:00.000Z }/)
   // })
 
-  // test('returns Date with variable in contructor', () => {
+  // test('returns Date with variable in constructor', () => {
   //   expect(testFunction(function () {
   //     let x = 1
   //     return new Date(2020, x)
@@ -175,7 +175,7 @@ describe('function', () => {
   })
 
   test(`returns anomymous function`, () => {
-    expect(testFunction(function () { return function () { } })).toBe(`fn() { return function () { }; }`)
+    expect(testFunction(function () { return function () { } })).toBe(`fn() { return function () {}; }`)
   })
 
   test('returns anonymous function with single param', () => {
@@ -187,39 +187,39 @@ describe('function', () => {
   })
 
   test(`returns named function`, () => {
-    expect(testFunction(function () { return function foo() { } })).toBe(`fn() { return function foo() { }; }`)
+    expect(testFunction(function () { return function foo() { } })).toBe(`fn() { return function foo() {}; }`)
   })
 
   test(`returns arrow function`, () => {
-    expect(testFunction(function () { return () => { } })).toBe(`fn() { return () => { }; }`)
+    expect(testFunction(function () { return () => { } })).toBe(`fn() { return () => {}; }`)
   })
 
   test(`returns async anomymous function`, () => {
-    expect(testFunction(function () { return async function () { } })).toBe(`fn() { return async function () { }; }`)
+    expect(testFunction(function () { return async function () { } })).toBe(`fn() { return async function () {}; }`)
   })
 
   test(`returns async named function`, () => {
-    expect(testFunction(function () { return async function foo() { } })).toBe(`fn() { return async function foo() { }; }`)
+    expect(testFunction(function () { return async function foo() { } })).toBe(`fn() { return async function foo() {}; }`)
   })
 
   test(`returns async arrow function`, () => {
-    expect(testFunction(function () { return async () => { } })).toBe(`fn() { return async () => { }; }`)
+    expect(testFunction(function () { return async () => { } })).toBe(`fn() { return async () => {}; }`)
   })
 
   test(`returns generator anomymous function`, () => {
-    expect(testFunction(function () { return function* () { } })).toBe(`fn() { return function* () { }; }`)
+    expect(testFunction(function () { return function* () { } })).toBe(`fn() { return function* () {}; }`)
   })
 
   test(`returns generator named function`, () => {
-    expect(testFunction(function () { return function* foo() { } })).toBe(`fn() { return function* foo() { }; }`)
+    expect(testFunction(function () { return function* foo() { } })).toBe(`fn() { return function* foo() {}; }`)
   })
 
   test(`returns async generator anomymous function`, () => {
-    expect(testFunction(function () { return async function* () { } })).toBe(`fn() { return async function* () { }; }`)
+    expect(testFunction(function () { return async function* () { } })).toBe(`fn() { return async function* () {}; }`)
   })
 
   test(`returns async generator named function`, () => {
-    expect(testFunction(function () { return async function* foo() { } })).toBe(`fn() { return async function* foo() { }; }`)
+    expect(testFunction(function () { return async function* foo() { } })).toBe(`fn() { return async function* foo() {}; }`)
   })
 
   test('returns single property object', () => {
@@ -415,13 +415,13 @@ describe('function', () => {
     expect(testFunction(function (x) {
       if (x) return true
       else return false
-    })).toBe('fn(x) { if (x) return true; else return false; }')
+    })).toBe('fn(x) { if (x) return true;else return false; }')
     expect(testFunction(function (x) {
       if (x) return true
       else {
         return false
       }
-    })).toBe('fn(x) { if (x) return true; else { return false; } }')
+    })).toBe('fn(x) { if (x) return true;else { return false; } }')
 
     expect(testFunction(function (x) {
       if (x) {
@@ -709,7 +709,7 @@ describe('arrow function', () => {
   //   })).toMatch(/\(\) => 2020-05-14T\d{2}:00:00.000Z/)
   // })
 
-  // test('returns Date with variable in contructor', () => {
+  // test('returns Date with variable in constructor', () => {
   //   expect(testFunction(() => {
   //     let x = 1
   //     return new Date(2020, x)
@@ -723,8 +723,8 @@ describe('arrow function', () => {
   })
 
   test('return anomymous function', () => {
-    expect(testFunction(() => function () { })).toBe(`() => function () { }`)
-    expect(testFunction(() => { return function () { } })).toBe(`() => function () { }`)
+    expect(testFunction(() => function () { })).toBe(`() => function () {}`)
+    expect(testFunction(() => { return function () { } })).toBe(`() => function () {}`)
     expect(testFunction(() => function (a, b) {
       console.info(a)
       console.info(b)
@@ -742,8 +742,8 @@ describe('arrow function', () => {
   })
 
   test('return named function', () => {
-    expect(testFunction(() => function foo() { })).toBe(`() => function foo() { }`)
-    expect(testFunction(() => { return function foo() { } })).toBe(`() => function foo() { }`)
+    expect(testFunction(() => function foo() { })).toBe(`() => function foo() {}`)
+    expect(testFunction(() => { return function foo() { } })).toBe(`() => function foo() {}`)
     expect(testFunction(() => function foo(a, b) {
       console.info(a)
       console.info(b)
@@ -755,35 +755,35 @@ describe('arrow function', () => {
     expect(testFunction((a) => (b) => {
       console.info(a)
       console.info(b)
-    })).toBe(`a => (b) => { console.info(a); console.info(b); }`)
+    })).toBe(`a => b => { console.info(a); console.info(b); }`)
   })
 
   test(`returns async anomymous function`, () => {
-    expect(testFunction(() => { return async function () { } })).toBe(`() => async function () { }`)
+    expect(testFunction(() => { return async function () { } })).toBe(`() => async function () {}`)
   })
 
   test(`returns async named function`, () => {
-    expect(testFunction(() => { return async function foo() { } })).toBe(`() => async function foo() { }`)
+    expect(testFunction(() => { return async function foo() { } })).toBe(`() => async function foo() {}`)
   })
 
   test(`returns async arrow function`, () => {
-    expect(testFunction(() => { return async () => { } })).toBe(`() => async () => { }`)
+    expect(testFunction(() => { return async () => { } })).toBe(`() => async () => {}`)
   })
 
   test(`returns generator anomymous function`, () => {
-    expect(testFunction(() => { return function* () { } })).toBe(`() => function* () { }`)
+    expect(testFunction(() => { return function* () { } })).toBe(`() => function* () {}`)
   })
 
   test(`returns generator named function`, () => {
-    expect(testFunction(() => { return function* foo() { } })).toBe(`() => function* foo() { }`)
+    expect(testFunction(() => { return function* foo() { } })).toBe(`() => function* foo() {}`)
   })
 
   test(`returns async generator anomymous function`, () => {
-    expect(testFunction(() => { return async function* () { } })).toBe(`() => async function* () { }`)
+    expect(testFunction(() => { return async function* () { } })).toBe(`() => async function* () {}`)
   })
 
   test(`returns async generator named function`, () => {
-    expect(testFunction(() => { return async function* foo() { } })).toBe(`() => async function* foo() { }`)
+    expect(testFunction(() => { return async function* foo() { } })).toBe(`() => async function* foo() {}`)
   })
 
   test('returns single property object', () => {
@@ -975,13 +975,13 @@ describe('arrow function', () => {
     expect(testFunction((x) => {
       if (x) return true
       else return false
-    })).toBe('x => { if (x) return true; else return false; }')
+    })).toBe('x => { if (x) return true;else return false; }')
     expect(testFunction((x) => {
       if (x) return true
       else {
         return false
       }
-    })).toBe('x => { if (x) return true; else { return false; } }')
+    })).toBe('x => { if (x) return true;else { return false; } }')
 
     expect(testFunction((x) => {
       if (x) {
@@ -1175,7 +1175,10 @@ describe('arrow function', () => {
 
   test('raw will skip tersify() method', () => {
     expect(testFunction(tersible((x, y) => x + y, () => 'x + y'), { maxLength: Infinity, raw: true })).toBe('(x, y) => x + y')
-    expect(testFunction(tersible(function (x, y) { return x + y }, () => 'x + y'), { maxLength: Infinity, raw: true })).toBe('function (x, y) { return x + y; }')
+    const fn = function (x, y) { return x + y }
+    expect(testFunction(
+      tersible(fn, () => 'x + y'), { maxLength: Infinity, raw: true }))
+      .toBe(fn.toString())
   })
 })
 
