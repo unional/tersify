@@ -15,12 +15,6 @@
     "name": "Homa Wong",
     "email": "homawong@gmail.com"
   },
-  "files": [
-    "dist",
-    "lib",
-    "libm",
-    "src"
-  ],
   "main": "lib/index.js",
   "module": "libm/index.js",
   "jsnext:main": "libm/index.js",
@@ -41,6 +35,12 @@
     "./src/tersifyFunction.ts": "./src/tersifyFunction.browser.ts"
   },
   "typings": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "lib",
+    "libm",
+    "src"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.es5.json && tsc -p tsconfig.esnext.json",
     "bundle": "webpack",
@@ -59,26 +59,39 @@
     }
   },
   "dependencies": {
-    "acorn": "^8.0.5",
+    "acorn": "^8.6.0",
     "is-buffer": "^2.0.5",
-    "unpartial": "^0.6.3"
+    "unpartial": "^0.6.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "@semantic-release/changelog": "^5.0.1",
-    "@unional/devpkg-node": "^1.5.0",
-    "codecov": "^3.8.0",
-    "commitlint-circle": "^1.0.0",
-    "eslint": "7.11.0",
-    "eslint-plugin-harmony": "^5.0.1",
-    "husky": "^4.3.0",
-    "param-case": "^3.0.3",
-    "pascal-case": "^3.1.1",
-    "semantic-release": "^17.1.2",
-    "ts-loader": "^8.0.4",
-    "webpack": "^5.0.0",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^4.0.0"
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
+    "@types/jest": "^27.0.3",
+    "codecov": "^3.8.3",
+    "dependency-check": "^4.1.0",
+    "eslint": "8.4.0",
+    "eslint-plugin-harmony": "^6.0.0",
+    "husky": "^7.0.4",
+    "is-ci": "^3.0.1",
+    "jest": "^27.4.3",
+    "jest-junit": "^13.0.0",
+    "jest-progress-tracker": "^3.0.1",
+    "jest-validate": "^27.4.2",
+    "jest-watch-suspend": "^1.1.2",
+    "jest-watch-toggle-config": "^2.0.1",
+    "jest-watch-typeahead": "^1.0.0",
+    "param-case": "^3.0.4",
+    "pascal-case": "^3.1.2",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.2",
+    "webpack": "^5.64.4",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^4.9.1"
   }
 }
