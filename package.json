@@ -19,6 +19,16 @@
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "jsnext:main": "esm/index.js",
+  "size-limit": [
+    {
+      "path": "cjs/index.js",
+      "limit": "5 kB"
+    },
+    {
+      "path": "esm/index.js",
+      "limit": "5 kB"
+    }
+  ],
   "browser": {
     "./cjs/constants.js": "./cjs/constants.browser.js",
     "./cjs/constants.d.ts": "./cjs/constants.browser.d.ts",
@@ -26,7 +36,7 @@
     "./esm/constants.js": "./esm/constants.browser.js",
     "./esm/constants.d.ts": "./esm/constants.browser.d.ts",
     "./esm/constants.js.map": "./esm/constants.browser.js.map",
-    "./ts/constants.js": "./ts/constants.browser.js",
+    "./ts/constants.ts": "./ts/constants.browser.ts",
     "./cjs/tersifyFunction.js": "./cjs/tersifyFunction.browser.js",
     "./cjs/tersifyFunction.d.ts": "./cjs/tersifyFunction.browser.d.ts",
     "./cjs/tersifyFunction.js.map": "./cjs/tersifyFunction.browser.js.map",
@@ -73,6 +83,7 @@
     "@babel/preset-typescript": "^7.16.0",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
+    "@size-limit/preset-small-lib": "^7.0.5",
     "@types/jest": "^27.0.3",
     "codecov": "^3.8.3",
     "dependency-check": "^4.1.0",
@@ -89,6 +100,7 @@
     "jest-watch-typeahead": "^1.0.0",
     "param-case": "^3.0.4",
     "pascal-case": "^3.1.2",
+    "size-limit": "^7.0.5",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.2",
     "webpack": "^5.64.4",

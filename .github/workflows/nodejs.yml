@@ -30,6 +30,7 @@ jobs:
       - run: yarn
       - run: yarn lint
       - run: yarn build
+      - run: yarn size-limit
       - run: yarn dependency-check
       - name: upload cjs folder
         uses: actions/upload-artifact@v1
