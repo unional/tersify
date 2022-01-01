@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "esModuleInterop": true,
     "lib": [
       "es2015"
     ],
-    "module": "commonjs",
     "moduleResolution": "node",
     "newLine": "LF",
     "noImplicitAny": false,
@@ -14,11 +12,13 @@
     "removeComments": false,
     "skipLibCheck": true,
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "stripInternal": true,
+    "useDefineForClassFields": true
   },
   "files": [
-    "src/index.ts",
-    "src/constants.browser.ts",
-    "src/tersifyFunction.browser.ts"
+    "ts/index.ts",
+    "ts/constants.browser.ts",
+    "ts/tersifyFunction.browser.ts"
   ]
 }

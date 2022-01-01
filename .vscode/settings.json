@@ -10,6 +10,7 @@
   ],
   "eslint.enable": true,
   "cSpell.words": [
+    "libm",
     "tersible",
     "tersify",
     "tsbuildinfo",

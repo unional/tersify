@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "declaration": true,
     "module": "esnext",
-    "outDir": "libm",
+    "outDir": "esm",
     "target": "esnext"
   }
 }

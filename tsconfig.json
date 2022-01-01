@@ -1,14 +1,6 @@
 {
   "extends": "./tsconfig.esnext.json",
-  "atom": {
-    "rewriteTsconfig": false
-  },
-  "buildOnSave": false,
-  "compileOnSave": false,
-  "compilerOptions": {
-    "noEmit": true
-  },
   "include": [
-    "src"
+    "ts"
   ]
 }
