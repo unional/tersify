@@ -45,7 +45,7 @@
     "./esm/tersifyFunction.js.map": "./esm/tersifyFunction.browser.js.map",
     "./ts/tersifyFunction.ts": "./ts/tersifyFunction.browser.ts"
   },
-  "typings": "esm/index.d.ts",
+  "typings": "cjs/index.d.ts",
   "files": [
     "dist",
     "cjs",
