@@ -15,7 +15,7 @@
     "name": "Homa Wong",
     "email": "homawong@gmail.com"
   },
-  "sideEffect": false,
+  "sideEffects": false,
   "main": "lib/index.js",
   "module": "libm/index.js",
   "jsnext:main": "libm/index.js",
