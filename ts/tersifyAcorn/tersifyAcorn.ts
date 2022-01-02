@@ -7,14 +7,17 @@ import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder'
 export function tersifyAcorn(context: TersifyContext, value: any, length: number): string {
   const fnStr = getFunctionString(value)
   const node = parseExpressionAt(`(${fnStr})`, 0, { ecmaVersion: 2020 }) as AcornNode
-  return tersifyAcornNode(context, node, length)
+  const result = tersifyAcornNode(context, node, length)
+  return result
 }
 
 function getFunctionString(value: Function) {
-  const fnStr: string = value.toString()
-  const matches = /^([^\s]+)\(/.exec(fnStr)
-  return matches && matches[1] !== 'function' ?
-    `function ${fnStr}` :
+  const fnStr = value.toString()
+  const isAsync = fnStr.startsWith('async ')
+  const subject = isAsync ? fnStr.slice('async '.length) : fnStr
+  const matches = /^([^\s\\)]+)\s?\(/.exec(subject)
+  return matches && (matches[1] !== 'function' && matches[1] !== 'function*') ?
+    `${isAsync ? 'async ' : ''}function ${fnStr}` :
     fnStr
 }
 

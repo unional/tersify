@@ -231,7 +231,7 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
   const value = bag[key]
   if (typeof value === 'function') {
     const fnLen = 2
-    if ((/^(.*) => /.test(value.toString()))) {
+    if ((/^(.*)\s?=>\s?/.test(value.toString()))) {
       const propValue = tersifyValue(
         { ...context, path },
         value,
