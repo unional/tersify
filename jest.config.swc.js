@@ -17,8 +17,8 @@ module.exports = {
   ],
   'testEnvironment': 'node',
   'testMatch': [
-    '**/?(*.)+(spec|test|integrate|accept|system|unit).[jt]s?(x)',
-    '!**/*.browser.spec.ts'
+    // '**/?(*.)+(spec|test|integrate|accept|system|unit).[jt]s?(x)',
+    '**/*.browser.spec.ts'
   ],
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
