@@ -1,5 +1,12 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "libm",
+    "tersible",
+    "tersify",
+    "tsbuildinfo",
+    "unpartial"
+  ],
+  "eslint.enable": true,
   "json.schemas": [
     {
       "fileMatch": [
@@ -8,11 +15,5 @@
       "url": "http://json.schemastore.org/tsconfig"
     }
   ],
-  "eslint.enable": true,
-  "cSpell.words": [
-    "tersible",
-    "tersify",
-    "tsbuildinfo",
-    "unpartial"
-  ]
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

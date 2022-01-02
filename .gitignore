@@ -42,4 +42,6 @@ node_modules
 typings
 
 # project folders
+cjs
+esm
 lib*

@@ -36,12 +36,6 @@ function getArrowStruct(str: string) {
   const paramRaw = str.slice(0, arrowIndex).trim()
   const bodyRaw = str.slice(arrowIndex + 4).trim()
   const params = getParams(paramRaw.startsWith('(') ? paramRaw : `(${paramRaw})`)
-  // const indexOfOpenParen = str.indexOf('(')
-  // const name = str.slice(0, indexOfOpenParen).trim()
-  // str = str.slice(indexOfOpenParen)
-  // const paramsNotTrimmed = getParams(str)
-  // str = str.slice(paramsNotTrimmed.length + 2).trim()
-  // str = str.slice(str.indexOf('=>') + 2).trim()
   let isSingle = isSingleLineBody(bodyRaw)
   let body = removeLineBreaks(isSingle ? bodyRaw : getEnclosedBody(bodyRaw)).trim()
   if (!isSingle && body.startsWith('return ') && body.endsWith(';')) {
