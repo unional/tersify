@@ -19,16 +19,6 @@
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "jsnext:main": "esm/index.js",
-  "size-limit": [
-    {
-      "path": "cjs/index.js",
-      "limit": "5 kB"
-    },
-    {
-      "path": "esm/index.js",
-      "limit": "5 kB"
-    }
-  ],
   "browser": {
     "./cjs/constants.js": "./cjs/constants.browser.js",
     "./cjs/constants.d.ts": "./cjs/constants.browser.d.ts",
@@ -61,6 +51,7 @@
     "dependency-check": "dependency-check . --unused --no-dev && dependency-check . --missing --no-dev",
     "lint": "eslint --ext=ts,js .",
     "test": "jest --reporters=default",
+    "test:swc": "jest -c jest.config.swc.js --reporters=default",
     "verify": "yarn lint && yarn build && yarn dependency-check && jest --coverage --reporters=default",
     "watch": "jest --watch"
   },
@@ -84,6 +75,8 @@
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@size-limit/preset-small-lib": "^7.0.5",
+    "@swc/core": "^1.2.124",
+    "@swc/jest": "^0.2.15",
     "@types/jest": "^27.0.3",
     "codecov": "^3.8.3",
     "dependency-check": "^4.1.0",
@@ -106,5 +99,15 @@
     "webpack": "^5.64.4",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "cjs/index.js",
+      "limit": "5 kB"
+    },
+    {
+      "path": "esm/index.js",
+      "limit": "5 kB"
+    }
+  ]
 }

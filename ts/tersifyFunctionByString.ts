@@ -13,7 +13,7 @@ export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 
 function isFunc(str: string) {
   const lines = str.split(EOL)
-  return new RegExp('^(async\\s+)?function[(]?.*[)]?').test(lines[0])
+  return new RegExp('^(async\\s+)?function\\s?[(]?.*[)]?').test(lines[0])
 }
 
 function formatArrow(str: string, maxLength: number) {
@@ -32,9 +32,9 @@ function getArrowStruct(str: string) {
   const isAsync = str.startsWith('async ')
   if (isAsync) str = str.slice(5).trim()
 
-  const arrowIndex = str.indexOf(' => ')
+  const arrowIndex = str.indexOf('=>')
   const paramRaw = str.slice(0, arrowIndex).trim()
-  const bodyRaw = str.slice(arrowIndex + 4).trim()
+  const bodyRaw = str.slice(arrowIndex + 2).trim()
   const params = getParams(paramRaw.startsWith('(') ? paramRaw : `(${paramRaw})`)
   let isSingle = isSingleLineBody(bodyRaw)
   let body = removeLineBreaks(isSingle ? bodyRaw : getEnclosedBody(bodyRaw)).trim()

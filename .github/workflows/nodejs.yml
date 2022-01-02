@@ -75,6 +75,7 @@ jobs:
           key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
       - run: yarn
       - run: yarn coverage --maxWorkers=2
+      - run: yarn test:swc --maxWorkers=2
       - name: codecov
         if: matrix.node-version == 16 && matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v1
