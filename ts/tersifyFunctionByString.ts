@@ -4,6 +4,7 @@ import { trim } from './trim';
 
 export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
   const str = fn.toString()
+  console.info(str)
   if (options.raw) return str
   if (isFunc(str))
     return formatFn(str, options.maxLength)
