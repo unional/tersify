@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
       - name: setup yarn-cache
@@ -50,7 +50,7 @@ jobs:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
         node-version: [12, 14, 16]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
       - name: setup yarn-cache
@@ -95,7 +95,7 @@ jobs:
       - build
       - test
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: setup yarn-cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
