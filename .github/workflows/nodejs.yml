@@ -107,11 +107,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: download cjs folder
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: cjs
       - name: download esm folder
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: esm
       - name: cache node_modules
