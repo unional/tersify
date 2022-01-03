@@ -33,12 +33,12 @@ jobs:
       - run: yarn size-limit
       - run: yarn dependency-check
       - name: upload cjs folder
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: cjs
           path: cjs
       - name: upload esm folder
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: esm
           path: esm
