@@ -58,7 +58,8 @@
     "prepublishOnly": "yarn bundle",
     "release": "npx semantic-release",
     "size-limit": "size-limit",
-    "test": "jest",
+    "test": "run-p test:node test:swc",
+    "test:node": "jest",
     "test:swc": "jest -c jest.config.swc.js",
     "verify": "run-p build:verify lint coverage",
     "watch": "jest --watch"
