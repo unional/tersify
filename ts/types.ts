@@ -7,6 +7,6 @@ export type TersifyOptions = {
   raw?: boolean,
 }
 
-export type Tersible<T = any> = T & {
+export type Tersible<T = unknown> = T & {
   tersify(this: T, options?: Partial<TersifyOptions>): string
 }
