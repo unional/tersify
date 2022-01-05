@@ -1,25 +1,25 @@
 'use strict';
-const paramCase = require('param-case')
-const pascalCase = require('pascal-case')
+const paramCase = require('param-case').paramCase
+const pascalCase = require('pascal-case').pascalCase
 const path = require('path')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const pjson = require('./package.json')
+const pkg = require('./package.json')
 
-const filename = paramCase(pjson.name)
+const filename = paramCase(pkg.name)
 const library = pascalCase(filename)
 
 module.exports = {
   mode: 'production',
   devtool: 'source-map',
-  entry: './src/index',
+  entry: './ts/index',
   module: {
     rules: [
       {
         loader: 'ts-loader',
         test: /\.tsx?$/,
         options: {
-          configFile: 'tsconfig.es5.json',
+          configFile: 'tsconfig.cjs.json',
           transpileOnly: true
         }
       }
