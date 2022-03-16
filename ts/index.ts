@@ -1,3 +1,3 @@
-export * from './tersible';
-export * from './tersify';
-export * from './types';
+export * from './tersible'
+export * from './tersify'
+export type { Tersible, TersifyOptions } from './types'

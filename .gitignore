@@ -43,5 +43,6 @@ typings
 
 # project folders
 cjs
+dist
 esm
 lib*

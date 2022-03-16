@@ -3,8 +3,7 @@ const isCI = require('is-ci')
 module.exports = {
   'collectCoverageFrom': [
     '<rootDir>/ts/**/*.[jt]s',
-    '!<rootDir>/ts/bin.[jt]s',
-    '!<rootDir>/ts/type-checker/*'
+    '!<rootDir>/ts/bin.[jt]s'
   ],
   'reporters': [
     'default',
@@ -16,7 +15,10 @@ module.exports = {
     '<rootDir>/ts',
   ],
   'testEnvironment': 'node',
-  'testMatch': ['**/?(*.)+(spec|test|integrate|accept|system|unit).[jt]s?(x)'],
+  'testMatch': [
+    '**/?(*.)+(spec|test|integrate|accept|system|unit).[jt]s?(x)',
+    '!**/*.browser.spec.ts'
+  ],
   'watchPlugins': [
     'jest-watch-suspend',
     'jest-watch-typeahead/filename',
