@@ -75,7 +75,7 @@
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@size-limit/preset-small-lib": "^7.0.5",
-    "@swc/core": "^1.2.156",
+    "@swc/core": "^1.2.157",
     "@swc/jest": "^0.2.20",
     "@types/jest": "^27.0.3",
     "codecov": "^3.8.3",
