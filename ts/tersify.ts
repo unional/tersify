@@ -1,11 +1,11 @@
-import isBuffer from 'is-buffer';
-import { required } from 'unpartial';
-import { defaultOptions } from './constants';
-import { hasTersifyFn } from './hasTersifyFn';
-import { tersifyFunction } from './tersifyFunction';
-import { trim } from './trim';
-import { TersifyOptions } from './types';
-import { TersifyContext } from './typesInternal';
+import isBuffer from 'is-buffer'
+import { required } from 'unpartial'
+import { defaultOptions } from './constants'
+import { hasTersifyFn } from './hasTersifyFn'
+import { tersifyFunction } from './tersifyFunction'
+import { trim } from './trim'
+import { TersifyOptions } from './types'
+import { TersifyContext } from './typesInternal'
 
 export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
   return tersify(this, options)
