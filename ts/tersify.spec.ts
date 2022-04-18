@@ -962,30 +962,6 @@ describe('function', () => {
 
     expect(tersify(withTypeof)).toBe('fn withTypeof(s) { return typeof s }')
   })
-
-  test('nullish coalescing operator', () => {
-    function nco(s) { return s ?? 1 }
-
-    expect(tersify(nco)).toBe('fn nco(s) { return s ?? 1 }')
-  })
-
-  test('optional chaining', () => {
-    function oc(s) { return s?.a }
-
-    expect(tersify(oc)).toBe('fn oc(s) { return s?.a }')
-  })
-
-  test('optional chaining invoke function', () => {
-    function oc(s) { return s?.() }
-
-    expect(tersify(oc)).toBe('fn oc(s) { return s?.() }')
-  })
-
-  test('optional chaining invoke function from indexed props', () => {
-    function oc(s) { return s?.['x']?.() }
-
-    expect(tersify(oc)).toBe(`fn oc(s) { return s?.['x']?.() }`)
-  })
 })
 
 describe('arrow function', () => {
