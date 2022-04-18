@@ -238,7 +238,7 @@ describe('RegExp', () => {
 })
 
 describe('function', () => {
-  test('anomymous with no return', () => {
+  test('anonymous with no return', () => {
     expect(tersify(function () { })).toBe('fn() {}')
     expect(tersify(function () { }, { maxLength: 7 })).toBe('fn() {}')
     expect(tersify(function () { }, { maxLength: 6 })).toBe('fn(...')
@@ -328,7 +328,7 @@ describe('function', () => {
     })).toBe(`fn() { return a.b.c.d }`)
   })
 
-  test('anomymous returns nothing', () => {
+  test('anonymous returns nothing', () => {
     expect(tersify(function () { return })).toBe('fn() {}')
   })
 
@@ -408,7 +408,7 @@ describe('function', () => {
     })).toMatch(/fn\(\) { return 2020-05-\d{2}T\d{2}:00:00.000Z }/)
   })
 
-  test('returns Date with variable in contructor', () => {
+  test('returns Date with variable in constructor', () => {
     expect(tersify(function () {
       let x = 1
       return new Date(2020, x)
@@ -421,7 +421,7 @@ describe('function', () => {
     })).toBe(`fn() { return Buffer.from('abc') }`)
   })
 
-  test(`returns anomymous function`, () => {
+  test(`returns anonymous function`, () => {
     expect(tersify(function () { return function () { } })).toBe(`fn() { return fn() {} }`)
   })
 
@@ -441,7 +441,7 @@ describe('function', () => {
     expect(tersify(function () { return () => { } })).toBe(`fn() { return () => {} }`)
   })
 
-  test(`returns async anomymous function`, () => {
+  test(`returns async anonymous function`, () => {
     expect(tersify(function () { return async function () { } })).toBe(`fn() { return async fn() {} }`)
   })
 
@@ -453,7 +453,7 @@ describe('function', () => {
     expect(tersify(function () { return async () => { } })).toBe(`fn() { return async () => {} }`)
   })
 
-  test(`returns generator anomymous function`, () => {
+  test(`returns generator anonymous function`, () => {
     expect(tersify(function () { return function* () { } })).toBe(`fn() { return fn*() {} }`)
   })
 
@@ -461,7 +461,7 @@ describe('function', () => {
     expect(tersify(function () { return function* foo() { } })).toBe(`fn() { return fn* foo() {} }`)
   })
 
-  test(`returns async generator anomymous function`, () => {
+  test(`returns async generator anonymous function`, () => {
     expect(tersify(function () { return async function* () { } })).toBe(`fn() { return async fn*() {} }`)
   })
 
@@ -873,7 +873,7 @@ describe('function', () => {
     expect(tersify(async function () { await x })).toBe('async fn() { await x }')
   })
 
-  test('anomymous generator function', () => {
+  test('anonymous generator function', () => {
     expect(tersify(function* () { })).toBe('fn*() {}')
   })
 
@@ -1047,7 +1047,7 @@ describe('arrow function', () => {
     })).toMatch(/\(\) => 2020-05-\d{2}T\d{2}:00:00.000Z/)
   })
 
-  test('returns Date with variable in contructor', () => {
+  test('returns Date with variable in constructor', () => {
     expect(tersify(() => {
       let x = 1
       return new Date(2020, x)
@@ -1060,7 +1060,7 @@ describe('arrow function', () => {
     })).toBe(`() => Buffer.from('abc')`)
   })
 
-  test('return anomymous function', () => {
+  test('return anonymous function', () => {
     expect(tersify(() => function () { })).toBe(`() => fn() {}`)
     expect(tersify(() => { return function () { } })).toBe(`() => fn() {}`)
     expect(tersify(() => function (a, b) {
@@ -1096,7 +1096,7 @@ describe('arrow function', () => {
     })).toBe(`a => b => { console.info(a); console.info(b) }`)
   })
 
-  test(`returns async anomymous function`, () => {
+  test(`returns async anonymous function`, () => {
     expect(tersify(() => { return async function () { } })).toBe(`() => async fn() {}`)
   })
 
@@ -1108,7 +1108,7 @@ describe('arrow function', () => {
     expect(tersify(() => { return async () => { } })).toBe(`() => async () => {}`)
   })
 
-  test(`returns generator anomymous function`, () => {
+  test(`returns generator anonymous function`, () => {
     expect(tersify(() => { return function* () { } })).toBe(`() => fn*() {}`)
   })
 
@@ -1116,7 +1116,7 @@ describe('arrow function', () => {
     expect(tersify(() => { return function* foo() { } })).toBe(`() => fn* foo() {}`)
   })
 
-  test(`returns async generator anomymous function`, () => {
+  test(`returns async generator anonymous function`, () => {
     expect(tersify(() => { return async function* () { } })).toBe(`() => async fn*() {}`)
   })
 
@@ -1693,7 +1693,7 @@ describe('object', () => {
     expect(tersify(subject, { maxLength: 12 })).toBe(`{ abc: ... }`)
   })
 
-  test('anomymous function', () => {
+  test('anonymous function', () => {
     expect(tersify({ a: function () { } })).toBe('{ a() {} }')
     expect(tersify({ a: function () { } }, { maxLength: 9 })).toBe('{ a(... }')
   })
@@ -1706,7 +1706,7 @@ describe('object', () => {
     expect(tersify({ a: function foo() { } })).toBe('{ a() {} }')
   })
 
-  test('async anomymous function', () => {
+  test('async anonymous function', () => {
     expect(tersify({ a: async function () { } })).toBe('{ async a() {} }')
   })
 
@@ -1714,7 +1714,7 @@ describe('object', () => {
     expect(tersify({ a: async function foo() { } })).toBe('{ async a() {} }')
   })
 
-  test('generator anomymous function', () => {
+  test('generator anonymous function', () => {
     expect(tersify({ a: function* () { } })).toBe('{ *a() {} }')
 
   })
@@ -1723,7 +1723,7 @@ describe('object', () => {
     expect(tersify({ a: function* foo() { } })).toBe('{ *a() {} }')
   })
 
-  test('async generator anomymous function', () => {
+  test('async generator anonymous function', () => {
     expect(tersify({ a: async function* () { } })).toBe('{ async *a() {} }')
   })
 
@@ -1825,7 +1825,7 @@ describe('array', () => {
     })).toBe(`{ path: [1, 2], expected: a => a > 0, actual: 0 }`)
   })
 
-  test('with anomymous function', () => {
+  test('with anonymous function', () => {
     expect(tersify([function () { return 'a' }])).toBe(`[fn() { return 'a' }]`)
   })
 
@@ -1962,7 +1962,7 @@ describe('class', () => {
     expect(tersify(Foo)).toBe('class Foo{}')
   })
 
-  test('anomymous class', () => {
+  test('anonymous class', () => {
     const C = class { }
     expect(tersify(C)).toBe('class {}')
   })

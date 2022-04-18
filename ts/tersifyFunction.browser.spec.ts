@@ -83,7 +83,7 @@ describe('function', () => {
     })).toBe(`fn() { return a.b.c.d; }`)
   })
 
-  test('anomymous returns nothing', () => {
+  test('anonymous returns nothing', () => {
     expect(testFunction(function () { return })).toBe('fn() {}')
   })
 
@@ -174,7 +174,7 @@ describe('function', () => {
     })).toBe(`fn() { return Buffer.from('abc'); }`)
   })
 
-  test(`returns anomymous function`, () => {
+  test(`returns anonymous function`, () => {
     expect(testFunction(function () { return function () { } })).toBe(`fn() { return function () {}; }`)
   })
 
@@ -194,7 +194,7 @@ describe('function', () => {
     expect(testFunction(function () { return () => { } })).toBe(`fn() { return () => {}; }`)
   })
 
-  test(`returns async anomymous function`, () => {
+  test(`returns async anonymous function`, () => {
     expect(testFunction(function () { return async function () { } })).toBe(`fn() { return async function () {}; }`)
   })
 
@@ -206,7 +206,7 @@ describe('function', () => {
     expect(testFunction(function () { return async () => { } })).toBe(`fn() { return async () => {}; }`)
   })
 
-  test(`returns generator anomymous function`, () => {
+  test(`returns generator anonymous function`, () => {
     expect(testFunction(function () { return function* () { } })).toBe(`fn() { return function* () {}; }`)
   })
 
@@ -214,7 +214,7 @@ describe('function', () => {
     expect(testFunction(function () { return function* foo() { } })).toBe(`fn() { return function* foo() {}; }`)
   })
 
-  test(`returns async generator anomymous function`, () => {
+  test(`returns async generator anonymous function`, () => {
     expect(testFunction(function () { return async function* () { } })).toBe(`fn() { return async function* () {}; }`)
   })
 
@@ -615,7 +615,7 @@ describe('function', () => {
     expect(testFunction(async function () { await x })).toBe('async fn() { await x; }')
   })
 
-  test('anomymous generator function', () => {
+  test('anonymous generator function', () => {
     expect(testFunction(function* () { })).toBe('fn*() {}')
   })
 
@@ -722,7 +722,7 @@ describe('arrow function', () => {
     })).toBe(`() => Buffer.from('abc')`)
   })
 
-  test('return anomymous function', () => {
+  test('return anonymous function', () => {
     expect(testFunction(() => function () { })).toBe(`() => function () {}`)
     expect(testFunction(() => { return function () { } })).toBe(`() => function () {}`)
     expect(testFunction(() => function (a, b) {
@@ -758,7 +758,7 @@ describe('arrow function', () => {
     })).toBe(`a => b => { console.info(a); console.info(b); }`)
   })
 
-  test(`returns async anomymous function`, () => {
+  test(`returns async anonymous function`, () => {
     expect(testFunction(() => { return async function () { } })).toBe(`() => async function () {}`)
   })
 
@@ -770,7 +770,7 @@ describe('arrow function', () => {
     expect(testFunction(() => { return async () => { } })).toBe(`() => async () => {}`)
   })
 
-  test(`returns generator anomymous function`, () => {
+  test(`returns generator anonymous function`, () => {
     expect(testFunction(() => { return function* () { } })).toBe(`() => function* () {}`)
   })
 
@@ -778,7 +778,7 @@ describe('arrow function', () => {
     expect(testFunction(() => { return function* foo() { } })).toBe(`() => function* foo() {}`)
   })
 
-  test(`returns async generator anomymous function`, () => {
+  test(`returns async generator anonymous function`, () => {
     expect(testFunction(() => { return async function* () { } })).toBe(`() => async function* () {}`)
   })
 
