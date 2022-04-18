@@ -1,7 +1,7 @@
 import { parseExpressionAt } from 'acorn'
 import { trim } from '../trim'
 import { TersifyContext } from '../typesInternal'
-import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode, SequenceExpression, TemplateLiteral, TaggedTemplateExpression } from './AcornTypes'
+import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode, SequenceExpression, TemplateLiteral, TaggedTemplateExpression, ChainExpression } from './AcornTypes'
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder'
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number): string {
@@ -118,15 +118,21 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyTemplateLiteral(context, node, length)
     case 'TaggedTemplateExpression':
       return tersifyTaggedTemplateExpression(context, node, length)
+    case 'ChainExpression':
+      return tersifyChainExpression(context, node, length)
     // istanbul ignore next
-    default: {
-      const nodeType = (node as any).type
-      console.warn(`tersify received unsupported type: ${nodeType}. Please open an issue at https://github.com/unional/tersify/issues
+    default:
+      return tersifyUnknown(node)
+  }
+}
+
+// istanbul ignore next
+function tersifyUnknown(node: AcornNode) {
+  const nodeType = node.type
+  console.warn(`tersify received unsupported type: ${nodeType}. Please open an issue at https://github.com/unional/tersify/issues
 node detail:
 ${JSON.stringify(node, undefined, 2)}`)
-      return `<unsupported: ${nodeType}>`
-    }
-  }
+  return `<unsupported: ${nodeType}>`
 }
 
 function tersifyCatchClauseNode(context: TersifyContext, node: CatchClauseNode, length: number) {
@@ -445,7 +451,10 @@ function tersifyExpressionStatementNode(context: TersifyContext, node: Expressio
 }
 
 function tersifyMemberExpressionNode(context: TersifyContext, node: MemberExpressionNode, length: number) {
-  return `${tersifyAcornNode(context, node.object, length)}.${tersifyAcornNode(context, node.property, length)}`
+  const property = node.property.type === 'Identifier'
+    ? tersifyAcornNode(context, node.property, length)
+    : `[${tersifyAcornNode(context, node.property, length)}]`
+  return `${tersifyAcornNode(context, node.object, length)}${node.optional ? '?' : ''}.${property}`
 }
 
 function tersifyCallExpressionNode(context: TersifyContext, node: CallExpressionNode, length: number) {
@@ -458,7 +467,7 @@ function tersifyCallExpressionNode(context: TersifyContext, node: CallExpression
   }
   const callee = tersifyAcornNode(context, node.callee, length)
   const params = tersifyFunctionParams(context, node.arguments)
-  return `${callee}${params}`
+  return `${callee}${node.optional ? '?.' : ''}${params}`
 }
 
 function isSymbolForNode(node: CallExpressionNode): node is SymbolForNode {
@@ -633,4 +642,18 @@ function tersifyTemplateLiteral(context: TersifyContext, node: TemplateLiteral, 
 function tersifyTaggedTemplateExpression(context: TersifyContext, node: TaggedTemplateExpression, length: number) {
   const name = node.tag.name
   return name + tersifyAcornNode(context, node.quasi, length - name.length)
+}
+
+function tersifyChainExpression(context: TersifyContext, node: ChainExpression, length: number) {
+  switch (node.expression.type) {
+    case 'MemberExpression':
+      return tersifyMemberExpressionNode(context, node.expression, length)
+    // return `${tersifyAcornNode(context, node.expression.object, length)}?.${tersifyAcornNode(context, node.expression.property, length)}`
+    case 'CallExpression': {
+      return tersifyCallExpressionNode(context, node.expression, length)
+    }
+    // istanbul ignore next
+    default:
+      return tersifyUnknown(node)
+  }
 }

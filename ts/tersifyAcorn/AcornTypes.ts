@@ -10,36 +10,38 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ObjectExpressionNode | PropertyNode | YieldExpressionNode | AwaitExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
   ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
-  ObjectPatternNode | SequenceExpression | TemplateLiteral | TemplateElement | TaggedTemplateExpression
+  ObjectPatternNode | SequenceExpression | TemplateLiteral | TemplateElement | TaggedTemplateExpression |
+  ChainExpression
 
-export type AcornNodeBase = {
+export interface AcornNodeBase {
   start: number,
   end: number,
 }
-export type IdentifierNode = {
+export interface IdentifierNode extends AcornNodeBase {
   type: 'Identifier',
   name: string,
-} & AcornNodeBase
+}
 
-export type LiteralNode = {
+export interface LiteralNode extends AcornNodeBase {
   type: 'Literal',
   value: any,
   raw: string,
-} & AcornNodeBase
+}
 
-export type CallExpressionNode = {
+export interface CallExpressionNode extends AcornNodeBase {
   type: 'CallExpression',
   callee: IdentifierNode | MemberExpressionNode,
-  arguments: (IdentifierNode | LiteralNode | ThisExpressionNode)[]
-} & AcornNodeBase
+  arguments: (IdentifierNode | LiteralNode | ThisExpressionNode)[],
+  optional?: boolean
+}
 
-export type SymbolForNode = AcornNodeBase & {
+export interface SymbolForNode extends AcornNodeBase {
   type: 'CallExpression',
   callee: IdentifierNode,
   arguments: [LiteralNode]
 }
 
-export type FunctionExpressionNode = {
+export interface FunctionExpressionNode extends AcornNodeBase {
   type: 'FunctionExpression',
   id: null | IdentifierNode,
   expression: boolean,
@@ -47,9 +49,9 @@ export type FunctionExpressionNode = {
   async: boolean,
   params: IdentifierNode[],
   body: AcornNode
-} & AcornNodeBase
+}
 
-export type FunctionDeclarationNode = {
+export interface FunctionDeclarationNode extends AcornNodeBase {
   type: 'FunctionDeclaration',
   id: null | IdentifierNode,
   expression: boolean,
@@ -57,30 +59,30 @@ export type FunctionDeclarationNode = {
   async: boolean,
   params: IdentifierNode[],
   body: AcornNode
-} & AcornNodeBase
+}
 
-export type BlockStatementNode = AcornNodeBase & {
+export interface BlockStatementNode extends AcornNodeBase {
   type: 'BlockStatement',
   body: AcornNode[]
 }
 
-export type ReturnStatementNode = AcornNodeBase & {
+export interface ReturnStatementNode extends AcornNodeBase {
   type: 'ReturnStatement',
   argument: LiteralNode | IdentifierNode | CallExpressionNode | MemberExpressionNode | ObjectExpressionNode | null
 }
 
-export type AssignmentPatternNode = AcornNodeBase & {
+export interface AssignmentPatternNode extends AcornNodeBase {
   type: 'AssignmentPattern',
   left: IdentifierNode,
   right: AcornNode
 }
 
-export type RestElementNode = AcornNodeBase & {
+export interface RestElementNode extends AcornNodeBase {
   type: 'RestElement',
   argument: IdentifierNode
 }
 
-export type ArrowFunctionExpressionNode = AcornNodeBase & {
+export interface ArrowFunctionExpressionNode extends AcornNodeBase {
   type: 'ArrowFunctionExpression',
   id: null,
   expression: boolean,
@@ -90,37 +92,38 @@ export type ArrowFunctionExpressionNode = AcornNodeBase & {
   body: AcornNode
 }
 
-export type ExpressionStatementNode = AcornNodeBase & {
+export interface ExpressionStatementNode extends AcornNodeBase {
   type: 'ExpressionStatement',
   expression: CallExpressionNode,
 }
 
-export type MemberExpressionNode = AcornNodeBase & {
+export interface MemberExpressionNode extends AcornNodeBase {
   type: 'MemberExpression',
   computed: boolean,
   object: IdentifierNode | MemberExpressionNode,
-  property: IdentifierNode
+  property: IdentifierNode | LiteralNode,
+  optional?: boolean
 }
 
-export type VariableDeclarationNode = AcornNodeBase & {
+export interface VariableDeclarationNode extends AcornNodeBase {
   type: 'VariableDeclaration',
   kind: 'const' | 'let' | 'var',
   declarations: VariableDeclaratorNode[],
 }
 
-export type VariableDeclaratorNode = AcornNodeBase & {
+export interface VariableDeclaratorNode extends AcornNodeBase {
   type: 'VariableDeclarator',
   id: IdentifierNode,
   init?: NewExpressionNode,
 }
 
-export type NewExpressionNode = AcornNodeBase & {
+export interface NewExpressionNode extends AcornNodeBase {
   type: 'NewExpression',
   callee: IdentifierNode | MemberExpressionNode,
   arguments: AcornNode[],
 }
 
-export type BinaryExpressionNode = AcornNodeBase & {
+export interface BinaryExpressionNode extends AcornNodeBase {
   type: 'BinaryExpression',
   operator: string,
   left: AcornNode,
@@ -128,28 +131,28 @@ export type BinaryExpressionNode = AcornNodeBase & {
   needParen?: boolean,
 }
 
-export type ConditionalExpressionNode = AcornNodeBase & {
+export interface ConditionalExpressionNode extends AcornNodeBase {
   type: 'ConditionalExpression',
   test: AcornNode,
   consequent: AcornNode,
   alternate: AcornNode,
 }
 
-export type UnaryExpressionNode = AcornNodeBase & {
+export interface UnaryExpressionNode extends AcornNodeBase {
   type: 'UnaryExpression',
   operator: string,
   prefix: boolean,
   argument: AcornNode,
 }
 
-export type UpdateExpressionNode = AcornNodeBase & {
+export interface UpdateExpressionNode extends AcornNodeBase {
   type: 'UpdateExpression',
   operator: string,
   prefix: boolean,
   argument: AcornNode
 }
 
-export type LogicalExpressionNode = AcornNodeBase & {
+export interface LogicalExpressionNode extends AcornNodeBase {
   type: 'LogicalExpression',
   operator: string,
   left: AcornNode,
@@ -157,33 +160,33 @@ export type LogicalExpressionNode = AcornNodeBase & {
   needParen?: boolean
 }
 
-export type IfStatementNode = AcornNodeBase & {
+export interface IfStatementNode extends AcornNodeBase {
   type: 'IfStatement',
   test: AcornNode,
   consequent: AcornNode,
   alternate: AcornNode
 }
 
-export type WhileStatementNode = AcornNodeBase & {
+export interface WhileStatementNode extends AcornNodeBase {
   type: 'WhileStatement',
   test: AcornNode,
   body: AcornNode
 }
 
-export type DoWhileStatementNode = AcornNodeBase & {
+export interface DoWhileStatementNode extends AcornNodeBase {
   type: 'DoWhileStatement',
   test: AcornNode,
   body: AcornNode,
 }
 
-export type AssignmentExpressionNode = AcornNodeBase & {
+export interface AssignmentExpressionNode extends AcornNodeBase {
   type: 'AssignmentExpression',
   operator: string,
   left: AcornNode,
   right: AcornNode,
 }
 
-export type ForStatementNode = AcornNodeBase & {
+export interface ForStatementNode extends AcornNodeBase {
   type: 'ForStatement',
   body: AcornNode,
   init: AcornNode,
@@ -191,54 +194,54 @@ export type ForStatementNode = AcornNodeBase & {
   update: AcornNode,
 }
 
-export type BreakStatementNode = AcornNodeBase & {
+export interface BreakStatementNode extends AcornNodeBase {
   type: 'BreakStatement',
   label: null | IdentifierNode,
 }
 
-export type LabeledStatementNode = AcornNodeBase & {
+export interface LabeledStatementNode extends AcornNodeBase {
   type: 'LabeledStatement',
   label: IdentifierNode,
   body: AcornNode,
 }
 
-export type ContinueStatementNode = AcornNodeBase & {
+export interface ContinueStatementNode extends AcornNodeBase {
   type: 'ContinueStatement',
   label: null | IdentifierNode,
 }
 
-export type SwitchStatementNode = AcornNodeBase & {
+export interface SwitchStatementNode extends AcornNodeBase {
   type: 'SwitchStatement',
   discriminant: AcornNode,
   cases: SwitchCaseNode[],
 }
 
-export type SwitchCaseNode = AcornNodeBase & {
+export interface SwitchCaseNode extends AcornNodeBase {
   type: 'SwitchCase',
   test: AcornNode | null,
   consequent: AcornNode[],
 }
 
-export type ForInStatementNode = AcornNodeBase & {
+export interface ForInStatementNode extends AcornNodeBase {
   type: 'ForInStatement',
   left: AcornNode,
   right: AcornNode,
   body: AcornNode,
 }
 
-export type ForOfStatementNode = AcornNodeBase & {
+export interface ForOfStatementNode extends AcornNodeBase {
   type: 'ForOfStatement',
   left: AcornNode,
   right: AcornNode,
   body: AcornNode
 }
 
-export type ObjectExpressionNode = AcornNodeBase & {
+export interface ObjectExpressionNode extends AcornNodeBase {
   type: 'ObjectExpression',
   properties: PropertyNode[]
 }
 
-export type PropertyNode = AcornNodeBase & {
+export interface PropertyNode extends AcornNodeBase {
   type: 'Property',
   key: IdentifierNode,
   kind: 'init',
@@ -248,59 +251,59 @@ export type PropertyNode = AcornNodeBase & {
   value: AcornNode,
 }
 
-export type YieldExpressionNode = AcornNodeBase & {
+export interface YieldExpressionNode extends AcornNodeBase {
   type: 'YieldExpression',
   delegate: boolean,
   argument: AcornNode
 }
 
-export type AwaitExpressionNode = AcornNodeBase & {
+export interface AwaitExpressionNode extends AcornNodeBase {
   type: 'AwaitExpression',
   argument: AcornNode,
 }
 
-export type ArrayExpression = AcornNodeBase & {
+export interface ArrayExpression extends AcornNodeBase {
   type: 'ArrayExpression',
   elements: AcornNode[],
 }
 
-export type ThrowStatementNode = AcornNodeBase & {
+export interface ThrowStatementNode extends AcornNodeBase {
   type: 'ThrowStatement',
   argument: AcornNode,
 }
 
-export type TryStatementNode = AcornNodeBase & {
+export interface TryStatementNode extends AcornNodeBase {
   type: 'TryStatement',
   block: AcornNode,
   handler: AcornNode,
   finalizer: AcornNode
 }
 
-export type CatchClauseNode = AcornNodeBase & {
+export interface CatchClauseNode extends AcornNodeBase {
   type: 'CatchClause',
   param: IdentifierNode,
   body: AcornNode
 }
 
-export type ThisExpressionNode = AcornNodeBase & {
+export interface ThisExpressionNode extends AcornNodeBase {
   type: 'ThisExpression',
   start: number,
   end: number
 }
 
-export type ClassExpressionNode = AcornNodeBase & {
+export interface ClassExpressionNode extends AcornNodeBase {
   type: 'ClassExpression',
   id: null | IdentifierNode,
   superClass: null | ClassExpressionNode,
   body: AcornNode,
 }
 
-export type ClassBodyNode = AcornNodeBase & {
+export interface ClassBodyNode extends AcornNodeBase {
   type: 'ClassBody',
   body: AcornNode[]
 }
 
-export type MethodDefinitionNode = AcornNodeBase & {
+export interface MethodDefinitionNode extends AcornNodeBase {
   type: 'MethodDefinition',
   kind: 'constructor',
   static: boolean,
@@ -309,35 +312,40 @@ export type MethodDefinitionNode = AcornNodeBase & {
   value: FunctionExpressionNode
 }
 
-export type SpreadElementNode = AcornNodeBase & {
+export interface SpreadElementNode extends AcornNodeBase {
   type: 'SpreadElement',
   argument: IdentifierNode
 }
 
-export type ObjectPatternNode = AcornNodeBase & {
+export interface ObjectPatternNode extends AcornNodeBase {
   type: 'ObjectPattern',
   properties: PropertyNode[]
 }
 
-export type SequenceExpression = AcornNodeBase & {
+export interface SequenceExpression extends AcornNodeBase {
   type: 'SequenceExpression',
   expressions: AcornNode[]
 }
 
-export type TemplateLiteral = AcornNodeBase & {
+export interface TemplateLiteral extends AcornNodeBase {
   type: 'TemplateLiteral',
   expressions: AcornNode[],
   quasis: TemplateElement[],
 }
 
-export type TemplateElement = AcornNodeBase & {
+export interface TemplateElement extends AcornNodeBase {
   type: 'TemplateElement',
   value: { raw: string, cooked: string },
   tail: boolean,
 }
 
-export type TaggedTemplateExpression = AcornNodeBase & {
+export interface TaggedTemplateExpression extends AcornNodeBase {
   type: 'TaggedTemplateExpression',
   tag: IdentifierNode,
   quasi: TemplateLiteral,
+}
+
+export interface ChainExpression extends AcornNodeBase {
+  type: 'ChainExpression',
+  expression: MemberExpressionNode | CallExpressionNode
 }
