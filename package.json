@@ -64,11 +64,6 @@
     "verify": "run-p build:verify lint coverage",
     "watch": "jest --watch"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
   "dependencies": {
     "acorn": "^8.7.0",
     "is-buffer": "^2.0.5",
@@ -86,6 +81,7 @@
     "@swc/jest": "^0.2.20",
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "codecov": "^3.8.3",
     "dependency-check": "^4.1.0",
     "eslint": "8.15.0",
