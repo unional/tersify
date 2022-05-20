@@ -84,7 +84,7 @@
     "@typescript-eslint/parser": "^5.23.0",
     "codecov": "^3.8.3",
     "dependency-check": "^4.1.0",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-plugin-harmony": "^7.0.0",
     "husky": "^8.0.0",
     "is-ci": "^3.0.1",
