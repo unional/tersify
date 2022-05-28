@@ -67,7 +67,7 @@
   "dependencies": {
     "acorn": "^8.7.0",
     "is-buffer": "^2.0.5",
-    "unpartial": "^0.6.4"
+    "unpartial": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
