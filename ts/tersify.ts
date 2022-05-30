@@ -1,11 +1,11 @@
 import isBuffer from 'is-buffer'
 import { required } from 'unpartial'
-import { defaultOptions } from './constants'
-import { hasTersifyFn } from './hasTersifyFn'
-import { tersifyFunction } from './tersifyFunction'
-import { trim } from './trim'
-import { TersifyOptions } from './types'
-import { TersifyContext } from './typesInternal'
+import { defaultOptions } from './constants.js'
+import { hasTersifyFn } from './hasTersifyFn.js'
+import { tersifyFunction } from './tersifyFunction.js'
+import { trim } from './trim.js'
+import { TersifyOptions } from './types.js'
+import { TersifyContext } from './typesInternal.js'
 
 export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
   return tersify(this, options)
@@ -259,5 +259,5 @@ function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string,
 }
 
 function getPropKey(key: string) {
-  return key.indexOf('-') >=0 ? `'${key}'` : key
+  return key.indexOf('-') >= 0 ? `'${key}'` : key
 }

@@ -1,1 +1,1 @@
-export * from './tersifyAcorn'
+export * from './tersifyAcorn.js'

@@ -1,3 +1,4 @@
-export * from './tersible'
-export { tersify } from './tersify'
-export * from './types'
+export * from './tersible.js'
+export { tersify } from './tersify.js'
+export * from './types.js'
+

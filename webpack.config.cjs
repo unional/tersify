@@ -12,7 +12,7 @@ const library = pascalCase(filename)
 module.exports = {
   mode: 'production',
   devtool: 'source-map',
-  entry: './ts/index',
+  entry: './ts/index.js',
   module: {
     rules: [
       {

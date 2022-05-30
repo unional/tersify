@@ -1,8 +1,8 @@
-import { tersifyFunction } from './tersifyFunction.browser';
-import { tersible } from './tersible';
-import { TersifyContext } from './typesInternal';
-import { TersifyOptions } from './types';
-import { unpartial } from 'unpartial';
+import { unpartial } from 'unpartial'
+import { tersible } from './tersible.js'
+import { tersifyFunction } from './tersifyFunction.browser.js'
+import { TersifyOptions } from './types.js'
+import { TersifyContext } from './typesInternal.js'
 
 describe('function', () => {
   test('anonymous with no return', () => {
@@ -18,7 +18,7 @@ describe('function', () => {
   })
 
   test(`raw mode returns using fn.toString()`, () => {
-    expect(testFunction(function () { }, { raw: true })).toBe(`function () {}`)
+    expect(testFunction(function () { }, { raw: true })).toBe((function () { }).toString())
   })
 
   test('single param', () => {
@@ -346,8 +346,8 @@ describe('function', () => {
   test('with variable declaration', () => {
     const subject: any = function () {
       const value = 1234
-      return value;
-    };
+      return value
+    }
     expect(testFunction(subject)).toBe(`fn() { const value = 1234; return value; }`)
     expect(testFunction(subject, { maxLength: 42 })).toBe(`fn() { const value = 1234; return value; }`)
     expect(testFunction(subject, { maxLength: 14 })).toBe(`fn() { co... }`)
@@ -415,13 +415,13 @@ describe('function', () => {
     expect(testFunction(function (x) {
       if (x) return true
       else return false
-    })).toBe('fn(x) { if (x) return true;else return false; }')
+    })).toBe('fn(x) { if (x) return true; else return false; }')
     expect(testFunction(function (x) {
       if (x) return true
       else {
         return false
       }
-    })).toBe('fn(x) { if (x) return true;else { return false; } }')
+    })).toBe('fn(x) { if (x) return true; else { return false; } }')
 
     expect(testFunction(function (x) {
       if (x) {
@@ -503,7 +503,7 @@ describe('function', () => {
   test('with for loop with break', () => {
     expect(testFunction(function () {
       for (; ;) {
-        break;
+        break
       }
     })).toBe('fn() { for (;;) { break; } }')
   })
@@ -723,12 +723,12 @@ describe('arrow function', () => {
   })
 
   test('return anonymous function', () => {
-    expect(testFunction(() => function () { })).toBe(`() => function () {}`)
+    expect(testFunction(() => function () { })).toBe(`() => fn() {}`)
     expect(testFunction(() => { return function () { } })).toBe(`() => function () {}`)
     expect(testFunction(() => function (a, b) {
       console.info(a)
       console.info(b)
-    })).toBe(`() => function (a, b) { console.info(a); console.info(b); }`)
+    })).toBe(`() => fn(a, b) { console.info(a); console.info(b); }`)
   })
 
   test('returns anonymous function with single param', () => {
@@ -742,12 +742,12 @@ describe('arrow function', () => {
   })
 
   test('return named function', () => {
-    expect(testFunction(() => function foo() { })).toBe(`() => function foo() {}`)
+    expect(testFunction(() => function foo() { })).toBe(`() => fn foo() {}`)
     expect(testFunction(() => { return function foo() { } })).toBe(`() => function foo() {}`)
     expect(testFunction(() => function foo(a, b) {
       console.info(a)
       console.info(b)
-    })).toBe(`() => function foo(a, b) { console.info(a); console.info(b); }`)
+    })).toBe(`() => fn foo(a, b) { console.info(a); console.info(b); }`)
   })
 
   test('return arrow function', () => {
@@ -906,8 +906,8 @@ describe('arrow function', () => {
   test('with variable declaration', () => {
     const subject: any = () => {
       const value = 1234
-      return value;
-    };
+      return value
+    }
     expect(testFunction(subject)).toBe(`() => { const value = 1234; return value; }`)
     expect(testFunction(subject, { maxLength: 43 })).toBe(`() => { const value = 1234; return value; }`)
     expect(testFunction(subject, { maxLength: 15 })).toBe(`() => { co... }`)
@@ -975,13 +975,13 @@ describe('arrow function', () => {
     expect(testFunction((x) => {
       if (x) return true
       else return false
-    })).toBe('x => { if (x) return true;else return false; }')
+    })).toBe('x => { if (x) return true; else return false; }')
     expect(testFunction((x) => {
       if (x) return true
       else {
         return false
       }
-    })).toBe('x => { if (x) return true;else { return false; } }')
+    })).toBe('x => { if (x) return true; else { return false; } }')
 
     expect(testFunction((x) => {
       if (x) {
@@ -1063,7 +1063,7 @@ describe('arrow function', () => {
   test('with for loop with break', () => {
     expect(testFunction(() => {
       for (; ;) {
-        break;
+        break
       }
     })).toBe('() => { for (;;) { break; } }')
   })

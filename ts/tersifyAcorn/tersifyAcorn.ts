@@ -1,8 +1,23 @@
 import { parseExpressionAt } from 'acorn'
-import { trim } from '../trim'
-import { TersifyContext } from '../typesInternal'
-import { AcornNode, ArrayExpression, ArrowFunctionExpressionNode, AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode, BinaryExpressionNode, BlockStatementNode, BreakStatementNode, CallExpressionNode, CatchClauseNode, ClassBodyNode, ClassExpressionNode, ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode, ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode, FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode, LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode, MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode, PropertyNode, RestElementNode, ReturnStatementNode, SpreadElementNode, SwitchCaseNode, SwitchStatementNode, SymbolForNode, ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode, UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode, WhileStatementNode, YieldExpressionNode, SequenceExpression, TemplateLiteral, TaggedTemplateExpression, ChainExpression } from './AcornTypes'
-import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder'
+import { trim } from '../trim.js'
+import { TersifyContext } from '../typesInternal.js'
+import {
+  AcornNode, ArrayExpression, ArrowFunctionExpressionNode,
+  AssignmentExpressionNode, AssignmentPatternNode, AwaitExpressionNode,
+  BinaryExpressionNode, BlockStatementNode, BreakStatementNode,
+  CallExpressionNode, CatchClauseNode, ChainExpression, ClassBodyNode, ClassExpressionNode,
+  ConditionalExpressionNode, ContinueStatementNode, DoWhileStatementNode,
+  ExpressionStatementNode, ForInStatementNode, ForOfStatementNode, ForStatementNode,
+  FunctionDeclarationNode, FunctionExpressionNode, IdentifierNode, IfStatementNode,
+  LabeledStatementNode, LiteralNode, LogicalExpressionNode, MemberExpressionNode,
+  MethodDefinitionNode, NewExpressionNode, ObjectExpressionNode, ObjectPatternNode,
+  PropertyNode, RestElementNode, ReturnStatementNode, SequenceExpression, SpreadElementNode, SwitchCaseNode,
+  SwitchStatementNode, SymbolForNode, TaggedTemplateExpression, TemplateLiteral,
+  ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode,
+  UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode,
+  WhileStatementNode, YieldExpressionNode
+} from './AcornTypes.js'
+import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder.js'
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number): string {
   const fnStr = getFunctionString(value)

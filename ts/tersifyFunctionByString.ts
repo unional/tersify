@@ -1,6 +1,6 @@
-import { EOL } from './constants';
-import { TersifyOptions } from './types';
-import { trim } from './trim';
+import { EOL } from './constants.js'
+import { trim } from './trim.js'
+import { TersifyOptions } from './types.js'
 
 export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
   const str = fn.toString()
@@ -13,14 +13,19 @@ export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 
 function isFunc(str: string) {
   const lines = str.split(EOL)
-  return new RegExp('^(async\\s+)?function\\s?[(]?.*[)]?').test(lines[0])
+  return new RegExp('^(async\\s+)?function\\s?\\*?\\s?[(]?.*[)]?').test(lines[0])
+}
+
+function isArrow(str: string) {
+  const lines = str.split(EOL)
+  return new RegExp('^(async\\s+)?[(]?.*[)]?\\s+=>').test(lines[0])
 }
 
 function formatArrow(str: string, maxLength: number) {
   const struct = getArrowStruct(str)
   const template = `${struct.async ? 'async ' : ''}${struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`} => ${struct.singleLineBody ? '%2' : `{${struct.body ? ' %2 ' : ''}}`}`
   const baseLength = struct.params && struct.body ? template.length - 4 :
-    struct.params || struct.body ? template.length - 2 : template.length;
+    struct.params || struct.body ? template.length - 2 : template.length
 
   struct.params = trim({ raw: false, noTrim: false }, struct.params, Math.max(3, maxLength - baseLength - struct.body.length))
   struct.body = trim({ raw: false, noTrim: false }, struct.body, Math.max(3, maxLength - baseLength - struct.params.length))
@@ -37,7 +42,7 @@ function getArrowStruct(str: string) {
   const bodyRaw = str.slice(arrowIndex + 2).trim()
   const params = getParams(paramRaw.startsWith('(') ? paramRaw : `(${paramRaw})`)
   let isSingle = isSingleLineBody(bodyRaw)
-  let body = removeLineBreaks(isSingle ? bodyRaw : getEnclosedBody(bodyRaw)).trim()
+  let body = removeLineBreaks(isSingle ? getSingleLineBody(bodyRaw, Infinity) : getEnclosedBody(bodyRaw)).trim()
   if (!isSingle && body.startsWith('return ') && body.endsWith(';')) {
     isSingle = true
     body = body.slice(7, -1)
@@ -60,7 +65,7 @@ function formatFn(str: string, maxLength: number) {
   const struct = getFuncStruct(str)
   const template = `${struct.async ? 'async ' : ''}fn${struct.generator ? '*' : ''}${struct.name ? ' ' + struct.name : ''}(${struct.params ? '%1' : ''}) {${struct.body ? ' %2 ' : ''}}`
   const baseLength = struct.params && struct.body ? template.length - 4 :
-    struct.params || struct.body ? template.length - 2 : template.length;
+    struct.params || struct.body ? template.length - 2 : template.length
 
   struct.params = trim({ raw: false, noTrim: false }, struct.params, Math.max(3, maxLength - baseLength - struct.body.length))
   struct.body = trim({ raw: false, noTrim: false }, struct.body, Math.max(3, maxLength - baseLength - struct.params.length))
@@ -113,6 +118,17 @@ function isSingleLineBody(str: string) {
   return !str.startsWith('{')
 }
 
+function getSingleLineBody(str: string, maxLength: number) {
+  return isFunc(str) ? formatFn(str, maxLength)
+    : isArrow(str) ? formatArrow(str, maxLength)
+      : str.replace(/return;/g, '')
+        .replace(/([\s([{])Symbol\(\)/g, '$1Sym()')
+        .replace(/([\s([{])Symbol\.for\('([\w_]*)'\)/g, '$1Sym($2)')
+        .replace(/([\s([{])Symbol\.for\("([\w_]*)"\)/g, '$1Sym($2)')
+        .replace(/([\s([{])Symbol\.for\(`([\w_]*)`\)/g, '$1Sym($2)')
+        .replace(/{\s+}/g, '{}')
+}
+
 function getEnclosedBody(str: string) {
   let count = 1
   str = str.slice(1)
@@ -126,6 +142,7 @@ function getEnclosedBody(str: string) {
         .replace(/([\s([{])Symbol\.for\('([\w_]*)'\)/g, '$1Sym($2)')
         .replace(/([\s([{])Symbol\.for\("([\w_]*)"\)/g, '$1Sym($2)')
         .replace(/([\s([{])Symbol\.for\(`([\w_]*)`\)/g, '$1Sym($2)')
+        .replace(/{\s+}/g, '{}')
       break
     }
   }
