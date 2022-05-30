@@ -1,0 +1,8 @@
+ignores:
+  - '@commitlint/*'
+  - '@semantic-release/*'
+  - '@size-limit/*'
+  - '@types/*'
+  - jest-*
+  - semantic-release
+  - ts-jest

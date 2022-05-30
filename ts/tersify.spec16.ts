@@ -1,4 +1,4 @@
-import { tersify } from './tersify'
+import { tersify } from './index.js'
 
 describe('function', () => {
   test('optional chaining', () => {

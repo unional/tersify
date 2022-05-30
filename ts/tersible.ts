@@ -1,5 +1,5 @@
-import { defaultTersify } from './tersify'
-import { Tersible, TersifyOptions } from './types'
+import { defaultTersify } from './tersify.js'
+import { Tersible, TersifyOptions } from './types.js'
 
 /**
  * Create a Tersible mixin class

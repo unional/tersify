@@ -1,8 +1,8 @@
 {
   "env": {
-    "node": true,
     "es6": true,
-    "jest": true
+    "jest": true,
+    "node": true
   },
   "extends": [
     "plugin:harmony/latest"
@@ -23,18 +23,21 @@
       }
     },
     {
+      "excludedFiles": [
+        "*.spec.ts"
+      ],
       "extends": "plugin:harmony/ts-recommended",
       "files": [
         "*.ts",
         "*.tsx"
-      ],
-      "excludedFiles": [
-        "*.spec.ts"
       ],
       "rules": {
         "@typescript-eslint/ban-types": "off",
         "no-use-before-define": "off"
       }
     }
-  ]
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  }
 }

@@ -1,8 +1,8 @@
-import { hasTersifyFn } from './hasTersifyFn';
-import { defaultTersify } from './tersify';
-import { tersifyAcorn } from './tersifyAcorn';
-import { tersifyFunctionByString } from './tersifyFunctionByString';
-import { TersifyContext } from './typesInternal';
+import { hasTersifyFn } from './hasTersifyFn.js'
+import { defaultTersify } from './tersify.js'
+import { tersifyAcorn } from './tersifyAcorn/index.js'
+import { tersifyFunctionByString } from './tersifyFunctionByString.js'
+import { TersifyContext } from './typesInternal.js'
 
 export function tersifyFunction(context: TersifyContext, fn: Function, _length: number): string {
   if (!context.raw && hasTersifyFn(fn) && fn.tersify !== defaultTersify) {
