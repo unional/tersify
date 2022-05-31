@@ -17,14 +17,10 @@
       "@semantic-release/github",
       {
         "assets": [
-          {
-            "path": "./cjs",
-            "label": "CJS distribution"
-          },
-          {
-            "path": "./esm",
-            "label": "ESM distribution"
-          }
+          [
+            "cjs",
+            "esm"
+          ]
         ]
       }
     ],
