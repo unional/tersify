@@ -1,8 +1,13 @@
 ignores:
   - '@commitlint/*'
   - '@semantic-release/*'
+  - '@swc/*'
   - '@size-limit/*'
   - '@types/*'
   - jest-*
+  - param-case
+  - pascal-case
   - semantic-release
   - ts-jest
+  - ts-loader
+  - webpack-*
