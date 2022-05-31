@@ -9,7 +9,7 @@ pull_request_rules:
   - name: automatic merge for Renovate pull requests (except major)
     conditions:
       - author=renovate[bot]
-      - head~=^(?!major-)
+      - head~=^chore
     actions:
       merge:
         method: squash
