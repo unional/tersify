@@ -18,11 +18,11 @@
       {
         "assets": [
           {
-            "path": "cjs/**",
+            "path": "./cjs",
             "label": "CJS distribution"
           },
           {
-            "path": "esm/**",
+            "path": "./esm",
             "label": "ESM distribution"
           }
         ]
