@@ -12,6 +12,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "removeComments": false,
+    "rootDir": "ts",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
