@@ -22,7 +22,12 @@ module.exports = {
           configFile: 'tsconfig.es5.json',
           transpileOnly: true
         }
-      }
+      },
+      {
+        test: /\.[jt]s$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
     ]
   },
   // optimization: {
