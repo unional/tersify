@@ -1,4 +1,3 @@
-'use strict';
 const paramCase = require('param-case').paramCase
 const pascalCase = require('pascal-case').pascalCase
 const path = require('path');
@@ -25,23 +24,23 @@ module.exports = {
           transpileOnly: true
         }
       },
-      {
-        loader: 'babel-loader',
-        test: /\.js$/,
-        options:
-        {
-          presets: [
-            '@babel/preset-env',
-            '@babel/preset-typescript'
-          ],
-          plugins: ['@babel/plugin-transform-modules-commonjs']
-        }
-      },
       // {
-      //   test: /\.[jt]s$/,
-      //   enforce: 'pre',
-      //   use: ['source-map-loader'],
+      //   loader: 'babel-loader',
+      //   test: /\.js$/,
+      //   options:
+      //   {
+      //     presets: [
+      //       '@babel/preset-env',
+      //       '@babel/preset-typescript'
+      //     ],
+      //     plugins: ['@babel/plugin-transform-modules-commonjs']
+      //   }
       // },
+      {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
     ]
   },
   optimization: {
