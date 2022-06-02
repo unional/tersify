@@ -20,22 +20,10 @@ module.exports = {
         loader: 'ts-loader',
         test: /\.ts$/,
         options: {
-          configFile: 'tsconfig.cjs.json',
-          transpileOnly: true
+          configFile: 'tsconfig.esm.json',
+          // transpileOnly: true
         }
       },
-      // {
-      //   loader: 'babel-loader',
-      //   test: /\.js$/,
-      //   options:
-      //   {
-      //     presets: [
-      //       '@babel/preset-env',
-      //       '@babel/preset-typescript'
-      //     ],
-      //     plugins: ['@babel/plugin-transform-modules-commonjs']
-      //   }
-      // },
       {
         test: /\.js$/,
         enforce: 'pre',
@@ -46,9 +34,6 @@ module.exports = {
   optimization: {
     minimize: true,
   },
-  // plugins: [
-  //   new BundleAnalyzerPlugin()
-  // ],
   output: {
     path: path.resolve('dist'),
     filename: `${filename}.es5.js`,
@@ -57,6 +42,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new NormalModuleReplacementPlugin(/.js$/, (resource) => {
+      if (/node_modules/.test(resource.context)) return
       resource.request = resource.request.replace(/.js$/, '')
     })
   ],

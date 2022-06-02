@@ -4,10 +4,12 @@ ignores:
   - '@swc/*'
   - '@size-limit/*'
   - '@types/*'
+  - clean-webpack-plugin
   - jest-*
   - param-case
   - pascal-case
   - semantic-release
+  - source-map-loader
   - ts-jest
   - ts-loader
   - webpack-*
