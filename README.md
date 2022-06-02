@@ -3,13 +3,12 @@
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
 
-[![Github NodeJS][github-nodejs]][github-action-url]
+[![GitHub NodeJS][github-nodejs]][github-action-url]
 [![Codecov][codecov-image]][codecov-url]
 
 [![Semantic Release][semantic-release-image]][semantic-release-url]
 
 [![Visual Studio Code][vscode-image]][vscode-url]
-[![Wallaby.js][wallaby-image]][wallaby-url]
 
 Create a readable terse representation of the subject.
 
@@ -41,7 +40,7 @@ tersify({ a: 1 })
 tersify(() => { return Symbol.for(abc) })
 ```
 
-## tersible
+## `tersible`
 
 Inject a `tersify()` function to the subject.
 
@@ -61,7 +60,7 @@ decrement.tersify() // 'a--'
 tersible({ a: 1 }, options => `a: ${options.maxLength}`).tersify({ maxLength: 10 })
 ```
 
-## Tersiblized
+## `Tersiblized`
 
 Mixin `Tersible` to a class.
 
@@ -88,5 +87,3 @@ boo.tersify() // '{ a: 3 }'
 [semantic-release-url]: https://github.com/semantic-release/semantic-release
 [vscode-image]: https://img.shields.io/badge/vscode-ready-green.svg
 [vscode-url]: https://code.visualstudio.com/
-[wallaby-image]: https://img.shields.io/badge/wallaby.js-configured-green.svg
-[wallaby-url]: https://wallabyjs.com
