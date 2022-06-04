@@ -8,7 +8,9 @@ export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
   switch (struct.type) {
     case 'function': return formatFn2(struct, options.maxLength)
     case 'arrow': return formatArrow2(struct, options.maxLength)
-    case 'unknown': default: return formatUnknown(struct, options.maxLength)
+    case 'unknown': default:
+      // istanbul ignore next
+      return formatUnknown(struct, options.maxLength)
   }
 }
 
@@ -128,6 +130,7 @@ function formatArrow2(struct: ArrowStruct, maxLength: number) {
   return trim({ raw: false, noTrim: false }, applyTemplate(template, struct), maxLength)
 }
 
+// istanbul ignore next
 function formatUnknown(struct: UnknownStruct, maxLength: number) {
   return trim({ noTrim: false }, struct.value, maxLength)
 }
