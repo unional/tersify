@@ -79,7 +79,6 @@ describe('parseFn()', () => {
       type: 'function',
       body: `return a;`,
     })
-
     testParseFn(`function(){
   a ++
   return a;
@@ -178,6 +177,31 @@ describe('parseFn()', () => {
 )`, {
       type: 'arrow',
       body: `( { a: 1 } )`,
+      singleLineBody: true
+    })
+    testParseFn(`() => {
+      return 1;
+    }`, {
+      type: 'arrow',
+      body: `1`,
+      singleLineBody: true
+    })
+    testParseFn(`a => {
+      return a;
+    }`, {
+      type: 'arrow',
+      params: 'a',
+      body: `a`,
+      singleParam: true,
+      singleLineBody: true
+    })
+    testParseFn(`a => {
+      return {a:1};
+    }`, {
+      type: 'arrow',
+      params: 'a',
+      body: `({a:1})`,
+      singleParam: true,
       singleLineBody: true
     })
   })
