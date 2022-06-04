@@ -1,3 +1,10 @@
+# [3.10.0](https://github.com/unional/tersify/compare/v3.9.1...v3.10.0) (2022-06-04)
+
+
+### Features
+
+* improve browser parsing ([74c3254](https://github.com/unional/tersify/commit/74c3254d85bab7e620675359d92c7e10e45e934c)), closes [#152](https://github.com/unional/tersify/issues/152)
+
 ## [3.9.1](https://github.com/unional/tersify/compare/v3.9.0...v3.9.1) (2022-06-02)
 
 
