@@ -9637,6 +9637,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tersify@npm:^3.8.2":
+  version: 3.9.1
+  resolution: "tersify@npm:3.9.1"
+  dependencies:
+    acorn: ^8.7.0
+    is-buffer: ^2.0.5
+    unpartial: ^0.7.3
+  checksum: 1f4a495f9d1d3258986d6d222f8dd6b0813a4a46e082d3e4f7c68adb4d41038423068f5a6889773ea77e1420a27c1d2a3a1e4f99307143e6f18ba8cad0228d98
+  languageName: node
+  linkType: hard
+
 "tersify@workspace:.":
   version: 0.0.0-use.local
   resolution: "tersify@workspace:."
@@ -9675,6 +9686,7 @@ __metadata:
     source-map-loader: ^3.0.1
     ts-jest: ^28.0.3
     ts-loader: ^9.3.0
+    type-plus: ^4.9.1
     typescript: ^4.7.2
     unpartial: ^0.7.3
     webpack: ^5.72.1
@@ -10011,6 +10023,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-plus@npm:^4.9.1":
+  version: 4.9.1
+  resolution: "type-plus@npm:4.9.1"
+  dependencies:
+    tersify: ^3.8.2
+    unpartial: ^0.6.4
+  checksum: 87b30e4dc42c152e0acebafe2ada57cb2c0504ab8db60934768f352276cc9f38e8a42f81f3ffd8a6fdbbde5a2f0486a9b08a149b165001d86abefdb62879f0e4
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^4.6.4":
   version: 4.6.4
   resolution: "typescript@npm:4.6.4"
@@ -10120,7 +10142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unpartial@npm:^0.6.1":
+"unpartial@npm:^0.6.1, unpartial@npm:^0.6.4":
   version: 0.6.4
   resolution: "unpartial@npm:0.6.4"
   checksum: 34a9d765d97f54ec36036c8d0bd8087874e2b7c4ff2b71a3168687b867d4db2f3a7dd7bc15b50371df9488d280723a1ba8f726b1fdfb5537d293785eee647ec2
