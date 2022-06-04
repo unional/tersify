@@ -83,7 +83,7 @@
     "@size-limit/preset-small-lib": "^7.0.8",
     "@swc/core": "^1.2.194",
     "@swc/jest": "^0.2.21",
-    "@types/jest": "^27.5.1",
+    "@types/jest": "^28.0.0",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.23.0",
     "clean-webpack-plugin": "^4.0.0",
