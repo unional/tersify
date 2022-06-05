@@ -39,5 +39,6 @@
   ],
   "parserOptions": {
     "sourceType": "module"
-  }
+  },
+  "root": true
 }
