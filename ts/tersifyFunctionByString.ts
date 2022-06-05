@@ -177,10 +177,10 @@ function removeLineBreaks(value: string) {
   return value.split('\n')
     .map(x => x.trim())
     .filter(x => !!x)
-    .map((x, i, a) => {
-      return (i < a.length - 1 && /[^({}):;(do|else)]$/.test(x) && /[^)}]/.test(a[i + 1]))
-        ? x + ';' : x
-    }).join(' ')
+    .map((x, i, a) => i < a.length - 1
+      && /[^({}):;(do|else)]$/.test(x)
+      && /[^)}]/.test(a[i + 1]) ? x + ';' : x
+    ).join(' ')
 }
 
 function applyTemplate(template: string, struct: { params: string, body: string }) {
