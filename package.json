@@ -48,9 +48,10 @@
     "!ts/**/*.spec.ts"
   ],
   "scripts": {
-    "build": "run-p build:cjs build:esm",
+    "build": "run-p build:cjs build:esm build:tslib",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
+    "build:tslib": "tsc -p tsconfig.tslib.json",
     "bundle": "webpack",
     "clean": "rimraf dist cjs esm lib libm || true",
     "coverage": "jest --coverage",
@@ -105,6 +106,7 @@
     "source-map-loader": "^3.0.1",
     "ts-jest": "^28.0.4",
     "ts-loader": "^9.3.0",
+    "tslib": "^2.4.0",
     "type-plus": "^4.9.1",
     "typescript": "^4.7.3",
     "webpack": "^5.73.0",
@@ -120,6 +122,10 @@
     {
       "path": "./esm/index.js",
       "limit": "5 kB"
+    },
+    {
+      "path": "./tslib/index.js",
+      "limit": "50 kB"
     }
   ]
 }

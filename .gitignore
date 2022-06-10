@@ -51,7 +51,8 @@ typings
 !.yarn/versions
 
 # project folders
-cjs
-dist
-esm
-lib*
+/cjs
+/dist
+/esm
+/lib*
+/tslib

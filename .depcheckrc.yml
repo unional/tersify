@@ -12,4 +12,5 @@ ignores:
   - source-map-loader
   - ts-jest
   - ts-loader
+  - tslib
   - webpack-*
