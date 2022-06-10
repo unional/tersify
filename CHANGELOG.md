@@ -1,3 +1,10 @@
+## [3.10.1](https://github.com/unional/tersify/compare/v3.10.0...v3.10.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* downgrade to ES2019 ([456f1f0](https://github.com/unional/tersify/commit/456f1f0d20de0d1591772b58f55d36cc1a3f4855))
+
 # [3.10.0](https://github.com/unional/tersify/compare/v3.9.1...v3.10.0) (2022-06-04)
 
 
