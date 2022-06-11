@@ -1,3 +1,10 @@
+## [3.10.2](https://github.com/unional/tersify/compare/v3.10.1...v3.10.2) (2022-06-11)
+
+
+### Bug Fixes
+
+* add cjs/package.json ([366e2d7](https://github.com/unional/tersify/commit/366e2d7d91af614fadb59f1629e28209a5adbd78))
+
 ## [3.10.1](https://github.com/unional/tersify/compare/v3.10.0...v3.10.1) (2022-06-10)
 
 
