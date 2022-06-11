@@ -9610,7 +9610,7 @@ __metadata:
     tslib: ^2.4.0
     type-plus: ^4.9.1
     typescript: ^4.7.3
-    unpartial: ^0.7.3
+    unpartial: ^0.7.4
     webpack: ^5.73.0
     webpack-bundle-analyzer: ^4.5.0
     webpack-cli: ^4.9.2
@@ -10079,6 +10079,13 @@ __metadata:
   version: 0.7.3
   resolution: "unpartial@npm:0.7.3"
   checksum: 92b1acb408af2c9efb470f09a57938cd14d62f22e056df91a5a0e47cc35e51452a797803c19f0596d24539de2d3ea8e5adc0a60e39b67debf6a58a79f1ad4dcb
+  languageName: node
+  linkType: hard
+
+"unpartial@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "unpartial@npm:0.7.4"
+  checksum: 28c57b77b7d64135a22a50b57ef5388da7eece85efab0f117d323000866df6ab4fde1c1fdef55f2a56f52f566d711e86b0b4dc28e375debfb7288924efc86f57
   languageName: node
   linkType: hard
 
