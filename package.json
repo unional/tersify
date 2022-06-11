@@ -36,6 +36,12 @@
     "./esm/tersifyFunction.d.ts": "./esm/tersifyFunction.browser.d.ts",
     "./esm/tersifyFunction.js": "./esm/tersifyFunction.browser.js",
     "./esm/tersifyFunction.js.map": "./esm/tersifyFunction.browser.js.map",
+    "./tslib/constants.d.ts": "./tslib/constants.browser.d.ts",
+    "./tslib/constants.js": "./tslib/constants.browser.js",
+    "./tslib/constants.js.map": "./tslib/constants.browser.js.map",
+    "./tslib/tersifyFunction.d.ts": "./tslib/tersifyFunction.browser.d.ts",
+    "./tslib/tersifyFunction.js": "./tslib/tersifyFunction.browser.js",
+    "./tslib/tersifyFunction.js.map": "./tslib/tersifyFunction.browser.js.map",
     "./ts/constants.ts": "./ts/constants.browser.ts",
     "./ts/tersifyFunction.ts": "./ts/tersifyFunction.browser.ts"
   },
