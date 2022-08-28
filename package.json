@@ -36,14 +36,14 @@
     "./esm/tersifyFunction.d.ts": "./esm/tersifyFunction.browser.d.ts",
     "./esm/tersifyFunction.js": "./esm/tersifyFunction.browser.js",
     "./esm/tersifyFunction.js.map": "./esm/tersifyFunction.browser.js.map",
+    "./ts/constants.ts": "./ts/constants.browser.ts",
+    "./ts/tersifyFunction.ts": "./ts/tersifyFunction.browser.ts",
     "./tslib/constants.d.ts": "./tslib/constants.browser.d.ts",
     "./tslib/constants.js": "./tslib/constants.browser.js",
     "./tslib/constants.js.map": "./tslib/constants.browser.js.map",
     "./tslib/tersifyFunction.d.ts": "./tslib/tersifyFunction.browser.d.ts",
     "./tslib/tersifyFunction.js": "./tslib/tersifyFunction.browser.js",
-    "./tslib/tersifyFunction.js.map": "./tslib/tersifyFunction.browser.js.map",
-    "./ts/constants.ts": "./ts/constants.browser.ts",
-    "./ts/tersifyFunction.ts": "./ts/tersifyFunction.browser.ts"
+    "./tslib/tersifyFunction.js.map": "./tslib/tersifyFunction.browser.js.map"
   },
   "types": "./esm/index.d.ts",
   "files": [
@@ -60,7 +60,7 @@
     "build:tslib": "tsc -p tsconfig.tslib.json",
     "bundle": "webpack",
     "clean": "rimraf cjs coverage dist esm lib libm tslib && mkdir cjs && echo '{\"type\":\"commonjs\"}' > cjs/package.json || true",
-    "coverage": "jest --coverage",
+    "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "depcheck": "depcheck",
     "lint": "eslint --ext=js,ts .",
     "prepublishOnly": "yarn bundle",
@@ -70,16 +70,16 @@
     "nuke": "yarn clean && rimraf node_modules || true",
     "size": "size-limit",
     "test": "run-p test:node test:jsdom test:swc",
-    "test:jsdom": "jest -c jest.config.jsdom.mjs",
-    "test:node": "jest -c jest.config.mjs",
-    "test:swc": "jest -c jest.config.swc.mjs",
+    "test:jsdom": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.jsdom.mjs",
+    "test:node": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.mjs",
+    "test:swc": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.swc.mjs",
     "verify": "npm-run-all clean -p build depcheck lint coverage -p size",
-    "watch": "jest --watch"
+    "watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch"
   },
   "dependencies": {
-    "acorn": "^8.7.1",
+    "acorn": "^8.8.0",
     "is-buffer": "^2.0.5",
-    "unpartial": "^0.7.4"
+    "unpartial": "^0.7.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",
@@ -94,6 +94,7 @@
     "@types/jest": "^28.1.0",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "clean-webpack-plugin": "^4.0.0",
+    "cross-env": "^7.0.3",
     "depcheck": "^1.4.3",
     "eslint": "8.17.0",
     "eslint-plugin-harmony": "^7.1.0",
@@ -111,11 +112,11 @@
     "semantic-release": "^19.0.3",
     "size-limit": "^7.0.8",
     "source-map-loader": "^4.0.0",
-    "ts-jest": "^28.0.4",
-    "ts-loader": "^9.3.0",
+    "ts-jest": "^28.0.8",
+    "ts-loader": "^9.3.1",
     "tslib": "^2.4.0",
-    "type-plus": "^4.9.1",
-    "typescript": "^4.7.3",
+    "type-plus": "^4.11.1",
+    "typescript": "^4.8.2",
     "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.2"
