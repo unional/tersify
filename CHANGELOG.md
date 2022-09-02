@@ -1,3 +1,10 @@
+## [3.10.3](https://github.com/unional/tersify/compare/v3.10.2...v3.10.3) (2022-09-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency unpartial to v1 ([b2535db](https://github.com/unional/tersify/commit/b2535db1f673a1c2a03fb754b7a57a728297fbec))
+
 ## [3.10.2](https://github.com/unional/tersify/compare/v3.10.1...v3.10.2) (2022-06-11)
 
 
