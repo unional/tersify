@@ -1,3 +1,10 @@
+## [3.10.5](https://github.com/unional/tersify/compare/v3.10.4...v3.10.5) (2022-09-14)
+
+
+### Bug Fixes
+
+* re-release ([4d2cb41](https://github.com/unional/tersify/commit/4d2cb41c319e6dab8abdba377ef21b62405fc2c6))
+
 ## [3.10.4](https://github.com/unional/tersify/compare/v3.10.3...v3.10.4) (2022-09-14)
 
 
