@@ -183,7 +183,7 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
   }
 
   const proto = Object.getPrototypeOf(value)
-  const name: string = proto.constructor.name
+  const name: string = proto?.constructor?.name ?? ''
   const bracketLen = 2 // `{}`
   const spaceLen = 1 // ' '
 
@@ -191,7 +191,7 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
     [length - spaceLen - bracketLen, bracketLen] :
     [name.length, length - name.length - spaceLen]
 
-  const nameStr = trim(context, name, nameLength)
+  const nameStr = nameLength ? `${trim(context, name, nameLength)} ` : ''
 
   let remaining = valueLength
   const keys = Object.keys(value)
@@ -209,10 +209,10 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
   const content = hasSkippedProps ? props.join(', ') + ' ' : props.join(', ')
   const trimmedContent = trim(context, content, valueLength - bracketLen - 2)
 
-  return keys.length === 0 ? `${nameStr} {}` :
+  return keys.length === 0 ? `${nameStr}{}` :
     trimmedContent.length === 0 ?
-      trim(context, `${nameStr} {   }`, length) :
-      `${nameStr} { ${trimmedContent} }`
+      trim(context, `${nameStr}{   }`, length) :
+      `${nameStr}{ ${trimmedContent} }`
 }
 
 function getPropStr(context: TersifyContext, bag: Record<any, any>, key: string, length: number, isLastKey: boolean) {

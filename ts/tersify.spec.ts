@@ -1790,6 +1790,12 @@ describe('object', () => {
     const subject = { a: { b: node }, c: node }
     expect(tersify(subject)).toBe('{ a: { b: { x: 1 } }, c: ref(a, b) }')
   })
+
+  test('object with null proto', () => {
+    const subject = Object.create(null)
+    subject.abc = 1
+    expect(tersify(subject)).toBe('{ abc: 1 }')
+  })
 })
 
 describe('array', () => {
