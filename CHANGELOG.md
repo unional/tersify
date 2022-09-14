@@ -1,3 +1,10 @@
+## [3.10.4](https://github.com/unional/tersify/compare/v3.10.3...v3.10.4) (2022-09-14)
+
+
+### Bug Fixes
+
+* handle record (Object.create(null)) ([4462e75](https://github.com/unional/tersify/commit/4462e7504b50f9eacdcde765d21de2299dbe7a4d))
+
 ## [3.10.3](https://github.com/unional/tersify/compare/v3.10.2...v3.10.3) (2022-09-02)
 
 
