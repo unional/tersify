@@ -11,7 +11,7 @@ export type AcornNode = IdentifierNode | LiteralNode | CallExpressionNode |
   ArrayExpression | ThrowStatementNode | TryStatementNode | CatchClauseNode |
   ThisExpressionNode | ClassExpressionNode | ClassBodyNode | MethodDefinitionNode | SpreadElementNode |
   ObjectPatternNode | SequenceExpression | TemplateLiteral | TemplateElement | TaggedTemplateExpression |
-  ChainExpression
+  ChainExpression | MetaProperty
 
 export interface AcornNodeBase {
   start: number,
@@ -348,4 +348,10 @@ export interface TaggedTemplateExpression extends AcornNodeBase {
 export interface ChainExpression extends AcornNodeBase {
   type: 'ChainExpression',
   expression: MemberExpressionNode | CallExpressionNode
+}
+
+export interface MetaProperty extends AcornNodeBase {
+  type: 'MetaProperty',
+  meta: IdentifierNode,
+  property: IdentifierNode
 }

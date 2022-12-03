@@ -2170,3 +2170,9 @@ describe('instance', () => {
     expect(tersify(instance, { maxLength: 18 })).toBe(`TwoProps { va... }`)
   })
 })
+
+it('works with new.target', () => {
+  function meta() { return new.target }
+
+  expect(tersify(meta)).toBe('fn meta() { return new.target }')
+})

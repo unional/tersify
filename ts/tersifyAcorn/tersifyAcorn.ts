@@ -15,7 +15,7 @@ import {
   SwitchStatementNode, SymbolForNode, TaggedTemplateExpression, TemplateLiteral,
   ThisExpressionNode, ThrowStatementNode, TryStatementNode, UnaryExpressionNode,
   UpdateExpressionNode, VariableDeclarationNode, VariableDeclaratorNode,
-  WhileStatementNode, YieldExpressionNode
+  WhileStatementNode, YieldExpressionNode, MetaProperty
 } from './AcornTypes.js'
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder.js'
 
@@ -135,11 +135,14 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
       return tersifyTaggedTemplateExpression(context, node, length)
     case 'ChainExpression':
       return tersifyChainExpression(context, node, length)
+    case 'MetaProperty':
+      return tersifyMetaProperty(context, node, length)
     // istanbul ignore next
     default:
       return tersifyUnknown(node)
   }
 }
+
 
 // istanbul ignore next
 function tersifyUnknown(node: AcornNode) {
@@ -180,6 +183,10 @@ function tersifyAwaitExpressionNode(context: TersifyContext, node: AwaitExpressi
 function tersifyYieldExpressionNode(context: TersifyContext, node: YieldExpressionNode, length: number) {
   const argument = tersifyAcornNode(context, node.argument, length)
   return `yield ${argument}`
+}
+function tersifyMetaProperty(context: TersifyContext, node: MetaProperty, length: number) {
+  const meta = tersifyAcornNode(context, node.meta, length)
+  return `${meta}.${tersifyAcornNode(context, node.property, length)}`
 }
 
 function tersifyPropertyNode(context: TersifyContext, node: PropertyNode, length: number) {
