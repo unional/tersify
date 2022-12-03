@@ -1,3 +1,10 @@
+# [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
+
+
+### Features
+
+* support MetaProperty ([5506029](https://github.com/unional/tersify/commit/550602956b297f964483d00e51819081191c4b50))
+
 ## [3.10.5](https://github.com/unional/tersify/compare/v3.10.4...v3.10.5) (2022-09-14)
 
 
