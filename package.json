@@ -20,7 +20,7 @@
   "exports": {
     "types": "./esm/index.d.ts",
     "import": "./esm/index.js",
-    "require": "./cjs/index.js"
+    "default": "./cjs/index.js"
   },
   "main": "cjs/index.js",
   "browser": {
