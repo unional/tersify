@@ -61,6 +61,7 @@
     "bundle": "webpack",
     "clean": "rimraf cjs coverage dist esm lib libm tslib",
     "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --coverage",
+    "cs": "changeset",
     "depcheck": "depcheck",
     "lint": "eslint --ext=js,ts .",
     "prepublishOnly": "pnpm bundle",
@@ -68,12 +69,14 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "nuke": "pnpm clean && rimraf node_modules || true",
+    "release": "pnpm build && changeset publish",
     "size": "size-limit",
     "test": "run-p test:node test:jsdom test:swc",
     "test:jsdom": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.jsdom.mjs",
     "test:node": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.mjs",
     "test:swc": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.swc.mjs",
     "verify": "npm-run-all clean -p build depcheck lint coverage -p size",
+    "version": "changeset version",
     "watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch"
   },
   "dependencies": {
@@ -82,6 +85,7 @@
     "unpartial": "^1.0.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.25.2",
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@repobuddy/jest": "^1.0.0",
