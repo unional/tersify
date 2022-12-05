@@ -2176,3 +2176,8 @@ it('works with new.target', () => {
 
   expect(tersify(meta)).toBe('fn meta() { return new.target }')
 })
+
+it('works to class with symbol property', () => {
+  class SymbolProp { [Symbol.iterator]() { } }
+  expect(tersify(SymbolProp)).toBe('class SymbolProp{ [Sym.iterator]() {} }')
+})

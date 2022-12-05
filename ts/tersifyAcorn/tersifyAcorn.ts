@@ -601,7 +601,7 @@ function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinition
   const fnExpNode = node.value
   const async = fnExpNode.async ? 'async ' : ''
   const generator = fnExpNode.generator ? '*' : ''
-  const id = node.key.name
+  const id = node.key.name ?? `[${tersifyAcornNode(context, node.key, length)}]`
   const params = fnExpNode.params.length > 0 ? tersifyFunctionParams(context, fnExpNode.params) : '()'
   const space = ' '
   const declarationLen = staticStr.length + async.length + generator.length + id.length + space.length
