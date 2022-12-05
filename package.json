@@ -22,7 +22,7 @@
     "import": "./esm/index.js",
     "default": "./cjs/index.js"
   },
-  "main": "cjs/index.js",
+  "main": "./cjs/index.js",
   "browser": {
     "./cjs/constants.d.ts": "./cjs/constants.browser.d.ts",
     "./cjs/constants.js": "./cjs/constants.browser.js",
@@ -57,24 +57,24 @@
     "build": "run-p build:cjs build:esm build:tslib",
     "build:cjs": "tsc -p tsconfig.cjs.json && ncp package.cjs.json cjs/package.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build:tslib": "tsc -p tsconfig.tslib.json",
+    "build:tslib": "tsc -p tsconfig.tslib.json && ncp package.cjs.json tslib/package.json",
     "bundle": "webpack",
     "clean": "rimraf cjs coverage dist esm lib libm tslib",
     "coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "depcheck": "depcheck",
     "lint": "eslint --ext=js,ts .",
-    "prepublishOnly": "yarn bundle",
+    "prepublishOnly": "pnpm bundle",
     "postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "nuke": "yarn clean && rimraf node_modules || true",
+    "nuke": "pnpm clean && rimraf node_modules || true",
     "size": "size-limit",
     "test": "run-p test:node test:jsdom test:swc",
-    "test:jsdom": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.jsdom.mjs",
-    "test:node": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.mjs",
-    "test:swc": "cross-env NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.swc.mjs",
+    "test:jsdom": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.jsdom.mjs",
+    "test:node": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.mjs",
+    "test:swc": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest -c jest.config.swc.mjs",
     "verify": "npm-run-all clean -p build depcheck lint coverage -p size",
-    "watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch"
+    "watch": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 jest --watch"
   },
   "dependencies": {
     "acorn": "^8.8.0",
@@ -122,19 +122,5 @@
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^5.0.0"
   },
-  "packageManager": "yarn@3.3.0",
-  "size-limit": [
-    {
-      "path": "./cjs/index.js",
-      "limit": "5 kB"
-    },
-    {
-      "path": "./esm/index.js",
-      "limit": "5 kB"
-    },
-    {
-      "path": "./tslib/index.js",
-      "limit": "50 kB"
-    }
-  ]
+  "packageManager": "pnpm@7.18.0"
 }
