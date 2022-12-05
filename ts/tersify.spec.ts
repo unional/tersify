@@ -1,3 +1,4 @@
+import { record } from 'type-plus'
 import { tersible, tersify } from './index.js'
 
 describe('undefined', () => {
@@ -961,6 +962,15 @@ describe('function', () => {
 
     expect(tersify(withTypeof)).toBe('fn withTypeof(s) { return typeof s }')
   })
+
+  test('with (a,b)', () => {
+    let x = 0
+    function withParan() {
+      return (x = 1, 2)
+    }
+
+    expect(tersify(withParan)).toBe('fn withParan() { return (x = 1, 2) }')
+  })
 })
 
 describe('arrow function', () => {
@@ -1822,6 +1832,12 @@ describe('array', () => {
 
   test('with object entry', () => {
     expect(tersify([{ a: 1 }])).toBe('[{ a: 1 }]')
+  })
+
+  test(`with Object.create({}) entry`, () => {
+    const o = Object.create({})
+    o.a = 1
+    expect(tersify([o])).toBe('[Object { a: 1 }]')
   })
 
   test('with object containing array', () => {
