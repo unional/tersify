@@ -4,6 +4,7 @@
     "declarationMap": true,
     "esModuleInterop": true,
     "lib": [
+      "DOM",
       "ES2019"
     ],
     "moduleResolution": "node",

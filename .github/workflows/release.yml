@@ -5,9 +5,11 @@ on:
 
 jobs:
   code:
-    uses: unional/.github/.github/workflows/yarn-verify-linux.yml@main
+    uses: unional/.github/.github/workflows/pnpm-verify.yml@main
+    with:
+      os: '["ubuntu-latest"]'
 
   release:
-    uses: unional/.github/.github/workflows/yarn-release-semantic.yml@main
+    uses: unional/.github/.github/workflows/pnpm-release-changeset.yml@main
     needs: code
     secrets: inherit
