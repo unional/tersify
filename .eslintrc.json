@@ -11,7 +11,8 @@
     {
       "extends": "plugin:harmony/ts-recommended",
       "files": [
-        "*.spec.ts"
+        "*.spec.ts",
+        "*.spec.*.ts"
       ],
       "rules": {
         "@typescript-eslint/ban-types": "off",
@@ -24,7 +25,8 @@
     },
     {
       "excludedFiles": [
-        "*.spec.ts"
+        "*.spec.ts",
+        "*.spec.*.ts"
       ],
       "extends": "plugin:harmony/ts-recommended",
       "files": [
