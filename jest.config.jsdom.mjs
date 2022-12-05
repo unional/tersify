@@ -1,4 +1,4 @@
-const testMatch = ['**/*.browser.spec.ts']
+const testMatch = ['**/*.spec.jsdom.ts']
 
 export default {
   preset: 'ts-jest/presets/default-esm',

@@ -1,5 +1,6 @@
 ignores:
   - '@commitlint/*'
+  - '@repobuddy/jest'
   - '@semantic-release/*'
   - '@swc/*'
   - '@size-limit/*'
