@@ -1,6 +1,6 @@
 {
   "name": "tersify",
-  "version": "0.0.0-development",
+  "version": "3.11.0",
   "description": "Creates a terse representation of code",
   "homepage": "https://github.com/unional/tersify",
   "bugs": {
