@@ -1,5 +1,8 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: '@repobuddy/jest/presets/ts-esm',
-  roots: ['<rootDir>/ts']
+  projects: [
+    "./jest.config.jsdom.mjs",
+    "./jest.config.swc.mjs",
+    "./jest.config.node.mjs"
+  ]
 }

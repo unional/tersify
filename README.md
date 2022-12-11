@@ -75,7 +75,7 @@ boo.a = 3
 boo.tersify() // '{ a: 3 }'
 ```
 
-[codecov-image]: https://codecov.io/gh/unional/tersify/branch/master/graph/badge.svg
+[codecov-image]: https://codecov.io/gh/unional/tersify/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/unional/tersify
 [downloads-image]: https://img.shields.io/npm/dm/tersify.svg?style=flat
 [downloads-url]: https://npmjs.org/package/tersify
