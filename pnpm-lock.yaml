@@ -39,7 +39,7 @@ specifiers:
   ts-jest: ^29.0.0
   ts-loader: ^9.3.1
   tslib: ^2.4.0
-  type-plus: ^4.11.1
+  type-plus: ^5.0.0
   typescript: ^4.8.2
   unpartial: ^1.0.0
   webpack: ^5.73.0
@@ -88,7 +88,7 @@ devDependencies:
   ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
   ts-loader: 9.4.2_vfotqvx6lgcbf3upbs6hgaza4q
   tslib: 2.4.1
-  type-plus: 4.18.0
+  type-plus: 5.0.0
   typescript: 4.9.3
   webpack: 5.75.0_st32d7rnije6agpi6zwtewr37u
   webpack-bundle-analyzer: 4.7.0
@@ -7038,8 +7038,8 @@ packages:
       source-map-support: 0.5.21
     dev: true
 
-  /tersify/3.11.0:
-    resolution: {integrity: sha512-ZKX0fcX01MDobKsO+N3etWN50C4IU+5EpOnHtmPlO5T3QXtubZBQYO1cZBnbkRPopMBCeJF7srmCmmP/ucXI0Q==}
+  /tersify/3.11.1:
+    resolution: {integrity: sha512-W/Kv1z+cgDRsI10p9CyCZJ+gopPUVOz1/h7OPntr6D52iIHQTbsg40MBUoaG82q8IgD/GKoWhoujg/rOxQW7SA==}
     dependencies:
       acorn: 8.8.1
       is-buffer: 2.0.5
@@ -7315,10 +7315,10 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /type-plus/4.18.0:
-    resolution: {integrity: sha512-Hds5neDmogRcQheEmdjbEqVq/cE9UUdd9Ic7eCRI2/AzUH1JB+0ha3Hb3Spn2m1PQRBA61kNjbgSLaljNp0L9Q==}
+  /type-plus/5.0.0:
+    resolution: {integrity: sha512-nKp5pOQDldmR9BdEjLplLFwiXTVhOK2kReBSgVJ65URDLXCqENYzVDCONaExADIIc1CAGzvzTkB0TUgMAWR2qQ==}
     dependencies:
-      tersify: 3.11.0
+      tersify: 3.11.1
       unpartial: 1.0.4
     dev: true
 
