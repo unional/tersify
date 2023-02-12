@@ -2,9 +2,10 @@ ignores:
   - '@commitlint/*'
   - '@repobuddy/jest'
   - '@semantic-release/*'
-  - '@swc/*'
   - '@size-limit/*'
+  - '@swc/*'
   - '@types/*'
+  - '@typescript-eslint/parser'
   - clean-webpack-plugin
   - jest-*
   - param-case

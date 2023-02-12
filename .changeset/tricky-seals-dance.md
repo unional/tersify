@@ -1,0 +1,5 @@
+---
+'tersify': patch
+---
+
+Update dependencies.
