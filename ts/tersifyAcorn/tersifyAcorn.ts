@@ -54,7 +54,8 @@ import {
 	VariableDeclaratorNode,
 	WhileStatementNode,
 	YieldExpressionNode,
-	MetaProperty
+	MetaProperty,
+	SuperNode
 } from './AcornTypes.js'
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder.js'
 
@@ -178,6 +179,8 @@ function tersifyAcornNode(context: TersifyAcornContext, node: AcornNode | null, 
 			return tersifyChainExpression(context, node, length)
 		case 'MetaProperty':
 			return tersifyMetaProperty(context, node, length)
+		case 'Super':
+			return tersifySuperNode(context, node, length)
 		// istanbul ignore next
 		default:
 			return tersifyUnknown(node, context.rawString)
@@ -797,4 +800,8 @@ function tersifyChainExpression(context: TersifyAcornContext, node: ChainExpress
 		default:
 			return tersifyUnknown(node, context.rawString)
 	}
+}
+
+function tersifySuperNode(context: TersifyAcornContext, node: SuperNode, length: number) {
+	return 'Super'
 }

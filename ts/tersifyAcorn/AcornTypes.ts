@@ -51,6 +51,7 @@ export type AcornNode =
 	| TaggedTemplateExpression
 	| ChainExpression
 	| MetaProperty
+	| SuperNode
 
 export interface AcornNodeBase {
 	start: number
@@ -108,12 +109,12 @@ export interface BlockStatementNode extends AcornNodeBase {
 export interface ReturnStatementNode extends AcornNodeBase {
 	type: 'ReturnStatement'
 	argument:
-		| LiteralNode
-		| IdentifierNode
-		| CallExpressionNode
-		| MemberExpressionNode
-		| ObjectExpressionNode
-		| null
+	| LiteralNode
+	| IdentifierNode
+	| CallExpressionNode
+	| MemberExpressionNode
+	| ObjectExpressionNode
+	| null
 }
 
 export interface AssignmentPatternNode extends AcornNodeBase {
@@ -399,4 +400,8 @@ export interface MetaProperty extends AcornNodeBase {
 	type: 'MetaProperty'
 	meta: IdentifierNode
 	property: IdentifierNode
+}
+
+export interface SuperNode extends AcornNodeBase {
+	type: 'Super'
 }
