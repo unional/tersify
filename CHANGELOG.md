@@ -1,5 +1,15 @@
 # [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
 
+## 3.12.0
+
+### Minor Changes
+
+- 15eddde: Supports `SuperNode` (Parent Class).
+
+### Patch Changes
+
+- b60caee: Print out source when detected unknown node
+
 ## 3.11.1
 
 ### Patch Changes
