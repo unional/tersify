@@ -1,5 +1,11 @@
 # [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
 
+## 3.12.1
+
+### Patch Changes
+
+- e59c9c7: Update dependencies.
+
 ## 3.12.0
 
 ### Minor Changes
