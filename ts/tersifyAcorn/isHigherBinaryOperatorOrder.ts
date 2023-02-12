@@ -26,5 +26,5 @@ operators.set('&&', 6)
 operators.set('||', 5)
 
 export function isHigherOperatorOrder(op1: string, op2: string) {
-  return operators.get(op1)! > operators.get(op2)!
+	return operators.get(op1)! > operators.get(op2)!
 }

@@ -1,0 +1,8 @@
+cjs/
+coverage/
+esm/
+fixtures/
+lib/
+tslib/
+*.yml
+*.yaml

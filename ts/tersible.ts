@@ -11,15 +11,18 @@ import { Tersible, TersifyOptions } from './types.js'
  * @param Base Base class
  * @param tersify the tersify function
  */
-export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersify: (this: InstanceType<C>, options?: Partial<TersifyOptions>) => string) {
-  return class extends Base {
-    constructor(...args: any[]) {
-      super(...args)
-    }
-    tersify(this: InstanceType<C>, options?: Partial<TersifyOptions>) {
-      return tersify.call(this, options)
-    }
-  }
+export function Tersiblized<C extends new (...args: any[]) => {}>(
+	Base: C,
+	tersify: (this: InstanceType<C>, options?: Partial<TersifyOptions>) => string
+) {
+	return class extends Base {
+		constructor(...args: any[]) {
+			super(...args)
+		}
+		tersify(this: InstanceType<C>, options?: Partial<TersifyOptions>) {
+			return tersify.call(this, options)
+		}
+	}
 }
 
 /**
@@ -29,17 +32,23 @@ export function Tersiblized<C extends new (...args: any[]) => {}>(Base: C, tersi
  * but it cannot be done otherwise.
  * How can I "clone" a function or class?
  */
-export function tersible<T>(subject: T, tersify?: string | ((this: T, options: Partial<TersifyOptions>) => string)): Tersible<T> {
-  const tersifyFn = tersify === undefined ?
-    defaultTersify :
-    typeof tersify === 'string' ?
-      function () { return tersify } :
-      tersify
-  Object.defineProperty(subject, 'tersify', {
-    value: tersifyFn,
-    enumerable: false,
-    writable: false
-  })
+export function tersible<T>(
+	subject: T,
+	tersify?: string | ((this: T, options: Partial<TersifyOptions>) => string)
+): Tersible<T> {
+	const tersifyFn =
+		tersify === undefined
+			? defaultTersify
+			: typeof tersify === 'string'
+			? function () {
+					return tersify
+			  }
+			: tersify
+	Object.defineProperty(subject, 'tersify', {
+		value: tersifyFn,
+		enumerable: false,
+		writable: false
+	})
 
-  return subject as any
+	return subject as any
 }

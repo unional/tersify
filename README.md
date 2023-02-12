@@ -47,11 +47,16 @@ Inject a `tersify()` function to the subject.
 ```ts
 import { tersible } from 'tersify'
 
-const increment = tersible(a => a + 1, () => 'a++')
+const increment = tersible(
+	a => a + 1,
+	() => 'a++'
+)
 increment.tersify() // 'a++'
 
 // `{ a: 1 }`
-tersible({ a: 1 }, function () { return `{ a: ${this.a} }`}).tersify()
+tersible({ a: 1 }, function () {
+	return `{ a: ${this.a} }`
+}).tersify()
 
 const decrement = tersible(a => a--, 'a--')
 decrement.tersify() // 'a--'
@@ -67,8 +72,12 @@ Mixin `Tersible` to a class.
 ```ts
 import { Tersiblized } from 'tersify'
 
-class Foo { a = 1 }
-class Boo extends Tersiblized(Foo, function() { return `{ a: ${this.a} }` }) { }
+class Foo {
+	a = 1
+}
+class Boo extends Tersiblized(Foo, function () {
+	return `{ a: ${this.a} }`
+}) {}
 
 const boo = new Boo()
 boo.a = 3

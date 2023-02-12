@@ -1,24 +1,25 @@
 {
-  "cSpell.words": [
-    "Acron",
-    "jsnext",
-    "libm",
-    "pinst",
-    "snyk",
-    "tersible",
-    "Tersiblized",
-    "tersify",
-    "tsbuildinfo",
-    "unpartial"
-  ],
-  "eslint.enable": true,
-  "json.schemas": [
-    {
-      "fileMatch": [
-        "tsconfig.*.json"
-      ],
-      "url": "http://json.schemastore.org/tsconfig"
-    }
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+	"[typescript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	},
+	"cSpell.words": [
+		"Acron",
+		"jsnext",
+		"libm",
+		"pinst",
+		"snyk",
+		"tersible",
+		"Tersiblized",
+		"tersify",
+		"tsbuildinfo",
+		"unpartial"
+	],
+	"eslint.enable": true,
+	"json.schemas": [
+		{
+			"fileMatch": ["tsconfig.*.json"],
+			"url": "http://json.schemastore.org/tsconfig"
+		}
+	],
+	"typescript.tsdk": "node_modules/typescript/lib"
 }
