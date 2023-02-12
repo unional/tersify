@@ -59,11 +59,13 @@ import {
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder.js'
 
 export function tersifyAcorn(context: TersifyContext, value: any, length: number): string {
-	const fnStr = getFunctionString(value)
-	const node = parseExpressionAt(`(${fnStr})`, 0, { ecmaVersion: 2020 }) as AcornNode
-	const result = tersifyAcornNode(context, node, length)
+	const rawString = getFunctionString(value)
+	const node = parseExpressionAt(`(${rawString})`, 0, { ecmaVersion: 2020 }) as AcornNode
+	const result = tersifyAcornNode({ ...context, rawString }, node, length)
 	return result
 }
+
+type TersifyAcornContext = TersifyContext & { rawString: string }
 
 function getFunctionString(value: Function) {
 	const fnStr = value.toString()
@@ -75,7 +77,7 @@ function getFunctionString(value: Function) {
 		: fnStr
 }
 
-function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, length: number): string {
+function tersifyAcornNode(context: TersifyAcornContext, node: AcornNode | null, length: number): string {
 	if (!node) return ''
 	switch (node.type) {
 		case 'Identifier':
@@ -178,26 +180,29 @@ function tersifyAcornNode(context: TersifyContext, node: AcornNode | null, lengt
 			return tersifyMetaProperty(context, node, length)
 		// istanbul ignore next
 		default:
-			return tersifyUnknown(node)
+			return tersifyUnknown(node, context.rawString)
 	}
 }
 
 // istanbul ignore next
-function tersifyUnknown(node: AcornNode) {
+function tersifyUnknown(node: AcornNode, rawString: string) {
 	const nodeType = node.type
 	console.warn(`tersify received unsupported type: ${nodeType}. Please open an issue at https://github.com/unional/tersify/issues
 node detail:
-${JSON.stringify(node, undefined, 2)}`)
+${JSON.stringify(node, undefined, 2)}
+
+subject:
+${rawString}`)
 	return `<unsupported: ${nodeType}>`
 }
 
-function tersifyCatchClauseNode(context: TersifyContext, node: CatchClauseNode, length: number) {
+function tersifyCatchClauseNode(context: TersifyAcornContext, node: CatchClauseNode, length: number) {
 	const param = tersifyAcornNode(context, node.param, length)
 	const body = tersifyAcornNode(context, node.body, length)
 	return `catch${param ? ` (${param})` : ''}${body ? ` ${body}` : ''}`
 }
 
-function tersifyTryStatementNode(context: TersifyContext, node: TryStatementNode, length: number) {
+function tersifyTryStatementNode(context: TersifyAcornContext, node: TryStatementNode, length: number) {
 	const block = tersifyAcornNode(context, node.block, length)
 	const handler = tersifyAcornNode(context, node.handler, length)
 	const finalizer = tersifyAcornNode(context, node.finalizer, length)
@@ -205,29 +210,29 @@ function tersifyTryStatementNode(context: TersifyContext, node: TryStatementNode
 	return `try ${block}${handler ? ` ${handler}` : ''}${finalizer ? ` finally ${finalizer}` : ''}`
 }
 
-function tersifyThrowStatementNode(context: TersifyContext, node: ThrowStatementNode, length: number) {
+function tersifyThrowStatementNode(context: TersifyAcornContext, node: ThrowStatementNode, length: number) {
 	return `throw ${tersifyAcornNode(context, node.argument, length)}`
 }
 
-function tersifyArrayExpressionNode(context: TersifyContext, node: ArrayExpression, length: number) {
+function tersifyArrayExpressionNode(context: TersifyAcornContext, node: ArrayExpression, length: number) {
 	const elements = node.elements.map(e => tersifyAcornNode(context, e, length))
 	return trim(context, `[${elements.join(', ')}]`, length)
 }
 
-function tersifyAwaitExpressionNode(context: TersifyContext, node: AwaitExpressionNode, length: number) {
+function tersifyAwaitExpressionNode(context: TersifyAcornContext, node: AwaitExpressionNode, length: number) {
 	return `await ${tersifyAcornNode(context, node.argument, length)}`
 }
 
-function tersifyYieldExpressionNode(context: TersifyContext, node: YieldExpressionNode, length: number) {
+function tersifyYieldExpressionNode(context: TersifyAcornContext, node: YieldExpressionNode, length: number) {
 	const argument = tersifyAcornNode(context, node.argument, length)
 	return `yield ${argument}`
 }
-function tersifyMetaProperty(context: TersifyContext, node: MetaProperty, length: number) {
+function tersifyMetaProperty(context: TersifyAcornContext, node: MetaProperty, length: number) {
 	const meta = tersifyAcornNode(context, node.meta, length)
 	return `${meta}.${tersifyAcornNode(context, node.property, length)}`
 }
 
-function tersifyPropertyNode(context: TersifyContext, node: PropertyNode, length: number) {
+function tersifyPropertyNode(context: TersifyAcornContext, node: PropertyNode, length: number) {
 	const key = tersifyAcornNode(context, node.key, length)
 	const valueNode = node.value
 	if (valueNode.type === 'FunctionExpression') {
@@ -254,26 +259,26 @@ function tersifyPropertyNode(context: TersifyContext, node: PropertyNode, length
 	return `${key}: ${value}`
 }
 
-function tersifyObjectExpressionNode(context: TersifyContext, node: ObjectExpressionNode, length: number) {
+function tersifyObjectExpressionNode(context: TersifyAcornContext, node: ObjectExpressionNode, length: number) {
 	const properties = node.properties.map(p => tersifyAcornNode(context, p, length))
 	return `{ ${properties.join(', ')} }`
 }
 
-function tersifyForOfStatementNode(context: TersifyContext, node: ForOfStatementNode, length: number) {
+function tersifyForOfStatementNode(context: TersifyAcornContext, node: ForOfStatementNode, length: number) {
 	const left = tersifyAcornNode(context, node.left, length)
 	const right = tersifyAcornNode(context, node.right, length)
 	const body = tersifyAcornNode(context, node.body, length)
 	return `for (${left} of ${right}) ${body}`
 }
 
-function tersifyForInStatementNode(context: TersifyContext, node: ForInStatementNode, length: number) {
+function tersifyForInStatementNode(context: TersifyAcornContext, node: ForInStatementNode, length: number) {
 	const left = tersifyAcornNode(context, node.left, length)
 	const right = tersifyAcornNode(context, node.right, length)
 	const body = tersifyAcornNode(context, node.body, length)
 	return `for (${left} in ${right}) ${body}`
 }
 
-function tersifySwitchCaseNode(context: TersifyContext, node: SwitchCaseNode, length: number) {
+function tersifySwitchCaseNode(context: TersifyAcornContext, node: SwitchCaseNode, length: number) {
 	const test = tersifyAcornNode(context, node.test, length)
 	const consequent = node.consequent.map(c => tersifyAcornNode(context, c, length))
 
@@ -284,30 +289,30 @@ function tersifySwitchCaseNode(context: TersifyContext, node: SwitchCaseNode, le
 	}
 }
 
-function tersifySwitchStatementNode(context: TersifyContext, node: SwitchStatementNode, length: number) {
+function tersifySwitchStatementNode(context: TersifyAcornContext, node: SwitchStatementNode, length: number) {
 	const discriminant = tersifyAcornNode(context, node.discriminant, length)
 	const cases = node.cases.map(c => tersifyAcornNode(context, c, length))
 	return `switch (${discriminant}) { ${cases.join('; ')} }`
 }
 
-function tersifyContinueStatementNode(context: TersifyContext, node: ContinueStatementNode, length: number) {
+function tersifyContinueStatementNode(context: TersifyAcornContext, node: ContinueStatementNode, length: number) {
 	const label = tersifyAcornNode(context, node.label, length)
 	return label ? `continue ${label}` : 'continue'
 }
 
-function tersifyLabeledStatementNode(context: TersifyContext, node: LabeledStatementNode, length: number) {
+function tersifyLabeledStatementNode(context: TersifyAcornContext, node: LabeledStatementNode, length: number) {
 	const label = tersifyAcornNode(context, node.label, length)
 	const body = tersifyAcornNode(context, node.body, length)
 
 	return `${label}: ${body}`
 }
 
-function tersifyBreakStatementNode(context: TersifyContext, node: BreakStatementNode, length: number) {
+function tersifyBreakStatementNode(context: TersifyAcornContext, node: BreakStatementNode, length: number) {
 	const label = tersifyAcornNode(context, node.label, length)
 	return label ? `break ${label}` : 'break'
 }
 
-function tersifyForStatementNode(context: TersifyContext, node: ForStatementNode, length: number) {
+function tersifyForStatementNode(context: TersifyAcornContext, node: ForStatementNode, length: number) {
 	const test = tersifyAcornNode(context, node.test, length)
 	const init = tersifyAcornNode(context, node.init, length)
 	const update = tersifyAcornNode(context, node.update, length)
@@ -317,7 +322,7 @@ function tersifyForStatementNode(context: TersifyContext, node: ForStatementNode
 }
 
 function tersifyAssignmentExpressionNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: AssignmentExpressionNode,
 	length: number
 ) {
@@ -326,34 +331,34 @@ function tersifyAssignmentExpressionNode(
 	return `${left} ${node.operator} ${right}`
 }
 
-function tersifyWhileStatementNode(context: TersifyContext, node: WhileStatementNode, length: number) {
+function tersifyWhileStatementNode(context: TersifyAcornContext, node: WhileStatementNode, length: number) {
 	const test = tersifyAcornNode(context, node.test, length)
 	const body = tersifyAcornNode(context, node.body, length)
 	return `while (${test}) ${body}`
 }
 
-function tersifyDoWhileStatementNode(context: TersifyContext, node: DoWhileStatementNode, length: number) {
+function tersifyDoWhileStatementNode(context: TersifyAcornContext, node: DoWhileStatementNode, length: number) {
 	const test = tersifyAcornNode(context, node.test, length)
 	const body = tersifyAcornNode(context, node.body, length)
 	if (node.body.type === 'BlockStatement') return `do ${body} while (${test})`
 	else return `do ${body}; while (${test})`
 }
 
-function tersifyUnaryExpressionNode(context: TersifyContext, node: UnaryExpressionNode, length: number) {
+function tersifyUnaryExpressionNode(context: TersifyAcornContext, node: UnaryExpressionNode, length: number) {
 	if (['void', 'typeof'].indexOf(node.operator) !== -1)
 		return `${node.operator} ${tersifyAcornNode(context, node.argument, length)}`
 	return node.prefix
 		? `${node.operator}${tersifyAcornNode(context, node.argument, length)}`
 		: `${tersifyAcornNode(context, node.argument, length)}${node.operator}`
 }
-function tersifyUpdateExpressionNode(context: TersifyContext, node: UpdateExpressionNode, length: number) {
+function tersifyUpdateExpressionNode(context: TersifyAcornContext, node: UpdateExpressionNode, length: number) {
 	return node.prefix
 		? `${node.operator}${tersifyAcornNode(context, node.argument, length)}`
 		: `${tersifyAcornNode(context, node.argument, length)}${node.operator}`
 }
 
 function tersifyConditionalExpressionNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: ConditionalExpressionNode,
 	length: number
 ) {
@@ -363,7 +368,7 @@ function tersifyConditionalExpressionNode(
 	return `${test} ? ${consequent} : ${alternate}`
 }
 
-function tersifyIfStatementNode(context: TersifyContext, node: IfStatementNode, length: number) {
+function tersifyIfStatementNode(context: TersifyAcornContext, node: IfStatementNode, length: number) {
 	const test = tersifyAcornNode(context, node.test, length)
 	const consequent = tersifyAcornNode(context, node.consequent, length)
 	const alternate = tersifyAcornNode(context, node.alternate, length)
@@ -377,7 +382,7 @@ function tersifyIfStatementNode(context: TersifyContext, node: IfStatementNode, 
 }
 
 function tersifyBinaryExpressionNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: BinaryExpressionNode | LogicalExpressionNode,
 	length: number
 ) {
@@ -400,7 +405,7 @@ function tersifyBinaryExpressionNode(
 	return node.needParen ? `(${left} ${node.operator} ${right})` : `${left} ${node.operator} ${right}`
 }
 
-function tersifyNewExpressionNode(context: TersifyContext, node: NewExpressionNode, length: number) {
+function tersifyNewExpressionNode(context: TersifyAcornContext, node: NewExpressionNode, length: number) {
 	return (
 		tersifyNewDate(node) ||
 		`new ${tersifyAcornNode(context, node.callee, length)}(${node.arguments
@@ -434,7 +439,7 @@ function tersifyNewDate(node: NewExpressionNode) {
 }
 
 function tersifyVariableDeclaratorNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: VariableDeclaratorNode,
 	length: number
 ) {
@@ -442,30 +447,30 @@ function tersifyVariableDeclaratorNode(
 }
 
 function tersifyVariableDeclarationNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: VariableDeclarationNode,
 	length: number
 ) {
 	return `${node.kind} ${node.declarations.map(d => tersifyAcornNode(context, d, length)).join(', ')}`
 }
 
-function tersifyIdentifierNode(context: TersifyContext, node: IdentifierNode, _length: number) {
+function tersifyIdentifierNode(context: TersifyAcornContext, node: IdentifierNode, _length: number) {
 	return node.name === 'Symbol' ? 'Sym' : node.name
 }
 
-function tersifyLiteralNode(context: TersifyContext, node: LiteralNode, _length: number) {
+function tersifyLiteralNode(context: TersifyAcornContext, node: LiteralNode, _length: number) {
 	return node.raw
 }
 
 function tersifyRestElementNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: RestElementNode | SpreadElementNode,
 	_length: number
 ) {
 	return `...${node.argument.name}`
 }
 
-function tersifyAssignmentPatternNode(context: TersifyContext, node: AssignmentPatternNode, length: number) {
+function tersifyAssignmentPatternNode(context: TersifyAcornContext, node: AssignmentPatternNode, length: number) {
 	const eq = ' = '
 	return `${node.left.name}${eq}${tersifyAcornNode(
 		context,
@@ -475,7 +480,7 @@ function tersifyAssignmentPatternNode(context: TersifyContext, node: AssignmentP
 }
 
 function tersifyArrowExpressionNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: ArrowFunctionExpressionNode,
 	length: number
 ) {
@@ -518,21 +523,21 @@ function tersifyArrowExpressionNode(
 			const trimmedBody = isSingleBodyObjectExpression
 				? `({ ${trim(context, body.slice(2, body.length - 2), lenAvailForBody - 4)} })`
 				: singleBodyNode
-				? trim(context, body, lenAvailForBody)
-				: `{ ${trim(context, body.slice(2, body.length - 1), lenAvailForBody)} }`
+					? trim(context, body, lenAvailForBody)
+					: `{ ${trim(context, body.slice(2, body.length - 1), lenAvailForBody)} }`
 
 			return trim(context, `${async}${generator}${trimmedParams}${arrow}${trimmedBody}`, length)
 		}
 	}
 }
 
-function getSingleStatementBodyNode(context: TersifyContext, node: AcornNode) {
+function getSingleStatementBodyNode(context: TersifyAcornContext, node: AcornNode) {
 	if (node.type !== 'BlockStatement') return node
 	if (node.body.length === 1 && node.body[0].type === 'ReturnStatement') return node.body[0]
 	return undefined
 }
 
-function tersifyArrowBodyAsSingleStatement(context: TersifyContext, node: AcornNode) {
+function tersifyArrowBodyAsSingleStatement(context: TersifyAcornContext, node: AcornNode) {
 	if (node.type === 'ReturnStatement') {
 		if (!node.argument) return `{}`
 
@@ -545,14 +550,14 @@ function tersifyArrowBodyAsSingleStatement(context: TersifyContext, node: AcornN
 }
 
 function tersifyExpressionStatementNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: ExpressionStatementNode,
 	length: number
 ) {
 	return tersifyAcornNode(context, node.expression, length)
 }
 
-function tersifyMemberExpressionNode(context: TersifyContext, node: MemberExpressionNode, length: number) {
+function tersifyMemberExpressionNode(context: TersifyAcornContext, node: MemberExpressionNode, length: number) {
 	const property =
 		node.property.type === 'Identifier'
 			? tersifyAcornNode(context, node.property, length)
@@ -560,7 +565,7 @@ function tersifyMemberExpressionNode(context: TersifyContext, node: MemberExpres
 	return `${tersifyAcornNode(context, node.object, length)}${node.optional ? '?' : ''}.${property}`
 }
 
-function tersifyCallExpressionNode(context: TersifyContext, node: CallExpressionNode, length: number) {
+function tersifyCallExpressionNode(context: TersifyAcornContext, node: CallExpressionNode, length: number) {
 	if (isSymbolForNode(node)) {
 		return `Sym(${node.arguments[0].value})`
 	}
@@ -593,7 +598,7 @@ function isDefineThisProperty(node: CallExpressionNode) {
 }
 
 function tersifyParamsBody(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	params: Array<IdentifierNode | LiteralNode | ObjectPatternNode | ThisExpressionNode>
 ) {
 	return params
@@ -605,7 +610,7 @@ function tersifyParamsBody(
 }
 
 function tersifyFunctionExpressionNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: FunctionExpressionNode | FunctionDeclarationNode,
 	length: number
 ) {
@@ -629,9 +634,8 @@ function tersifyFunctionExpressionNode(
 			return trim(context, `${async}${token}${generator}${id}${minParam}${space}${body}`, length)
 		} else {
 			const bodyContent = body.slice(2, body.length - 2)
-			const result = `${async}${token}${generator}${id}${minParam}${space}${
-				bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`
-			}`
+			const result = `${async}${token}${generator}${id}${minParam}${space}${bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`
+				}`
 			return result.length > length ? trim(context, result, length) : result
 		}
 	} else if (prebodyLen + body.length > length) {
@@ -649,18 +653,18 @@ function tersifyFunctionExpressionNode(
 }
 
 function tersifyFunctionParams(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	params: (IdentifierNode | LiteralNode | ObjectPatternNode | ThisExpressionNode)[]
 ) {
 	return `(${tersifyParamsBody(context, params)})`
 }
 
-function tersifyFunctionBody(context: TersifyContext, value: AcornNode) {
+function tersifyFunctionBody(context: TersifyAcornContext, value: AcornNode) {
 	return tersifyAcornNode(context, value, Infinity)
 }
 
 function tersifyBlockStatementNode(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: BlockStatementNode | ClassBodyNode,
 	length: number
 ) {
@@ -682,27 +686,26 @@ function tersifyBlockStatementNode(
 	return result
 }
 
-function tersifyReturnStatementNode(context: TersifyContext, node: ReturnStatementNode, length: number) {
+function tersifyReturnStatementNode(context: TersifyAcornContext, node: ReturnStatementNode, length: number) {
 	if (!node.argument) return 'return'
 	return `return ${tersifyAcornNode(context, node.argument, length)}`
 }
 
-function tersifyThisExpression(_context: TersifyContext, _node: ThisExpressionNode, _length: number) {
+function tersifyThisExpression(_context: TersifyAcornContext, _node: ThisExpressionNode, _length: number) {
 	return `this`
 }
 
-function tersifyClassExpression(context: TersifyContext, node: ClassExpressionNode, length: number) {
+function tersifyClassExpression(context: TersifyAcornContext, node: ClassExpressionNode, length: number) {
 	const classStr = trim(context, `class${node.id ? ` ${node.id.name}` : ' '}{}`, length)
 	const prefix = classStr.slice(0, Math.max(3, classStr.length - 2))
 	const body = tersifyAcornNode(context, node.body, length - prefix.length)
-	return `${prefix}${
-		length >= prefix.length + body.length || body.length > 3
-			? body
-			: trim(context, '...', length - prefix.length)
-	}`
+	return `${prefix}${length >= prefix.length + body.length || body.length > 3
+		? body
+		: trim(context, '...', length - prefix.length)
+		}`
 }
 
-function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinitionNode, length: number) {
+function tersifyMethodDefinition(context: TersifyAcornContext, node: MethodDefinitionNode, length: number) {
 	const staticStr = node.static ? 'static ' : ''
 	const fnExpNode = node.value
 	const async = fnExpNode.async ? 'async ' : ''
@@ -723,9 +726,8 @@ function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinition
 			return trim(context, `${staticStr}${async}${generator}${id}${minParam}${space}${body}`, length)
 		} else {
 			const bodyContent = body.slice(2, body.length - 2)
-			const result = `${staticStr}${async}${generator}${id}${minParam}${space}${
-				bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`
-			}`
+			const result = `${staticStr}${async}${generator}${id}${minParam}${space}${bodyContent.length === 0 ? '{}' : `{ ${trim(context, bodyContent, length - minPrebodyLen - 4)} }`
+				}`
 			return result.length > length ? trim(context, result, length) : result
 		}
 	} else if (prebodyLen + body.length > length) {
@@ -742,7 +744,7 @@ function tersifyMethodDefinition(context: TersifyContext, node: MethodDefinition
 	}
 }
 
-function tersifyObjectPattern(context: TersifyContext, node: ObjectPatternNode, length: number) {
+function tersifyObjectPattern(context: TersifyAcornContext, node: ObjectPatternNode, length: number) {
 	return `${trim(
 		context,
 		`{ ${node.properties.map(p => tersifyAcornNode(context, p, length)).join(', ')} }`,
@@ -750,11 +752,11 @@ function tersifyObjectPattern(context: TersifyContext, node: ObjectPatternNode, 
 	)}`
 }
 
-function tersifySequenceExpression(context: TersifyContext, node: SequenceExpression, length: number) {
+function tersifySequenceExpression(context: TersifyAcornContext, node: SequenceExpression, length: number) {
 	return `(${node.expressions.map(n => tersifyAcornNode(context, n, length)).join(', ')})`
 }
 
-function tersifyTemplateLiteral(context: TersifyContext, node: TemplateLiteral, length: number) {
+function tersifyTemplateLiteral(context: TersifyAcornContext, node: TemplateLiteral, length: number) {
 	const elements = node.expressions.concat(node.quasis).sort((a, b) => a.start - b.start)
 	return (
 		'`' +
@@ -775,7 +777,7 @@ function tersifyTemplateLiteral(context: TersifyContext, node: TemplateLiteral, 
 }
 
 function tersifyTaggedTemplateExpression(
-	context: TersifyContext,
+	context: TersifyAcornContext,
 	node: TaggedTemplateExpression,
 	length: number
 ) {
@@ -783,7 +785,7 @@ function tersifyTaggedTemplateExpression(
 	return name + tersifyAcornNode(context, node.quasi, length - name.length)
 }
 
-function tersifyChainExpression(context: TersifyContext, node: ChainExpression, length: number) {
+function tersifyChainExpression(context: TersifyAcornContext, node: ChainExpression, length: number) {
 	switch (node.expression.type) {
 		case 'MemberExpression':
 			return tersifyMemberExpressionNode(context, node.expression, length)
@@ -793,6 +795,6 @@ function tersifyChainExpression(context: TersifyContext, node: ChainExpression, 
 		}
 		// istanbul ignore next
 		default:
-			return tersifyUnknown(node)
+			return tersifyUnknown(node, context.rawString)
 	}
 }
