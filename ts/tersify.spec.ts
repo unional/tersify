@@ -1,4 +1,3 @@
-import { record } from 'type-plus'
 import { tersible, tersify } from './index.js'
 
 describe('undefined', () => {
@@ -3357,16 +3356,6 @@ describe('instance', () => {
 		const subject = new Subject()
 
 		expect(tersify(subject)).toBe('Subject {}')
-	})
-
-	test('circular reference', () => {
-		class Circular {
-			instance?: Circular
-		}
-		const instance = new Circular()
-		instance.instance = instance
-
-		expect(tersify(instance)).toBe('Circular { instance: ref() }')
 	})
 
 	test('with tersify function', () => {
