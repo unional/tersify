@@ -802,6 +802,6 @@ function tersifyChainExpression(context: TersifyAcornContext, node: ChainExpress
 	}
 }
 
-function tersifySuperNode(context: TersifyAcornContext, node: SuperNode, length: number) {
+function tersifySuperNode(_context: TersifyAcornContext, _node: SuperNode, _length: number) {
 	return 'Super'
 }
