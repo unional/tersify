@@ -42,7 +42,7 @@ specifiers:
   ts-jest: ^29.0.5
   ts-loader: ^9.4.2
   tslib: ^2.5.0
-  type-plus: ^5.6.0
+  type-plus: ^6.0.0
   typescript: ^5.0.0
   unpartial: ^1.0.4
   webpack: ^5.75.0
@@ -95,7 +95,7 @@ devDependencies:
   ts-jest: 29.0.5_rxahpvrqygs7ofmhax2vsn2kmm
   ts-loader: 9.4.2_uwemawexpmcwp4gcune73namy4
   tslib: 2.5.0
-  type-plus: 5.6.0
+  type-plus: 6.0.0
   typescript: 5.0.2
   webpack: 5.75.0_msocmchqh4vawjvw66ropmri6m
   webpack-bundle-analyzer: 4.7.0
@@ -7620,6 +7620,13 @@ packages:
 
   /type-plus/5.6.0:
     resolution: {integrity: sha512-LAIvZzs6mKXYHzwRfGeOuWKsE5jHndwWlLheulMl6eWDSGa1bfZCd0aLQSMgP3HZTbazx/P2UumCqtOz5AMctA==}
+    dependencies:
+      tersify: 3.12.0
+      unpartial: 1.0.4
+    dev: true
+
+  /type-plus/6.0.0:
+    resolution: {integrity: sha512-ezkCTr6LGC87w9LHc83XJnJFfaeEa/nPhr4yzBKv2+Pw0y4FXKHgrJ2GWM4H1nSKzcEPv4q/Sfw4MKmi8NTxbg==}
     dependencies:
       tersify: 3.12.0
       unpartial: 1.0.4
