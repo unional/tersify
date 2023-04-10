@@ -131,5 +131,5 @@
 		"webpack-cli": "^5.0.1",
 		"ws": "^8.12.0"
 	},
-	"packageManager": "pnpm@8.1.1"
+	"packageManager": "pnpm@8.2.0"
 }
