@@ -107,8 +107,8 @@ devDependencies:
     specifier: ^4.0.0
     version: 4.0.0
   pascal-case:
-    specifier: ^3.1.2
-    version: 3.1.2
+    specifier: ^4.0.0
+    version: 4.0.0
   pinst:
     specifier: ^3.0.0
     version: 3.0.0
@@ -5901,12 +5901,6 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /lower-case@2.0.2:
-    resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
-    dependencies:
-      tslib: 2.5.0
-    dev: true
-
   /lru-cache@10.0.1:
     resolution: {integrity: sha512-IJ4uwUTi2qCccrioU6g9g/5rvvVl13bsdczUUcqbciD9iLr095yj8DQKdObriEvuNSx325N1rV1O0sJFszx75g==}
     engines: {node: 14 || >=16.14}
@@ -6177,13 +6171,6 @@ packages:
 
   /nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
-    dev: true
-
-  /no-case@3.0.4:
-    resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
-    dependencies:
-      lower-case: 2.0.2
-      tslib: 2.5.0
     dev: true
 
   /no-case@4.0.0:
@@ -6606,11 +6593,10 @@ packages:
       entities: 4.4.0
     dev: true
 
-  /pascal-case@3.1.2:
-    resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
+  /pascal-case@4.0.0:
+    resolution: {integrity: sha512-DPrSBfN1ivlJ5WwTdcBfCfmOHZXjaeW+b8DMHXcUWiR8wmO92T6N8elBsJj/v3g+INObw8Zx/q6eFAjA1w071Q==}
     dependencies:
-      no-case: 3.0.4
-      tslib: 2.5.0
+      no-case: 4.0.0
     dev: true
 
   /path-exists@3.0.0:
