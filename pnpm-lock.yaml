@@ -74,11 +74,11 @@ devDependencies:
     specifier: 8.57.0
     version: 8.57.0
   eslint-config-prettier:
-    specifier: ^9.0.0
-    version: 9.0.0(eslint@8.57.0)
+    specifier: ^10.0.0
+    version: 10.1.1(eslint@8.57.0)
   eslint-plugin-harmony:
     specifier: ^7.1.1
-    version: 7.1.1(@typescript-eslint/eslint-plugin@7.0.1)(eslint-config-prettier@9.0.0)(eslint@8.57.0)(typescript@5.0.2)
+    version: 7.1.1(@typescript-eslint/eslint-plugin@7.0.1)(eslint-config-prettier@10.1.1)(eslint@8.57.0)(typescript@5.0.2)
   husky:
     specifier: ^8.0.3
     version: 8.0.3
@@ -4036,8 +4036,8 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-prettier@9.0.0(eslint@8.57.0):
-    resolution: {integrity: sha512-IcJsTkJae2S35pRsRAwoCE+925rJJStOdkKnLVgtE+tEpqU0EVVM7OqrwxqgptKdX29NUwC82I5pXsGFIgSevw==}
+  /eslint-config-prettier@10.1.1(eslint@8.57.0):
+    resolution: {integrity: sha512-4EQQr6wXwS+ZJSzaR5ZCrYgLxqvUjdXctaEtBqHcbkW944B1NQyO4qpdHQbXBONfwxXdkAY81HH4+LUfrg+zPw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -4045,7 +4045,7 @@ packages:
       eslint: 8.57.0
     dev: true
 
-  /eslint-plugin-harmony@7.1.1(@typescript-eslint/eslint-plugin@7.0.1)(eslint-config-prettier@9.0.0)(eslint@8.57.0)(typescript@5.0.2):
+  /eslint-plugin-harmony@7.1.1(@typescript-eslint/eslint-plugin@7.0.1)(eslint-config-prettier@10.1.1)(eslint@8.57.0)(typescript@5.0.2):
     resolution: {integrity: sha512-4LBcIFu4chZBVtza2tDSrl+st4+Vs2c1Zz6/YqruyR0ny3fC92JQx8uMC/JmmQfTbIssehKZClG7DKBWijdlmg==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^5.0.0
@@ -4060,7 +4060,7 @@ packages:
       '@typescript-eslint/experimental-utils': 5.51.0(eslint@8.57.0)(typescript@5.0.2)
       '@typescript-eslint/parser': 5.51.0(eslint@8.57.0)(typescript@5.0.2)
       eslint: 8.57.0
-      eslint-config-prettier: 9.0.0(eslint@8.57.0)
+      eslint-config-prettier: 10.1.1(eslint@8.57.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
