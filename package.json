@@ -88,7 +88,7 @@
 		"@changesets/cli": "^2.26.0",
 		"@commitlint/cli": "^19.0.0",
 		"@commitlint/config-conventional": "^19.0.0",
-		"@repobuddy/jest": "^3.0.0",
+		"@repobuddy/jest": "^4.0.0",
 		"@semantic-release/changelog": "^6.0.2",
 		"@semantic-release/git": "^10.0.1",
 		"@semantic-release/github": "^11.0.0",
