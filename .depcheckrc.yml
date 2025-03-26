@@ -10,6 +10,7 @@ ignores:
   - jest-*
   - param-case
   - pascal-case
+  - rimraf # false positive
   - semantic-release
   - source-map-loader
   - ts-jest
