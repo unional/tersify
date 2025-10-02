@@ -28,8 +28,8 @@ importers:
         specifier: ^19.0.0
         version: 19.8.0
       '@repobuddy/jest':
-        specifier: ^3.0.0
-        version: 3.4.2(@swc/jest@0.2.37(@swc/core@1.11.13))(jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@22.13.13)))(jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@22.13.13)))(jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@22.13.13)))(jest@29.7.0(@types/node@22.13.13))(ts-jest@29.3.0(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@22.13.13))(typescript@5.8.2))
+        specifier: ^5.0.0
+        version: 5.0.0(@swc/jest@0.2.37(@swc/core@1.11.13))(jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@22.13.13)))(jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@22.13.13)))(jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@22.13.13)))(jest@29.7.0(@types/node@22.13.13))(ts-jest@29.3.0(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@22.13.13))(typescript@5.8.2))
       '@semantic-release/changelog':
         specifier: ^6.0.2
         version: 6.0.3(semantic-release@24.2.3(typescript@5.8.2))
@@ -814,10 +814,9 @@ packages:
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
 
-  '@repobuddy/jest@3.4.2':
-    resolution: {integrity: sha512-IDhx5vY7skwKsaObrCQ6KQzsOTP5aStMTeEQKtWUeP8rLp9ZdFtg9+ihLKZMQH2vfYiPno50zt63zb5QMg9nwA==}
+  '@repobuddy/jest@5.0.0':
+    resolution: {integrity: sha512-Nogt+Y3F27zp2sr1RYreFYSxhTfR11Jw05RSW2EAKuGKPQZPELhZgqr5JGpaozx2MhfkbF2cfjRgzvyqjMiS8w==}
     peerDependencies:
-      '@kayahr/jest-electron-runner': ^29
       '@swc/jest': ^0.2.31
       identity-obj-proxy: ^3.0.0
       jest: '>=29.5.0'
@@ -827,8 +826,6 @@ packages:
       jest-watch-typeahead: ^2
       ts-jest: ^29
     peerDependenciesMeta:
-      '@kayahr/jest-electron-runner':
-        optional: true
       identity-obj-proxy:
         optional: true
       jest-esm-transformer-2:
@@ -5198,7 +5195,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.28': {}
 
-  '@repobuddy/jest@3.4.2(@swc/jest@0.2.37(@swc/core@1.11.13))(jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@22.13.13)))(jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@22.13.13)))(jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@22.13.13)))(jest@29.7.0(@types/node@22.13.13))(ts-jest@29.3.0(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@22.13.13))(typescript@5.8.2))':
+  '@repobuddy/jest@5.0.0(@swc/jest@0.2.37(@swc/core@1.11.13))(jest-watch-suspend@1.1.2(jest@29.7.0(@types/node@22.13.13)))(jest-watch-toggle-config-2@2.1.0(jest@29.7.0(@types/node@22.13.13)))(jest-watch-typeahead@2.2.2(jest@29.7.0(@types/node@22.13.13)))(jest@29.7.0(@types/node@22.13.13))(ts-jest@29.3.0(@babel/core@7.26.10)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.10))(jest@29.7.0(@types/node@22.13.13))(typescript@5.8.2))':
     dependencies:
       '@swc/jest': 0.2.37(@swc/core@1.11.13)
       jest: 29.7.0(@types/node@22.13.13)
