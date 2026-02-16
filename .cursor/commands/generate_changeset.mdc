@@ -1,0 +1,86 @@
+---
+description: generate changesets
+alwaysApply: false
+---
+
+# Generate Changeset
+
+Create a new **changeset** file in `.changeset/` when the change affects public API or user-facing behavior and should trigger a version bump. Use the format below.
+
+## Changeset file format
+
+- **Location**: `.changeset/<unique-name>.md` (e.g. `fix-export.md`, `brave-lions.md`). Use a unique, descriptive or random filename.
+- **Structure**: YAML frontmatter between `---` with package names as keys and version type as value, then a markdown body.
+
+**Template:**
+
+```md
+---
+"<package-name>": <major|minor|patch>
+---
+
+Brief description of the changes.
+
+More detailed explanation if needed.
+
+BREAKING CHANGE: Description of breaking changes if any.
+```
+
+**Example for this repo (single package `tersify`):**
+
+```md
+---
+"tersify": patch
+---
+
+Fix default export in ESM entry.
+
+BREAKING CHANGE: Removed deprecated `legacyOption`. Use `newOption` instead.
+```
+
+### Frontmatter rules
+
+- **Package names**: Use exact package names from `package.json` (e.g. `tersify` or `@scope/pkg`). Package names must match exactly, including scope.
+- **Version types**: `major`, `minor`, or `patch` only.
+- **Multiple packages**: Add one line per package in the frontmatter.
+
+## When not to create a changeset
+
+Do **not** create a changeset when the change is limited to:
+
+- **Stories** (e.g. `*.stories.tsx`): Story-only changes do not affect the published package.
+- **Documentation** (e.g. `*.mdx`, `*.md`): Documentation-only changes do not require a version bump.
+
+Do **not** mention or include changes to stories or documentation in the changeset description. Focus on public API, behavior, or user-facing functionality only.
+
+## Validation steps
+
+### Pre-creation validation
+
+1. **Check if a changeset is needed**:
+   - Does the change affect public APIs?
+   - Is it a user-facing change?
+   - Will it require a version bump?
+   - **Skip the changeset** if the only changes are to stories or documentation.
+
+2. **Identify affected packages**:
+   - Review `git status --porcelain`.
+   - Check `package.json` for correct package names.
+
+3. **Determine version type**:
+   - **Major**: Breaking changes.
+   - **Minor**: New features.
+   - **Patch**: Bug fixes.
+
+## Quality checklist
+
+Before creating the changeset file, ensure:
+
+- [ ] Changes affect public APIs or user-facing functionality (not stories or documentation only).
+- [ ] Description does not mention changes to stories or documentation.
+- [ ] Correct packages are listed in frontmatter (keys in YAML).
+- [ ] Appropriate version type is selected (`major`, `minor`, `patch`).
+- [ ] Description is clear and concise.
+- [ ] Breaking changes are documented with `BREAKING CHANGE:` in the body.
+- [ ] File is created in `.changeset/` with a unique filename (e.g. kebab-case or random words, `.md`).
+- [ ] Package names match `package.json` exactly (including scope).
