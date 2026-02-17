@@ -79,8 +79,8 @@ importers:
         specifier: ^0.18.4
         version: 0.18.4(synckit@0.11.12)(typescript@5.9.3)
       type-plus:
-        specifier: ^7.6.2
-        version: 7.6.2
+        specifier: 8.0.0-beta.8
+        version: 8.0.0-beta.8(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -2385,8 +2385,10 @@ packages:
     resolution: {integrity: sha512-G+Mq8VVQAlpz/0HTsxiNNk/xywaHGl+dk1oiBREgOEVCCDjXInDlONWUn5srRnC9s5tdHTFD1bx1N19eR4hI+g==}
     hasBin: true
 
-  type-plus@7.6.2:
-    resolution: {integrity: sha512-qUlXv9Y0/W56pg38m275IMD3WA03QbVoqNY16S3kmwtuA4gOT2iheyUdOp8NWrmXWpf7om98hzr7AZD/eW2jLA==}
+  type-plus@8.0.0-beta.8:
+    resolution: {integrity: sha512-egrpXQq2tV0abCf99+n4SCD/stT76qEwPBI1q7BqiVUe5pHWc+bm4vsOiNR84SmZTv4SoEl9UOZUdkEbS3POdw==}
+    peerDependencies:
+      typescript: '>= 5.6.0'
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
@@ -4815,9 +4817,10 @@ snapshots:
       turbo-windows-64: 2.8.9
       turbo-windows-arm64: 2.8.9
 
-  type-plus@7.6.2:
+  type-plus@8.0.0-beta.8(typescript@5.9.3):
     dependencies:
       tersify: 3.12.1
+      typescript: 5.9.3
       unpartial: 1.0.5
 
   typescript@5.9.3: {}
