@@ -36,8 +36,8 @@
 		"./esm/tersifyFunction.d.ts": "./esm/tersifyFunction.browser.d.ts",
 		"./esm/tersifyFunction.js": "./esm/tersifyFunction.browser.js",
 		"./esm/tersifyFunction.js.map": "./esm/tersifyFunction.browser.js.map",
-		"./ts/constants.ts": "./ts/constants.browser.ts",
-		"./ts/tersifyFunction.ts": "./ts/tersifyFunction.browser.ts",
+		"./src/constants.ts": "./src/constants.browser.ts",
+		"./src/tersifyFunction.ts": "./src/tersifyFunction.browser.ts",
 		"./tslib/constants.d.ts": "./tslib/constants.browser.d.ts",
 		"./tslib/constants.js": "./tslib/constants.browser.js",
 		"./tslib/constants.js.map": "./tslib/constants.browser.js.map",
@@ -50,8 +50,8 @@
 		"dist",
 		"cjs",
 		"esm",
-		"ts",
-		"!ts/**/*.spec.ts"
+		"src",
+		"!src/**/*.spec.ts"
 	],
 	"scripts": {
 		"build": "run-p build:cjs build:esm build:tslib",

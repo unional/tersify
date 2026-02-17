@@ -9,12 +9,12 @@
 		"noImplicitAny": false,
 		"noUnusedLocals": true,
 		"noUnusedParameters": false,
-		"rootDir": "ts",
+		"rootDir": "src",
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
 		"stripInternal": true,
 		"useDefineForClassFields": true
 	},
-	"files": ["ts/index.ts", "ts/constants.browser.ts", "ts/tersifyFunction.browser.ts"]
+	"files": ["src/index.ts", "src/constants.browser.ts", "src/tersifyFunction.browser.ts"]
 }

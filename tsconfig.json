@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"target": "ES2021"
 	},
-	"include": ["ts"]
+	"include": ["src"]
 }
