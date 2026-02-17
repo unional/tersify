@@ -1,5 +1,6 @@
-import { defineDocsParam, showDocSource, StoryCard, withStoryCard } from '@repobuddy/storybook'
+import { defineDocsParam, StoryCard, showDocSource, withStoryCard } from '@repobuddy/storybook'
 import type { Meta, StoryObj } from '@repobuddy/storybook/storybook-addon-tag-badges'
+import { tersible } from './tersible.js'
 import { tersify } from './tersify.js'
 import source from './tersify.ts?raw'
 
@@ -51,21 +52,10 @@ tersify(undefined)  // "undefined"
 tersify(true)       // "true"`
 		}
 	}),
-	decorators: [
-		withStoryCard(),
-		showDocSource()
-	],
+	decorators: [withStoryCard(), showDocSource()],
 	render: () => (
 		<StoryCard appearance="output">
-			<pre>
-				{[
-					tersify(1),
-					tersify('hello'),
-					tersify(null),
-					tersify(undefined),
-					tersify(true)
-				].join('\n')}
-			</pre>
+			<pre>{[tersify(1), tersify('hello'), tersify(null), tersify(undefined), tersify(true)].join('\n')}</pre>
 		</StoryCard>
 	)
 }
@@ -82,10 +72,7 @@ export const ObjectExample: Story = {
 tersify({ a: 1, b: 2 }, { maxLength: 15 })`
 		}
 	}),
-	decorators: [
-		withStoryCard(),
-		showDocSource()
-	],
+	decorators: [withStoryCard(), showDocSource()],
 	render: () => (
 		<StoryCard appearance="output">
 			<pre>
@@ -109,10 +96,7 @@ export const ArrayExample: Story = {
 tersify([1, 2, 3, 4, 5], { maxLength: 20 })`
 		}
 	}),
-	decorators: [
-		withStoryCard(),
-		showDocSource()
-	],
+	decorators: [withStoryCard(), showDocSource()],
 	render: () => (
 		<StoryCard appearance="output">
 			<pre>
@@ -136,10 +120,7 @@ export const FunctionExample: Story = {
 tersify((x, y) => x * y)`
 		}
 	}),
-	decorators: [
-		withStoryCard(),
-		showDocSource()
-	],
+	decorators: [withStoryCard(), showDocSource()],
 	render: () => (
 		<StoryCard appearance="output">
 			<pre>
@@ -161,16 +142,51 @@ export const MaxLengthOption: Story = {
 			story: 'maxLength truncates the output with "..." when exceeded.'
 		},
 		source: {
-			code: "tersify({ a: 1, b: 2, c: 3 }, { maxLength: 20 })"
+			code: 'tersify({ a: 1, b: 2, c: 3 }, { maxLength: 20 })'
 		}
 	}),
-	decorators: [
-		withStoryCard(),
-		showDocSource()
-	],
+	decorators: [withStoryCard(), showDocSource()],
 	render: () => (
 		<StoryCard appearance="output">
 			<pre>{tersify({ a: 1, b: 2, c: 3 }, { maxLength: 20 })}</pre>
 		</StoryCard>
 	)
+}
+
+export const RawOption: Story = {
+	tags: ['props'],
+	name: 'options.raw',
+	parameters: defineDocsParam({
+		description: {
+			story:
+				'raw: true skips custom .tersify() on values and uses full forms (e.g. Symbol(...) instead of Sym(...)), so the result is parseable JavaScript.'
+		},
+		source: {
+			code: `// Symbol: full form with raw
+tersify(Symbol('x'))              // "Sym(x)"
+tersify(Symbol('x'), { raw: true })  // "Symbol(x)"
+
+// Object with custom .tersify(): raw skips it
+const obj = tersible({ a: 1 }, '<custom>')
+tersify(obj)                      // "<custom>"
+tersify(obj, { raw: true })       // "{ a: 1 }"`
+		}
+	}),
+	decorators: [withStoryCard(), showDocSource()],
+	render: () => {
+		const obj = tersible({ a: 1 }, '<custom>')
+		return (
+			<StoryCard appearance="output">
+				<pre>
+					{tersify(Symbol('x'))}
+					{'\n'}
+					{tersify(Symbol('x'), { raw: true })}
+					{'\n\n'}
+					{tersify(obj)}
+					{'\n'}
+					{tersify(obj, { raw: true })}
+				</pre>
+			</StoryCard>
+		)
+	}
 }
