@@ -11,7 +11,7 @@ export default defineConfig({
 			exclude: ['src/**/*.spec.ts', 'src/**/*.spec.*.ts']
 		},
 		projects: [
-			// { test: { name: 'node', environment: 'node' } }
+			{ test: { name: 'node', environment: 'node' } },
 			{ test: { name: 'jsdom', environment: 'jsdom' } }
 		]
 	}
