@@ -5,7 +5,6 @@ ignores:
   - '@size-limit/*'
   - '@swc/*'
   - '@types/*'
-  - '@typescript-eslint/parser'
   - clean-webpack-plugin
   - jest-*
   - param-case

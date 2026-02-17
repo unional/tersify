@@ -1,5 +1,5 @@
-import t from 'assert'
-import { tersible, Tersible, Tersiblized } from './index.js'
+import t from 'node:assert'
+import { Tersible, Tersiblized, tersible } from './index.js'
 
 test('without tersify function will get default tersify', () => {
 	const date = new Date('2020-05-14T11:45:27.234Z')

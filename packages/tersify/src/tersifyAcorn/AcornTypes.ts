@@ -109,12 +109,12 @@ export interface BlockStatementNode extends AcornNodeBase {
 export interface ReturnStatementNode extends AcornNodeBase {
 	type: 'ReturnStatement'
 	argument:
-	| LiteralNode
-	| IdentifierNode
-	| CallExpressionNode
-	| MemberExpressionNode
-	| ObjectExpressionNode
-	| null
+		| LiteralNode
+		| IdentifierNode
+		| CallExpressionNode
+		| MemberExpressionNode
+		| ObjectExpressionNode
+		| null
 }
 
 export interface AssignmentPatternNode extends AcornNodeBase {

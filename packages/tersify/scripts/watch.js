@@ -1,6 +1,4 @@
-'use strict'
-
-const cp = require('child_process')
+const cp = require('node:child_process')
 
 let ava
 cp.spawn('tsc', ['-w'], { shell: true }).stdout.on('data', data => {
@@ -13,7 +11,7 @@ cp.spawn('tsc', ['-w'], { shell: true }).stdout.on('data', data => {
 				shell: true
 			})
 		}
-		let lint = cp.spawnSync('npm', ['run', 'lint'], {
+		const lint = cp.spawnSync('npm', ['run', 'lint'], {
 			stdio: 'inherit',
 			shell: true
 		})

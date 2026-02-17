@@ -6,27 +6,27 @@ import { TersifyContext } from './typesInternal.js'
 
 describe('function', () => {
 	test('anonymous with no return', () => {
-		expect(testFunction(function () { })).toBe('fn() {}')
-		expect(testFunction(function () { }, { maxLength: 7 })).toBe('fn() {}')
-		expect(testFunction(function () { }, { maxLength: 6 })).toBe('fn(...')
-		expect(testFunction(function () { }, { maxLength: 5 })).toBe('fn...')
-		expect(testFunction(function () { }, { maxLength: 4 })).toBe('fn..')
-		expect(testFunction(function () { }, { maxLength: 3 })).toBe('fn.')
-		expect(testFunction(function () { }, { maxLength: 2 })).toBe('f.')
-		expect(testFunction(function () { }, { maxLength: 1 })).toBe('.')
-		expect(testFunction(function () { }, { maxLength: 0 })).toBe('')
+		expect(testFunction(function () {})).toBe('fn() {}')
+		expect(testFunction(function () {}, { maxLength: 7 })).toBe('fn() {}')
+		expect(testFunction(function () {}, { maxLength: 6 })).toBe('fn(...')
+		expect(testFunction(function () {}, { maxLength: 5 })).toBe('fn...')
+		expect(testFunction(function () {}, { maxLength: 4 })).toBe('fn..')
+		expect(testFunction(function () {}, { maxLength: 3 })).toBe('fn.')
+		expect(testFunction(function () {}, { maxLength: 2 })).toBe('f.')
+		expect(testFunction(function () {}, { maxLength: 1 })).toBe('.')
+		expect(testFunction(function () {}, { maxLength: 0 })).toBe('')
 	})
 
 	test(`raw mode returns using fn.toString()`, () => {
-		expect(testFunction(function () { }, { raw: true })).toBe(function () { }.toString())
+		expect(testFunction(function () {}, { raw: true })).toBe(function () {}.toString())
 	})
 
 	test('single param', () => {
-		expect(testFunction(function (a) { })).toBe('fn(a) {}')
+		expect(testFunction(function (a) {})).toBe('fn(a) {}')
 	})
 
 	test('multiple params', () => {
-		expect(testFunction(function (a, b, c) { })).toBe('fn(a, b, c) {}')
+		expect(testFunction(function (a, b, c) {})).toBe('fn(a, b, c) {}')
 	})
 
 	test('not enough length will first trim params before body', () => {
@@ -177,15 +177,15 @@ describe('function', () => {
 	})
 
 	test('default param', () => {
-		expect(testFunction(function (a = '1') { })).toBe(`fn(a = '1') {}`)
+		expect(testFunction(function (a = '1') {})).toBe(`fn(a = '1') {}`)
 	})
 
 	test('off order default param', () => {
-		expect(testFunction(function (a = 1, b) { })).toBe('fn(a = 1, b) {}')
+		expect(testFunction(function (a = 1, b) {})).toBe('fn(a = 1, b) {}')
 	})
 
 	test('rest param', () => {
-		expect(testFunction(function (a, ...b) { })).toBe(`fn(a, ...b) {}`)
+		expect(testFunction(function (a, ...b) {})).toBe(`fn(a, ...b) {}`)
 	})
 
 	test('multiple statements', () => {
@@ -426,23 +426,23 @@ describe('function', () => {
 	test(`returns anonymous function`, () => {
 		expect(
 			testFunction(function () {
-				return function () { }
+				return function () {}
 			})
 		).toBe(`fn() { return function () {}; }`)
 	})
 
 	test('returns anonymous function with single param', () => {
-		expect(testFunction(function (x) { })).toBe('fn(x) {}')
+		expect(testFunction(function (x) {})).toBe('fn(x) {}')
 	})
 
 	test('returns anonymous function with multi-params', () => {
-		expect(testFunction(function (x, y) { })).toBe('fn(x, y) {}')
+		expect(testFunction(function (x, y) {})).toBe('fn(x, y) {}')
 	})
 
 	test(`returns named function`, () => {
 		expect(
 			testFunction(function () {
-				return function foo() { }
+				return function foo() {}
 			})
 		).toBe(`fn() { return function foo() {}; }`)
 	})
@@ -450,7 +450,7 @@ describe('function', () => {
 	test(`returns arrow function`, () => {
 		expect(
 			testFunction(function () {
-				return () => { }
+				return () => {}
 			})
 		).toBe(`fn() { return () => {}; }`)
 	})
@@ -458,7 +458,7 @@ describe('function', () => {
 	test(`returns async anonymous function`, () => {
 		expect(
 			testFunction(function () {
-				return async function () { }
+				return async function () {}
 			})
 		).toBe(`fn() { return async function () {}; }`)
 	})
@@ -466,7 +466,7 @@ describe('function', () => {
 	test(`returns async named function`, () => {
 		expect(
 			testFunction(function () {
-				return async function foo() { }
+				return async function foo() {}
 			})
 		).toBe(`fn() { return async function foo() {}; }`)
 	})
@@ -474,7 +474,7 @@ describe('function', () => {
 	test(`returns async arrow function`, () => {
 		expect(
 			testFunction(function () {
-				return async () => { }
+				return async () => {}
 			})
 		).toBe(`fn() { return async () => {}; }`)
 	})
@@ -482,7 +482,7 @@ describe('function', () => {
 	test(`returns generator anonymous function`, () => {
 		expect(
 			testFunction(function () {
-				return function* () { }
+				return function* () {}
 			})
 		).toBe(`fn() { return function* () {}; }`)
 	})
@@ -490,7 +490,7 @@ describe('function', () => {
 	test(`returns generator named function`, () => {
 		expect(
 			testFunction(function () {
-				return function* foo() { }
+				return function* foo() {}
 			})
 		).toBe(`fn() { return function* foo() {}; }`)
 	})
@@ -498,7 +498,7 @@ describe('function', () => {
 	test(`returns async generator anonymous function`, () => {
 		expect(
 			testFunction(function () {
-				return async function* () { }
+				return async function* () {}
 			})
 		).toBe(`fn() { return async function* () {}; }`)
 	})
@@ -506,7 +506,7 @@ describe('function', () => {
 	test(`returns async generator named function`, () => {
 		expect(
 			testFunction(function () {
-				return async function* foo() { }
+				return async function* foo() {}
 			})
 		).toBe(`fn() { return async function* foo() {}; }`)
 	})
@@ -869,7 +869,7 @@ describe('function', () => {
 	test('with assignment', () => {
 		expect(
 			testFunction(function (x) {
-				return x %= 1
+				return (x %= 1)
 			})
 		).toBe('fn(x) { return x %= 1; }')
 	})
@@ -941,7 +941,7 @@ describe('function', () => {
 	test('with for loop no update', () => {
 		expect(
 			testFunction(function () {
-				for (let i = 0, y = 1; i < 10;) {
+				for (let i = 0, y = 1; i < 10; ) {
 					console.info(i, y)
 				}
 			})
@@ -951,7 +951,7 @@ describe('function', () => {
 	test('with for loop with break', () => {
 		expect(
 			testFunction(function () {
-				for (; ;) {
+				for (;;) {
 					break
 				}
 			})
@@ -961,7 +961,7 @@ describe('function', () => {
 	test('with for loop with labeled break', () => {
 		expect(
 			testFunction(function () {
-				label: for (; ;) {
+				label: for (;;) {
 					break label
 				}
 			})
@@ -971,7 +971,7 @@ describe('function', () => {
 	test('with for loop with continue', () => {
 		expect(
 			testFunction(function () {
-				for (; ;) {
+				for (;;) {
 					continue
 				}
 			})
@@ -981,7 +981,7 @@ describe('function', () => {
 	test('with for loop with labeled continue', () => {
 		expect(
 			testFunction(function () {
-				foo: for (; ;) {
+				foo: for (;;) {
 					continue foo
 				}
 			})
@@ -1096,11 +1096,11 @@ describe('function', () => {
 	})
 
 	test('anonymous generator function', () => {
-		expect(testFunction(function* () { })).toBe('fn*() {}')
+		expect(testFunction(function* () {})).toBe('fn*() {}')
 	})
 
 	test('named function', () => {
-		const subject = function name() { }
+		const subject = function name() {}
 		// expect(testFunction(subject)).toBe('fn name() {}')
 		expect(testFunction(subject, { maxLength: 11 })).toBe('fn name(...')
 	})
@@ -1108,16 +1108,16 @@ describe('function', () => {
 
 describe('arrow function', () => {
 	test('with no return', () => {
-		expect(testFunction(() => { })).toBe('() => {}')
-		expect(testFunction(() => { }, { maxLength: 8 })).toBe('() => {}')
-		expect(testFunction(() => { }, { maxLength: 7 })).toBe('() =...')
-		expect(testFunction(() => { }, { maxLength: 6 })).toBe('() ...')
-		expect(testFunction(() => { }, { maxLength: 5 })).toBe('()...')
-		expect(testFunction(() => { }, { maxLength: 4 })).toBe('()..')
-		expect(testFunction(() => { }, { maxLength: 3 })).toBe('().')
-		expect(testFunction(() => { }, { maxLength: 2 })).toBe('(.')
-		expect(testFunction(() => { }, { maxLength: 1 })).toBe('.')
-		expect(testFunction(() => { }, { maxLength: 0 })).toBe('')
+		expect(testFunction(() => {})).toBe('() => {}')
+		expect(testFunction(() => {}, { maxLength: 8 })).toBe('() => {}')
+		expect(testFunction(() => {}, { maxLength: 7 })).toBe('() =...')
+		expect(testFunction(() => {}, { maxLength: 6 })).toBe('() ...')
+		expect(testFunction(() => {}, { maxLength: 5 })).toBe('()...')
+		expect(testFunction(() => {}, { maxLength: 4 })).toBe('()..')
+		expect(testFunction(() => {}, { maxLength: 3 })).toBe('().')
+		expect(testFunction(() => {}, { maxLength: 2 })).toBe('(.')
+		expect(testFunction(() => {}, { maxLength: 1 })).toBe('.')
+		expect(testFunction(() => {}, { maxLength: 0 })).toBe('')
 	})
 
 	test('single statement', () => {
@@ -1251,10 +1251,10 @@ describe('arrow function', () => {
 	})
 
 	test('return anonymous function', () => {
-		expect(testFunction(() => function () { })).toBe(`() => fn() {}`)
+		expect(testFunction(() => function () {})).toBe(`() => fn() {}`)
 		expect(
 			testFunction(() => {
-				return function () { }
+				return function () {}
 			})
 		).toBe(`() => function () {}`)
 		expect(
@@ -1269,20 +1269,20 @@ describe('arrow function', () => {
 	})
 
 	test('returns anonymous function with single param', () => {
-		expect(testFunction(x => { })).toBe('x => {}')
-		expect(testFunction(abcde => { })).toBe('abcde => {}')
-		expect(testFunction(abcde => { }, { maxLength: 10 })).toBe('ab.. => {}')
+		expect(testFunction(x => {})).toBe('x => {}')
+		expect(testFunction(abcde => {})).toBe('abcde => {}')
+		expect(testFunction(abcde => {}, { maxLength: 10 })).toBe('ab.. => {}')
 	})
 
 	test('returns anonymous function with multi-params', () => {
-		expect(testFunction((x, y) => { })).toBe('(x, y) => {}')
+		expect(testFunction((x, y) => {})).toBe('(x, y) => {}')
 	})
 
 	test('return named function', () => {
-		expect(testFunction(() => function foo() { })).toBe(`() => fn foo() {}`)
+		expect(testFunction(() => function foo() {})).toBe(`() => fn foo() {}`)
 		expect(
 			testFunction(() => {
-				return function foo() { }
+				return function foo() {}
 			})
 		).toBe(`() => function foo() {}`)
 		expect(
@@ -1309,7 +1309,7 @@ describe('arrow function', () => {
 	test(`returns async anonymous function`, () => {
 		expect(
 			testFunction(() => {
-				return async function () { }
+				return async function () {}
 			})
 		).toBe(`() => async function () {}`)
 	})
@@ -1317,7 +1317,7 @@ describe('arrow function', () => {
 	test(`returns async named function`, () => {
 		expect(
 			testFunction(() => {
-				return async function foo() { }
+				return async function foo() {}
 			})
 		).toBe(`() => async function foo() {}`)
 	})
@@ -1325,7 +1325,7 @@ describe('arrow function', () => {
 	test(`returns async arrow function`, () => {
 		expect(
 			testFunction(() => {
-				return async () => { }
+				return async () => {}
 			})
 		).toBe(`() => async () => {}`)
 	})
@@ -1333,7 +1333,7 @@ describe('arrow function', () => {
 	test(`returns generator anonymous function`, () => {
 		expect(
 			testFunction(() => {
-				return function* () { }
+				return function* () {}
 			})
 		).toBe(`() => function* () {}`)
 	})
@@ -1341,7 +1341,7 @@ describe('arrow function', () => {
 	test(`returns generator named function`, () => {
 		expect(
 			testFunction(() => {
-				return function* foo() { }
+				return function* foo() {}
 			})
 		).toBe(`() => function* foo() {}`)
 	})
@@ -1349,7 +1349,7 @@ describe('arrow function', () => {
 	test(`returns async generator anonymous function`, () => {
 		expect(
 			testFunction(() => {
-				return async function* () { }
+				return async function* () {}
 			})
 		).toBe(`() => async function* () {}`)
 	})
@@ -1357,7 +1357,7 @@ describe('arrow function', () => {
 	test(`returns async generator named function`, () => {
 		expect(
 			testFunction(() => {
-				return async function* foo() { }
+				return async function* foo() {}
 			})
 		).toBe(`() => async function* foo() {}`)
 	})
@@ -1712,7 +1712,7 @@ describe('arrow function', () => {
 	test('with assignment', () => {
 		expect(
 			testFunction(x => {
-				return x %= 1
+				return (x %= 1)
 			})
 		).toBe('x => x %= 1')
 	})
@@ -1784,7 +1784,7 @@ describe('arrow function', () => {
 	test('with for loop no update', () => {
 		expect(
 			testFunction(() => {
-				for (let i = 0, y = 1; i < 10;) {
+				for (let i = 0, y = 1; i < 10; ) {
 					console.info(i, y)
 				}
 			})
@@ -1794,7 +1794,7 @@ describe('arrow function', () => {
 	test('with for loop with break', () => {
 		expect(
 			testFunction(() => {
-				for (; ;) {
+				for (;;) {
 					break
 				}
 			})
@@ -1804,7 +1804,7 @@ describe('arrow function', () => {
 	test('with for loop with labeled break', () => {
 		expect(
 			testFunction(() => {
-				label: for (; ;) {
+				label: for (;;) {
 					break label
 				}
 			})
@@ -1814,7 +1814,7 @@ describe('arrow function', () => {
 	test('with for loop with continue', () => {
 		expect(
 			testFunction(() => {
-				for (; ;) {
+				for (;;) {
 					continue
 				}
 			})
@@ -1824,7 +1824,7 @@ describe('arrow function', () => {
 	test('with for loop with labeled continue', () => {
 		expect(
 			testFunction(() => {
-				foo: for (; ;) {
+				foo: for (;;) {
 					continue foo
 				}
 			})

@@ -1,5 +1,5 @@
 import { defaultTersify } from './tersify.js'
-import { Tersible, TersifyOptions } from './types.js'
+import type { Tersible, TersifyOptions } from './types.js'
 
 /**
  * Create a Tersible mixin class
@@ -11,14 +11,11 @@ import { Tersible, TersifyOptions } from './types.js'
  * @param Base Base class
  * @param tersify the tersify function
  */
-export function Tersiblized<C extends new (...args: any[]) => {}>(
+export function Tersiblized<C extends new (...args: any[]) => object>(
 	Base: C,
 	tersify: (this: InstanceType<C>, options?: Partial<TersifyOptions>) => string
 ) {
 	return class extends Base {
-		constructor(...args: any[]) {
-			super(...args)
-		}
 		tersify(this: InstanceType<C>, options?: Partial<TersifyOptions>) {
 			return tersify.call(this, options)
 		}
@@ -37,13 +34,7 @@ export function tersible<T>(
 	tersify?: string | ((this: T, options: Partial<TersifyOptions>) => string)
 ): Tersible<T> {
 	const tersifyFn =
-		tersify === undefined
-			? defaultTersify
-			: typeof tersify === 'string'
-			? function () {
-					return tersify
-			  }
-			: tersify
+		tersify === undefined ? defaultTersify : typeof tersify === 'string' ? () => tersify : tersify
 	Object.defineProperty(subject, 'tersify', {
 		value: tersifyFn,
 		enumerable: false,

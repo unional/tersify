@@ -13,20 +13,21 @@ describe('parseFn()', () => {
 								body: '',
 								async: false,
 								generator: false
-						  }
+							}
 						: {
 								params: '',
 								body: '',
 								async: false,
 								singleParam: false,
 								singleLineBody: false
-						  },
+							},
 					struct
 				)
 			)
 		)
 	}
 	testParseFn.only = (str: string, struct: Partial<FuncStruct>) => {
+		// biome-ignore lint/suspicious/noFocusedTests: utility function
 		test.only(str, () =>
 			expect(parseFn(str)).toEqual(
 				required<FuncStruct>(
@@ -37,14 +38,14 @@ describe('parseFn()', () => {
 								body: '',
 								async: false,
 								generator: false
-						  }
+							}
 						: {
 								params: '',
 								body: '',
 								async: false,
 								singleParam: false,
 								singleLineBody: false
-						  },
+							},
 					struct
 				)
 			)

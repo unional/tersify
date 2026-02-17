@@ -1,4 +1,4 @@
-import { TersifyContext } from './typesInternal.js'
+import type { TersifyContext } from './typesInternal.js'
 
 export function trim({ raw, noTrim }: Pick<TersifyContext, 'raw' | 'noTrim'>, value: string, length: number) {
 	if (noTrim || raw || value.length <= length) return value

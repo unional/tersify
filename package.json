@@ -1,31 +1,36 @@
 {
-  "name": "tersify-monorepo",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Tersify monorepo",
-  "license": "MIT",
-  "scripts": {
-    "build": "turbo run build",
-    "clean": "turbo run clean",
-    "cs": "changeset",
-    "lint": "turbo run lint",
-    "nuke": "run-s nuke:pkgs nuke:root",
-    "nuke:pkgs": "turbo run nuke",
-    "nuke:root": "rimraf node_modules",
-    "prepare": "husky",
-    "release": "changeset publish",
-    "test": "turbo run test",
-    "verify": "turbo run verify",
-    "version": "changeset version"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+	"name": "tersify-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Tersify monorepo",
+	"license": "MIT",
+	"scripts": {
+		"build": "turbo run build",
+		"check": "biome check",
+		"check:fix": "biome check --write",
+		"clean": "turbo run clean",
+		"cs": "changeset",
+		"lint": "biome check",
+		"nuke": "run-s nuke:pkgs nuke:root",
+		"nuke:pkgs": "turbo run nuke",
+		"nuke:root": "rimraf node_modules",
+		"prepare": "husky",
+		"release": "changeset publish",
+		"tersify": "turbo --filter=tersify",
+		"test": "turbo run test",
+		"verify": "turbo run verify",
+		"version": "changeset version"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.14",
+		"@changesets/cli": "^2.29.8",
 		"@commitlint/cli": "^19.8.1",
 		"@commitlint/config-conventional": "^19.8.1",
-    "husky": "^9.1.7",
-    "npm-run-all2": "^7.0.2",
-    "rimraf": "~6.1.0",
-    "turbo": "^2.3.3"
-  },
-  "packageManager": "pnpm@10.29.3"
+		"@repobuddy/biome": "2.3.1",
+		"husky": "^9.1.7",
+		"npm-run-all2": "^7.0.2",
+		"rimraf": "~6.1.0",
+		"turbo": "^2.3.3"
+	},
+	"packageManager": "pnpm@10.29.3"
 }

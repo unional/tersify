@@ -1,5 +1,5 @@
-import { tersify } from './tersify.js'
 import * as ws from 'ws'
+import { tersify } from './tersify.js'
 
 describe('ws', () => {
 	it('works with WebSocket', () => {

@@ -1,27 +1,27 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["*.ts", "*.tsx", "package.json", "tsconfig*.json"],
-      "outputs": ["cjs", "esm", "tslib", "dist", "*.tsbuildinfo"]
-    },
-    "clean": {
-      "cache": false
-    },
-    "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
-    },
-    "lint": {
-      "dependsOn": ["^build"]
-    },
-    "verify": {
-      "dependsOn": ["^build"],
-      "outputs": ["cjs", "esm", "tslib", "dist", "coverage/**"]
-    },
-    "nuke": {
-      "cache": false
-    }
-  }
+	"$schema": "https://turborepo.org/schema.json",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"inputs": ["*.ts", "*.tsx", "package.json", "tsconfig*.json"],
+			"outputs": ["cjs", "esm", "tslib", "dist", "*.tsbuildinfo"]
+		},
+		"clean": {
+			"cache": false
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"outputs": ["coverage/**"]
+		},
+		"lint": {
+			"dependsOn": ["^build"]
+		},
+		"verify": {
+			"dependsOn": ["^build"],
+			"outputs": ["cjs", "esm", "tslib", "dist", "coverage/**"]
+		},
+		"nuke": {
+			"cache": false
+		}
+	}
 }

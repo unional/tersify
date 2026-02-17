@@ -1,7 +1,7 @@
 import { hasTersifyFn } from './hasTersifyFn.js'
 import { defaultTersify } from './tersify.js'
 import { tersifyFunctionByString } from './tersifyFunctionByString.js'
-import { TersifyContext } from './typesInternal.js'
+import type { TersifyContext } from './typesInternal.js'
 
 // istanbul ignore next
 export function tersifyFunction(context: TersifyContext, fn: Function, _length: number): string {

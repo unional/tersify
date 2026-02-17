@@ -1,4 +1,4 @@
-import { TersifyOptions } from './types.js'
+import type { TersifyOptions } from './types.js'
 
 export type TersifyContext = TersifyOptions & {
 	path: (keyof any)[]

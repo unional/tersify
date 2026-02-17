@@ -1,0 +1,78 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["@repobuddy/biome/recommended"],
+	"files": {
+		"includes": [
+			"!.turbo",
+			"!.vscode",
+			"!.vscode/*.code-workspace",
+			"!.vscode/*.txt",
+			"!**/cjs",
+			"!**/coverage",
+			"!**/dist",
+			"!**/esm",
+			"!**/node_modules",
+			"!**/tslib"
+		]
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "asNeeded",
+			"indentStyle": "tab",
+			"lineWidth": 110,
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"trailingCommas": "none"
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.spec.ts", "**/*.spec.*.ts"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noStaticOnlyClass": "off",
+						"noUselessConstructor": "off",
+						"noUselessContinue": "off",
+						"noUselessLabel": "off",
+						"useArrowFunction": "off"
+					},
+					"correctness": {
+						"noUnusedFunctionParameters": "off",
+						"noUnusedImports": "off",
+						"noUnusedVariables": "off",
+						"useYield": "off"
+					},
+					"style": {
+						"noParameterAssign": "off",
+						"noUnusedTemplateLiteral": "off",
+						"noUselessElse": "off",
+						"useConst": "off",
+						"useDefaultParameterLast": "off",
+						"useImportType": "off",
+						"useNumberNamespace": "off",
+						"useSingleVarDeclarator": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off",
+						"noFocusedTests": "warn",
+						"noImplicitAnyLet": "off",
+						"noTsIgnore": "off",
+						"noTemplateCurlyInString": "off",
+						"noVar": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/tersifyFunction*.ts", "**/tersifyFunctionByString.ts"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		}
+	]
+}

@@ -4,5 +4,5 @@ export default {
 	preset: '@repobuddy/jest/presets/ts-esm',
 	transform: {
 		'^.+\\.(t|j)sx?$': ['@swc/jest']
-	},
+	}
 }

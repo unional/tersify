@@ -4,8 +4,8 @@ import { defaultOptions } from './constants.js'
 import { hasTersifyFn } from './hasTersifyFn.js'
 import { tersifyFunction } from './tersifyFunction.js'
 import { trim } from './trim.js'
-import { TersifyOptions } from './types.js'
-import { TersifyContext } from './typesInternal.js'
+import type { TersifyOptions } from './types.js'
+import type { TersifyContext } from './typesInternal.js'
 
 export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
 	return tersify(this, options)
@@ -109,7 +109,7 @@ function tersifyArray(context: TersifyContext, value: any[], length: number) {
 		return value.tersify({ maxLength: length })
 	}
 
-	if (value.length === 0) return `[]`
+	if (value.length === 0) return '[]'
 
 	const bracketLen = 2
 	let entriesLen = 0
@@ -123,7 +123,7 @@ function tersifyArray(context: TersifyContext, value: any[], length: number) {
 		return entries
 	}, [] as string[])
 	const content = trim(context, entries.join(', '), length - bracketLen)
-	if (content.length === 0) return trim(context, `[ ]`, length)
+	if (content.length === 0) return trim(context, '[ ]', length)
 	return `[${content}]`
 }
 
@@ -159,8 +159,8 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
 	return keys.length === 0
 		? '{}'
 		: trimmedContent.length === 0
-		? trim(context, `{   }`, length)
-		: `{ ${trimmedContent} }`
+			? trim(context, '{   }', length)
+			: `{ ${trimmedContent} }`
 }
 
 function tersifyInstance(context: TersifyContext, value: object, length: number) {
@@ -220,8 +220,8 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
 	return keys.length === 0
 		? `${nameStr}{}`
 		: trimmedContent.length === 0
-		? trim(context, `${nameStr}{   }`, length)
-		: `${nameStr}{ ${trimmedContent} }`
+			? trim(context, `${nameStr}{   }`, length)
+			: `${nameStr}{ ${trimmedContent} }`
 }
 
 function getPropStr(
@@ -253,25 +253,23 @@ function getPropStr(
 				length - key.length - commaAndSpaceLen - colonAndSpaceLen
 			)
 			return `${getPropKey(key)}: ${propValue}`
-		} else {
-			const propValue = tersifyValue(
-				{ ...context, path },
-				value,
-				length - key.length - commaAndSpaceLen + fnLen
-			)
-			const asyncToken = /^async fn/.test(propValue) ? 'async ' : ''
-			const generatorToken = /^(async )?fn\*/.test(propValue) ? '*' : ''
-			return `${asyncToken}${generatorToken}${getPropKey(key)}${propValue.slice(propValue.indexOf('('))}`
 		}
-	} else {
-		// console.log(remaining, k.length, colonAndSpaceLen, commaAndSpaceLen, remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
 		const propValue = tersifyValue(
-			{ ...context, path, noTrim: true },
+			{ ...context, path },
 			value,
-			length - key.length - colonAndSpaceLen - commaAndSpaceLen
+			length - key.length - commaAndSpaceLen + fnLen
 		)
-		return `${getPropKey(key)}: ${propValue}`
+		const asyncToken = /^async fn/.test(propValue) ? 'async ' : ''
+		const generatorToken = /^(async )?fn\*/.test(propValue) ? '*' : ''
+		return `${asyncToken}${generatorToken}${getPropKey(key)}${propValue.slice(propValue.indexOf('('))}`
 	}
+	// console.log(remaining, k.length, colonAndSpaceLen, commaAndSpaceLen, remaining - k.length - colonAndSpaceLen - commaAndSpaceLen)
+	const propValue = tersifyValue(
+		{ ...context, path, noTrim: true },
+		value,
+		length - key.length - colonAndSpaceLen - commaAndSpaceLen
+	)
+	return `${getPropKey(key)}: ${propValue}`
 }
 
 function getPropKey(key: string) {

@@ -1,6 +1,6 @@
 const paramCase = require('param-case').paramCase
 const pascalCase = require('pascal-case').pascalCase
-const path = require('path')
+const path = require('node:path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { NormalModuleReplacementPlugin } = require('webpack')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;

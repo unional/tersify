@@ -1,5 +1,5 @@
 import { trim } from './trim.js'
-import { TersifyOptions } from './types.js'
+import type { TersifyOptions } from './types.js'
 
 export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 	const str = fn.toString()
@@ -10,7 +10,6 @@ export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 			return formatFn2(struct, options.maxLength)
 		case 'arrow':
 			return formatArrow2(struct, options.maxLength)
-		case 'unknown':
 		default:
 			// istanbul ignore next
 			return formatUnknown(struct, options.maxLength)
@@ -69,7 +68,9 @@ export function parseFn(input: string): FuncStruct {
 		const params = (match[2] ?? '').trim()
 		let body = (match[3] ?? '').trim()
 		let singleLineBody = isSingleLineBody(body)
-		body = removeLineBreaks(singleLineBody ? getSingleLineBody(body, Infinity) : getEnclosedBody(body)).trim()
+		body = removeLineBreaks(
+			singleLineBody ? getSingleLineBody(body, Number.POSITIVE_INFINITY) : getEnclosedBody(body)
+		).trim()
 		if (!singleLineBody && body.startsWith('return ') && body.endsWith(';')) {
 			singleLineBody = true
 			body = body.slice(7, -1)
@@ -90,7 +91,9 @@ export function parseFn(input: string): FuncStruct {
 	if (match) {
 		let body = (match[3] ?? '').trim()
 		let singleLineBody = isSingleLineBody(body)
-		body = removeLineBreaks(singleLineBody ? getSingleLineBody(body, Infinity) : getEnclosedBody(body)).trim()
+		body = removeLineBreaks(
+			singleLineBody ? getSingleLineBody(body, Number.POSITIVE_INFINITY) : getEnclosedBody(body)
+		).trim()
 		if (!singleLineBody && body.startsWith('return ') && body.endsWith(';')) {
 			singleLineBody = true
 			body = body.slice(7, -1)
@@ -140,7 +143,10 @@ function normalizeBody(body: string): string {
 		.replace(/\bfinally\s*\{/g, 'finally {')
 		.replace(/\bcatch\s*\{/g, 'catch {')
 		.replace(/\)\s*\{/g, ') {')
-		.replace(/(\{\s*|,\s*)((?:async\s+)?)(\*\s*)?(\w+)\s+\(/g, (_, prefix, async, star, name) => prefix + async + (star ? '*' : '') + name + '(')
+		.replace(
+			/(\{\s*|,\s*)((?:async\s+)?)(\*\s*)?(\w+)\s+\(/g,
+			(_, prefix, async, star, name) => prefix + async + (star ? '*' : '') + name + '('
+		)
 		.replace(/\[\s*;/g, '[') // remove erroneous leading semicolon in array (from removeLineBreaks)
 		.replace(/\[\s+/g, '[')
 		.replace(/\s+\]/g, ']')
@@ -160,8 +166,8 @@ function formatFn2(struct: FunctionStruct, maxLength: number) {
 		struct.params && struct.body
 			? template.length - 4
 			: struct.params || struct.body
-			? template.length - 2
-			: template.length
+				? template.length - 2
+				: template.length
 
 	struct.params = trim(
 		{ raw: false, noTrim: false },
@@ -185,8 +191,8 @@ function formatArrow2(struct: ArrowStruct, maxLength: number) {
 		struct.params && struct.body
 			? template.length - 4
 			: struct.params || struct.body
-			? template.length - 2
-			: template.length
+				? template.length - 2
+				: template.length
 
 	struct.params = trim(
 		{ raw: false, noTrim: false },
