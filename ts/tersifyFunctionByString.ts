@@ -3,7 +3,7 @@ import { TersifyOptions } from './types.js'
 
 export function tersifyFunctionByString(fn: Function, options: TersifyOptions) {
 	const str = fn.toString()
-	if (options.raw) return str
+	if (options.raw) return normalizeRawOutput(str)
 	const struct = parseFn(str)
 	switch (struct.type) {
 		case 'function':
@@ -113,7 +113,46 @@ export function parseFn(input: string): FuncStruct {
 	}
 }
 
+/**
+ * Normalize body string so output is consistent across engines (e.g. jsdom vs Node).
+ * Ensures spaces around keywords and removes unwanted semicolons in object/array literals.
+ */
+function normalizeBody(body: string): string {
+	return body
+		.replace(/\bfunction\s*\*\s*\(/g, 'function* (')
+		.replace(/\bfunction\s*\(/g, 'function (')
+		.replace(/\basync\s+function\s*\*\s*\(/g, 'async function* (')
+		.replace(/\basync\s+function\s*\(/g, 'async function (')
+		.replace(/\)=>/g, ') =>')
+		.replace(/=>\s*\{/g, '=> {')
+		.replace(/\bwhile\s*\(/g, 'while (')
+		.replace(/\bfor\s*\(/g, 'for (')
+		.replace(/\bswitch\s*\(/g, 'switch (')
+		.replace(/\}\s*while\s*\(/g, '} while (')
+		.replace(/(\}\s*while\s*\([^)]+\))\s*\}/g, '$1; }') // do-while: add semicolon before closing }
+		.replace(/(\}\s*while\s*\([^)]+\))\s*$/g, '$1;') // do-while at end of body: add semicolon
+		.replace(/(while\s*\([^)]+\))\s*$/g, '$1;') // do-while without block at end: add semicolon
+		.replace(/\b(while\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+		.replace(/\b(for\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+		.replace(/\b(switch\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+		.replace(/\b(in\s+\w+)\)(\w)/g, '$1) $2')
+		.replace(/\b(of\s+\w+)\)(\w)/g, '$1) $2')
+		.replace(/\bfinally\s*\{/g, 'finally {')
+		.replace(/\bcatch\s*\{/g, 'catch {')
+		.replace(/\)\s*\{/g, ') {')
+		.replace(/(\{\s*|,\s*)((?:async\s+)?)(\*\s*)?(\w+)\s+\(/g, (_, prefix, async, star, name) => prefix + async + (star ? '*' : '') + name + '(')
+		.replace(/\[\s*;/g, '[') // remove erroneous leading semicolon in array (from removeLineBreaks)
+		.replace(/\[\s+/g, '[')
+		.replace(/\s+\]/g, ']')
+}
+
+/** Normalize raw fn.toString() output for consistent formatting across engines. */
+function normalizeRawOutput(str: string): string {
+	return str.replace(/\)=>/g, ') =>').replace(/=>(\S)/g, '=> $1')
+}
+
 function formatFn2(struct: FunctionStruct, maxLength: number) {
+	if (struct.body) struct.body = normalizeBody(struct.body)
 	const template = `${struct.async ? 'async ' : ''}fn${struct.generator ? '*' : ''}${
 		struct.name ? ' ' + struct.name : ''
 	}(${struct.params ? '%1' : ''}) {${struct.body ? ' %2 ' : ''}}`
@@ -138,6 +177,7 @@ function formatFn2(struct: FunctionStruct, maxLength: number) {
 }
 
 function formatArrow2(struct: ArrowStruct, maxLength: number) {
+	if (struct.body) struct.body = normalizeBody(struct.body)
 	const template = `${struct.async ? 'async ' : ''}${
 		struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`
 	} => ${struct.singleLineBody ? '%2' : `{${struct.body ? ' %2 ' : ''}}`}`
@@ -214,9 +254,16 @@ function removeLineBreaks(value: string) {
 		.split('\n')
 		.map(x => x.trim())
 		.filter(x => !!x)
-		.map((x, i, a) =>
-			i < a.length - 1 && /[^({}):;(do|else)]$/.test(x) && /[^)}]/.test(a[i + 1]) ? x + ';' : x
-		)
+		.map((x, i, a) => {
+			if (i >= a.length - 1) return x
+			// Do not add semicolon after line ending with comma (object/array elements) or [
+			if (/,\s*$/.test(x) || /\[$/.test(x)) return x
+			// Do not add semicolon when next line is closing brace or bracket
+			if (/^[}\]]\s*;?\s*$/.test(a[i + 1].trim())) return x
+			if (!/[^({}):;(do|else)]$/.test(x)) return x
+			if (!/[^)}]/.test(a[i + 1])) return x
+			return x + ';'
+		})
 		.join(' ')
 }
 
