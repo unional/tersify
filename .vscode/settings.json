@@ -1,38 +1,24 @@
 {
-	"[typescript]": {
-		"editor.codeActionsOnSave": {
-			"source.organizeImports.biome": "explicit"
-		},
-		"editor.defaultFormatter": "biomejs.biome",
-		"editor.formatOnSave": true
-	},
-	"cSpell.words": [
-		"Acron",
-		"jsnext",
-		"libm",
-		"pinst",
-		"pkgs",
-		"repobuddy",
-		"snyk",
-		"tersible",
-		"Tersiblized",
-		"tersify",
-		"tsbuildinfo",
-		"unpartial",
-		"Vitest"
-	],
-	"biome.enable": true,
-	"editor.codeActionsOnSave": {
-		"source.fixAll.biome": "explicit"
-	},
-	"json.schemas": [
-		{
-			"fileMatch": [
-				"tsconfig.*.json"
-			],
-			"url": "http://json.schemastore.org/tsconfig"
-		}
-	],
-	"markdownlint.ignore": ".markdownlintignore",
-	"typescript.tsdk": "node_modules/typescript/lib"
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports.biome": "explicit"
+    },
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
+  },
+  "cSpell.words": ["Acron", "jsnext", "libm", "pinst", "pkgs", "repobuddy", "snyk", "tersible", "Tersiblized", "tersify", "tsbuildinfo", "unpartial", "Vitest"],
+  "biome.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["tsconfig.*.json"],
+      "url": "http://json.schemastore.org/tsconfig"
+    }
+  ],
+  "markdownlint.ignore": ".markdownlintignore",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
