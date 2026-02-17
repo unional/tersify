@@ -1,4 +1,6 @@
-# [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
+# @repobuddy/tersify
+
+## [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
 
 ## 3.12.1
 
