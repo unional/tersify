@@ -19,6 +19,7 @@ import type {
 	ConditionalExpressionNode,
 	ContinueStatementNode,
 	DoWhileStatementNode,
+	EmptyStatementNode,
 	ExpressionStatementNode,
 	ForInStatementNode,
 	ForOfStatementNode,
@@ -130,6 +131,8 @@ function tersifyAcornNode(context: TersifyAcornContext, node: AcornNode | null, 
 			return tersifyAssignmentExpressionNode(context, node, length)
 		case 'DoWhileStatement':
 			return tersifyDoWhileStatementNode(context, node, length)
+		case 'EmptyStatement':
+			return tersifyEmptyStatementNode(context, node, length)
 		case 'ForStatement':
 			return tersifyForStatementNode(context, node, length)
 		case 'BreakStatement':
@@ -184,7 +187,6 @@ function tersifyAcornNode(context: TersifyAcornContext, node: AcornNode | null, 
 			return tersifySuperNode(context, node, length)
 		// istanbul ignore next
 		default:
-			if ((node as AcornNode).type === 'EmptyStatement') return ''
 			return tersifyUnknown(node, context.rawString)
 	}
 }
@@ -321,6 +323,14 @@ function tersifyLabeledStatementNode(
 	const body = tersifyAcornNode(context, node.body, length)
 
 	return `${label}: ${body}`
+}
+
+function tersifyEmptyStatementNode(
+	_context: TersifyAcornContext,
+	_node: EmptyStatementNode,
+	_length: number
+) {
+	return ''
 }
 
 function tersifyBreakStatementNode(context: TersifyAcornContext, node: BreakStatementNode, length: number) {

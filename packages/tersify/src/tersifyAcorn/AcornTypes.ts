@@ -22,6 +22,7 @@ export type AcornNode =
 	| IfStatementNode
 	| WhileStatementNode
 	| DoWhileStatementNode
+	| EmptyStatementNode
 	| AssignmentExpressionNode
 	| ForStatementNode
 	| BreakStatementNode
@@ -238,6 +239,10 @@ export interface ForStatementNode extends AcornNodeBase {
 	init: AcornNode
 	test: AcornNode
 	update: AcornNode
+}
+
+export interface EmptyStatementNode extends AcornNodeBase {
+	type: 'EmptyStatement'
 }
 
 export interface BreakStatementNode extends AcornNodeBase {
