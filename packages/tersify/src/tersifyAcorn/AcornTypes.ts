@@ -54,7 +54,7 @@ export type AcornNode =
 	| MetaProperty
 	| SuperNode
 
-export interface AcornNodeBase {
+interface AcornNodeBase {
 	start: number
 	end: number
 }
