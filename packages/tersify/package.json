@@ -91,7 +91,7 @@
 		"@vitest/coverage-v8": "^4.0.18",
 		"@types/ws": "^8.18.1",
 		"clean-webpack-plugin": "^4.0.0",
-		"cross-env": "^7.0.3",
+		"cross-env": "^10.0.0",
 		"depcheck": "^1.4.7",
 		"ncp": "^2.0.0",
 		"npm-run-all2": "^6.2.6",
