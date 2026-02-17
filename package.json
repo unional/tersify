@@ -24,7 +24,7 @@
 		"@commitlint/config-conventional": "^19.8.1",
     "husky": "^9.1.7",
     "npm-run-all2": "^7.0.2",
-    "rimraf": "~6.0.1",
+    "rimraf": "~6.1.0",
     "turbo": "^2.3.3"
   },
   "packageManager": "pnpm@10.29.3"
