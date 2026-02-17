@@ -1,5 +1,23 @@
 # @repobuddy/tersify
 
+## 4.0.0
+
+### Major Changes
+
+- 2ec5a33: Update build targets ES2020.
+
+  BREAKING CHANGE: The build targets now ES2020. Consumers in ES5-only environments, it's time to upgrade your runtime.
+
+### Minor Changes
+
+- 61b4d40: Add `options.indent`: `'tab'` for tab indentation, or a number for that many spaces per level. Objects and arrays are formatted with newlines and the chosen indentation.
+- 3dc31e6: Switch build from tsc to tsdown; publish ESM as `.mjs` and CJS as `.cjs` with matching `.d.mts`/`.d.cts` types
+
+### Patch Changes
+
+- 454bb3d: Handle `EmptyStatement`.
+- f8c1b3c: Update dependencies (acorn, unpartial).
+
 ## [3.11.0](https://github.com/unional/tersify/compare/v3.10.5...v3.11.0) (2022-12-03)
 
 ## 3.12.1

@@ -1,5 +1,0 @@
----
-"tersify": patch
----
-
-Handle `EmptyStatement`.
