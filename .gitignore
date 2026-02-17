@@ -50,9 +50,11 @@ typings
 !.yarn/sdks
 !.yarn/versions
 
-# project folders
-/cjs
-/dist
-/esm
-/lib*
-/tslib
+# project folders (monorepo packages)
+.turbo
+packages/*/cjs
+packages/*/dist
+packages/*/esm
+packages/*/lib*
+packages/*/tslib
+packages/*/coverage
