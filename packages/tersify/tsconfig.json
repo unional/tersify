@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"composite": false,
 		"exactOptionalPropertyTypes": false,
+		"jsx": "react-jsx",
 		"lib": ["DOM", "ES2019"],
 		"noImplicitAny": false,
 		"noPropertyAccessFromIndexSignature": false,

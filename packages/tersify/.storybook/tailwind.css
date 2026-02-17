@@ -1,0 +1,6 @@
+@layer theme, base, repobuddy-storybook, components,  utilities;
+@import "tailwindcss";
+
+@source "../src/**";
+
+@custom-variant dark (&:where(.dark, .dark *));

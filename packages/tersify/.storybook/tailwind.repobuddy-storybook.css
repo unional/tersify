@@ -1,0 +1,5 @@
+@import "@repobuddy/storybook/tailwind" layer(repobuddy-storybook);
+
+@source "../node_modules/@repobuddy/storybook/src/**";
+
+@custom-variant dark (&:where(.dark, .dark *));

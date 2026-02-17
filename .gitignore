@@ -58,3 +58,6 @@ packages/*/esm
 packages/*/lib*
 packages/*/tslib
 packages/*/coverage
+
+*storybook.log
+storybook-static

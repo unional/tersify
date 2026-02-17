@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Overview" />
+
+# tersify
+
+Creates a **terse string representation** of any JavaScript value: primitives, objects, arrays, functions, class instances, and more.
+
+## Features
+
+- **Short and readable** output, ideal for error messages and logs
+- **Respects `maxLength`** so output stays within bounds
+- **Customizable** via a `.tersify()` method on your objects
+- **Consistent** behavior across Node and browser
+
+## Quick example
+
+```ts
+import { tersify } from 'tersify'
+
+tersify(42)                    // "42"
+tersify({ a: 1, b: 2 })       // "{ a: 1, b: 2 }"
+tersify([1, 2, 3])            // "[ 1, 2, 3 ]"
+tersify(() => {})             // "function () {}"
+tersify(new Date(), { maxLength: 20 })  // truncated when needed
+```
+
+## Docs
+
+Use the sidebar to explore **tersify** (main API) and **tersible** (mixin for custom types).
