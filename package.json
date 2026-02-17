@@ -16,7 +16,7 @@
 		"nuke:root": "rimraf node_modules",
 		"prepare": "husky",
 		"release": "changeset publish",
-		"tersify": "turbo --filter=tersify",
+		"tersify": "pnpm --filter=tersify",
 		"test": "turbo run test",
 		"verify": "turbo run verify",
 		"version": "changeset version"
