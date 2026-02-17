@@ -2481,16 +2481,14 @@ describe('object', () => {
 	test('indent: "tab" maintains indentation', () => {
 		expect(tersify({ a: 1, b: 2 }, { indent: 'tab' })).toBe('{\n\ta: 1,\n\tb: 2\n}')
 		expect(tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })).toBe(
-			'{\n\ta: {\n\t\tb: 1,\n\t\tc: \'c\'\n\t},\n\td: true\n}'
+			"{\n\ta: {\n\t\tb: 1,\n\t\tc: 'c'\n\t},\n\td: true\n}"
 		)
 	})
 
 	test('indent: number uses that many spaces per level', () => {
 		expect(tersify({ a: 1, b: 2 }, { indent: 2 })).toBe('{\n  a: 1,\n  b: 2\n}')
 		expect(tersify({ a: 1, b: 2 }, { indent: 4 })).toBe('{\n    a: 1,\n    b: 2\n}')
-		expect(tersify({ a: { b: 1 }, c: true }, { indent: 2 })).toBe(
-			'{\n  a: {\n    b: 1\n  },\n  c: true\n}'
-		)
+		expect(tersify({ a: { b: 1 }, c: true }, { indent: 2 })).toBe('{\n  a: {\n    b: 1\n  },\n  c: true\n}')
 	})
 
 	test('object with getter', () => {

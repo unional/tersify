@@ -1,4 +1,4 @@
-@layer theme, base, repobuddy-storybook, components,  utilities;
+@layer theme, base, repobuddy-storybook, components, utilities;
 @import "tailwindcss";
 
 @source "../src/**";
