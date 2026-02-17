@@ -10,6 +10,7 @@
 		"noUncheckedIndexedAccess": false,
 		"noUnusedParameters": false,
 		"outDir": ".nowhere",
+		"rootDir": ".",
 		"target": "ES2021"
 	}
 }
