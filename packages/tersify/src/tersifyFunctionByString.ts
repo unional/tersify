@@ -121,35 +121,52 @@ export function parseFn(input: string): FuncStruct {
  * Ensures spaces around keywords and removes unwanted semicolons in object/array literals.
  */
 function normalizeBody(body: string): string {
-	return body
-		.replace(/\bfunction\s*\*\s*\(/g, 'function* (')
-		.replace(/\bfunction\s*\(/g, 'function (')
-		.replace(/\basync\s+function\s*\*\s*\(/g, 'async function* (')
-		.replace(/\basync\s+function\s*\(/g, 'async function (')
-		.replace(/\)=>/g, ') =>')
-		.replace(/=>\s*\{/g, '=> {')
-		.replace(/\bwhile\s*\(/g, 'while (')
-		.replace(/\bfor\s*\(/g, 'for (')
-		.replace(/\bswitch\s*\(/g, 'switch (')
-		.replace(/\}\s*while\s*\(/g, '} while (')
-		.replace(/(\}\s*while\s*\([^)]+\))\s*\}/g, '$1; }') // do-while: add semicolon before closing }
-		.replace(/(\}\s*while\s*\([^)]+\))\s*$/g, '$1;') // do-while at end of body: add semicolon
-		.replace(/(while\s*\([^)]+\))\s*$/g, '$1;') // do-while without block at end: add semicolon
-		.replace(/\b(while\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
-		.replace(/\b(for\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
-		.replace(/\b(switch\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
-		.replace(/\b(in\s+\w+)\)(\w)/g, '$1) $2')
-		.replace(/\b(of\s+\w+)\)(\w)/g, '$1) $2')
-		.replace(/\bfinally\s*\{/g, 'finally {')
-		.replace(/\bcatch\s*\{/g, 'catch {')
-		.replace(/\)\s*\{/g, ') {')
-		.replace(
-			/(\{\s*|,\s*)((?:async\s+)?)(\*\s*)?(\w+)\s+\(/g,
-			(_, prefix, async, star, name) => prefix + async + (star ? '*' : '') + name + '('
-		)
-		.replace(/\[\s*;/g, '[') // remove erroneous leading semicolon in array (from removeLineBreaks)
-		.replace(/\[\s+/g, '[')
-		.replace(/\s+\]/g, ']')
+	return (
+		body
+			.replace(/\bfunction\s*\*\s*\(/g, 'function* (')
+			.replace(/\bfunction\s*\(/g, 'function (')
+			.replace(/\basync\s+function\s*\*\s*\(/g, 'async function* (')
+			.replace(/\basync\s+function\s*\(/g, 'async function (')
+			.replace(/\)=>/g, ') =>')
+			.replace(/=>\s*\{/g, '=> {')
+			.replace(/\bwhile\s*\(/g, 'while (')
+			.replace(/\bfor\s*\(/g, 'for (')
+			.replace(/\bswitch\s*\(/g, 'switch (')
+			.replace(/\}\s*while\s*\(/g, '} while (')
+			.replace(/(\}\s*while\s*\([^)]+\))\s*\}/g, '$1; }') // do-while: add semicolon before closing }
+			.replace(/(\}\s*while\s*\([^)]+\))\s*$/g, '$1;') // do-while at end of body: add semicolon
+			.replace(/(while\s*\([^)]+\))\s*$/g, '$1;') // do-while without block at end: add semicolon
+			.replace(/\b(while\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+			.replace(/\b(for\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+			.replace(/\b(switch\s*\([^)]+\))(\s*)(\w)/g, (_, cond, space, next) => (space ? _ : `${cond} ${next}`))
+			.replace(/\b(in\s+\w+)\)(\w)/g, '$1) $2')
+			.replace(/\b(of\s+\w+)\)(\w)/g, '$1) $2')
+			.replace(/\bfinally\s*\{/g, 'finally {')
+			.replace(/\bcatch\s*\{/g, 'catch {')
+			.replace(/\)\s*\{/g, ') {')
+			.replace(
+				/(\{\s*|,\s*)((?:async\s+)?)(\*\s*)?(\w+)\s+\(/g,
+				(_, prefix, async, star, name) => prefix + async + (star ? '*' : '') + name + '('
+			)
+			.replace(/\[\s*;/g, '[') // remove erroneous leading semicolon in array (from removeLineBreaks)
+			.replace(/\[\s+/g, '[')
+			.replace(/\s+\]/g, ']')
+			// Normalize for(;;) - collapse space between semicolons (Node vs JSDOM)
+			.replace(/;\s+;/g, ';;')
+			.replace(/;;\s+\)/g, ';;)')
+			.replace(/;\s+\)/g, ';)') // trim space before ) in for(x;y; ) -> for(x;y;)
+			// Don't add semicolon after } when next token is return (consistent with Node output)
+			.replace(/\}\s*;\s*(?=\s*return\b)/g, '} ')
+			// Normalize void 0 to undefined (engine stringifies undefined as void 0)
+			.replace(/\bvoid\s+0\b/g, 'undefined')
+			// Strip pure annotation comments (bundlers inject these)
+			.replace(/\/\*\s*@__PURE__\s*\*\/\s*/g, '')
+			// Normalize double-quoted strings to single quotes for consistency
+			.replace(
+				/"([^"\\]*(\\.[^"\\]*)*)"/g,
+				(_, inner, _backref) => "'" + inner.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
+			)
+	)
 }
 
 /** Normalize raw fn.toString() output for consistent formatting across engines. */
@@ -157,7 +174,16 @@ function normalizeRawOutput(str: string): string {
 	return str.replace(/\)=>/g, ') =>').replace(/=>(\S)/g, '=> $1')
 }
 
+/** Normalize double-quoted strings to single quotes (params and short strings). */
+function normalizeStringQuotes(str: string): string {
+	return str.replace(
+		/"([^"\\]*(\\.[^"\\]*)*)"/g,
+		(_, inner) => "'" + inner.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
+	)
+}
+
 function formatFn2(struct: FunctionStruct, maxLength: number) {
+	if (struct.params) struct.params = normalizeStringQuotes(struct.params)
 	if (struct.body) struct.body = normalizeBody(struct.body)
 	const template = `${struct.async ? 'async ' : ''}fn${struct.generator ? '*' : ''}${
 		struct.name ? ' ' + struct.name : ''
@@ -183,6 +209,7 @@ function formatFn2(struct: FunctionStruct, maxLength: number) {
 }
 
 function formatArrow2(struct: ArrowStruct, maxLength: number) {
+	if (struct.params) struct.params = normalizeStringQuotes(struct.params)
 	if (struct.body) struct.body = normalizeBody(struct.body)
 	const template = `${struct.async ? 'async ' : ''}${
 		struct.singleParam ? '%1' : `(${struct.params ? '%1' : ''})`

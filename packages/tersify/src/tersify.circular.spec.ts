@@ -1,3 +1,4 @@
+import { expect, it } from 'vitest'
 import { tersify } from './index.js'
 
 it('works with instance property', () => {

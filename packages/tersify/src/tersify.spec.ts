@@ -1,3 +1,4 @@
+import { describe, expect, it, test } from 'vitest'
 import { tersible, tersify } from './index.js'
 
 describe('undefined', () => {
@@ -1095,12 +1096,12 @@ describe('function', () => {
 			tersify(function () {
 				return !!1
 			})
-		).toBe(`fn() { return !!1 }`)
+		).toBe(`fn() { return true }`)
 		expect(
 			tersify(function () {
 				return +1
 			})
-		).toBe(`fn() { return +1 }`)
+		).toBe(`fn() { return 1 }`)
 	})
 
 	// Can't think of a postfix unary expression. `x++` and `x--` are update expression.
@@ -1111,7 +1112,7 @@ describe('function', () => {
 			tersify(function () {
 				return 1 && 2
 			})
-		).toBe(`fn() { return 1 && 2 }`)
+		).toBe(`fn() { return 2 }`)
 	})
 
 	test('with binary expression', () => {
@@ -1413,7 +1414,7 @@ describe('function', () => {
 			tersify(function () {
 				return void 0
 			})
-		).toBe(`fn() { return void 0 }`)
+		).toBe(`fn() { return undefined }`)
 	})
 
 	test(`async function`, () => {
@@ -2064,12 +2065,12 @@ describe('arrow function', () => {
 			tersify(() => {
 				return !!1
 			})
-		).toBe(`() => !!1`)
+		).toBe(`() => true`)
 		expect(
 			tersify(() => {
 				return +1
 			})
-		).toBe(`() => +1`)
+		).toBe(`() => 1`)
 	})
 
 	// Can't think of a postfix unary expression. `x++` and `x--` are update expression.
@@ -2080,7 +2081,7 @@ describe('arrow function', () => {
 			tersify(() => {
 				return 1 && 2
 			})
-		).toBe(`() => 1 && 2`)
+		).toBe(`() => 2`)
 	})
 
 	test('with binary expression', () => {

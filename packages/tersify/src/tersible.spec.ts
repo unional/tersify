@@ -1,4 +1,5 @@
 import t from 'node:assert'
+import { expect, test } from 'vitest'
 import { Tersible, Tersiblized, tersible } from './index.js'
 
 test('without tersify function will get default tersify', () => {

@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { isHigherOperatorOrder } from './isHigherBinaryOperatorOrder.js'
 
 test.each(['-', '+', '<<', '<'])('* order is higher than %s', op2 => {

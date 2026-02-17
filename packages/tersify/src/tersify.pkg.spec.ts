@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import * as ws from 'ws'
 import { tersify } from './tersify.js'
 

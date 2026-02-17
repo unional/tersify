@@ -1,4 +1,5 @@
 import { required } from 'type-plus'
+import { describe, expect, test } from 'vitest'
 import { FuncStruct, parseFn } from './tersifyFunctionByString.js'
 
 describe('parseFn()', () => {

@@ -184,6 +184,7 @@ function tersifyAcornNode(context: TersifyAcornContext, node: AcornNode | null, 
 			return tersifySuperNode(context, node, length)
 		// istanbul ignore next
 		default:
+			if ((node as AcornNode).type === 'EmptyStatement') return ''
 			return tersifyUnknown(node, context.rawString)
 	}
 }
@@ -333,7 +334,12 @@ function tersifyForStatementNode(context: TersifyAcornContext, node: ForStatemen
 	const update = tersifyAcornNode(context, node.update, length)
 	const body = tersifyAcornNode(context, node.body, length)
 
-	return `for (${init};${test ? ` ${test}` : ''};${update ? ` ${update}` : ''}) ${body}`
+	// No space between semicolons when test/update is empty (consistent across Node/JSDOM)
+	const testStr = (test || '').trim()
+	const updateStr = (update || '').trim()
+	const forBody = `for (${init};${testStr ? ` ${test}` : ''};${updateStr ? ` ${update}` : ''}) ${body}`
+	// Collapse "; ;" to ";;" only when space is between semicolons (Node vs JSDOM)
+	return forBody.replace(/;\s+;/g, ';;').replace(/;;\s+\)/g, ';;)')
 }
 
 function tersifyAssignmentExpressionNode(
@@ -364,8 +370,15 @@ function tersifyDoWhileStatementNode(
 }
 
 function tersifyUnaryExpressionNode(context: TersifyAcornContext, node: UnaryExpressionNode, length: number) {
-	if (['void', 'typeof'].indexOf(node.operator) !== -1)
-		return `${node.operator} ${tersifyAcornNode(context, node.argument, length)}`
+	if (node.operator === 'void') {
+		const arg = tersifyAcornNode(context, node.argument, length)
+		// Normalize void 0 to undefined for consistent output (engine stringifies undefined as void 0)
+		if (arg === '0' && node.argument?.type === 'Literal' && (node.argument as LiteralNode).value === 0) {
+			return 'undefined'
+		}
+		return `void ${arg}`
+	}
+	if (node.operator === 'typeof') return `typeof ${tersifyAcornNode(context, node.argument, length)}`
 	return node.prefix
 		? `${node.operator}${tersifyAcornNode(context, node.argument, length)}`
 		: `${tersifyAcornNode(context, node.argument, length)}${node.operator}`
@@ -482,6 +495,10 @@ function tersifyIdentifierNode(_context: TersifyAcornContext, node: IdentifierNo
 }
 
 function tersifyLiteralNode(_context: TersifyAcornContext, node: LiteralNode, _length: number) {
+	if (typeof node.value === 'string') {
+		// Normalize to single quotes for consistent output across Node and JSDOM
+		return "'" + node.value.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'"
+	}
 	return node.raw
 }
 

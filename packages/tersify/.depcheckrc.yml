@@ -1,18 +1,17 @@
 ignores:
   - '@commitlint/*'
-  - '@repobuddy/jest'
   - '@semantic-release/*'
   - '@size-limit/*'
-  - '@swc/*'
+  - '@swc/core'
   - '@types/*'
+  - '@vitest/*'
   - clean-webpack-plugin
-  - jest-*
   - param-case
   - pascal-case
   - rimraf # false positive
   - semantic-release
   - source-map-loader
-  - ts-jest
   - ts-loader
   - tslib
+  - vitest
   - webpack-*

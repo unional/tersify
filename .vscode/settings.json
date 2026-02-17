@@ -18,7 +18,8 @@
 		"Tersiblized",
 		"tersify",
 		"tsbuildinfo",
-		"unpartial"
+		"unpartial",
+		"Vitest"
 	],
 	"biome.enable": true,
 	"editor.codeActionsOnSave": {

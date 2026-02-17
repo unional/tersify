@@ -1,4 +1,5 @@
 import { unpartial } from 'unpartial'
+import { describe, expect, test } from 'vitest'
 import { tersible } from './tersible.js'
 import { tersifyFunction } from './tersifyFunction.browser.js'
 import { TersifyOptions } from './types.js'
@@ -769,12 +770,12 @@ describe('function', () => {
 			testFunction(function () {
 				return !!1
 			})
-		).toBe(`fn() { return !!1; }`)
+		).toBe(`fn() { return true; }`)
 		expect(
 			testFunction(function () {
 				return +1
 			})
-		).toBe(`fn() { return +1; }`)
+		).toBe(`fn() { return 1; }`)
 	})
 
 	// Can't think of a postfix unary expression. `x++` and `x--` are update expression.
@@ -785,7 +786,7 @@ describe('function', () => {
 			testFunction(function () {
 				return 1 && 2
 			})
-		).toBe(`fn() { return 1 && 2; }`)
+		).toBe(`fn() { return 2; }`)
 	})
 
 	test('with binary expression', () => {
@@ -1083,7 +1084,7 @@ describe('function', () => {
 			testFunction(function () {
 				return void 0
 			})
-		).toBe(`fn() { return void 0; }`)
+		).toBe(`fn() { return undefined; }`)
 	})
 
 	test(`async function`, () => {
@@ -1607,12 +1608,12 @@ describe('arrow function', () => {
 			testFunction(() => {
 				return !!1
 			})
-		).toBe(`() => !!1`)
+		).toBe(`() => true`)
 		expect(
 			testFunction(() => {
 				return +1
 			})
-		).toBe(`() => +1`)
+		).toBe(`() => 1`)
 	})
 
 	// Can't think of a postfix unary expression. `x++` and `x--` are update expression.
@@ -1623,7 +1624,7 @@ describe('arrow function', () => {
 			testFunction(() => {
 				return 1 && 2
 			})
-		).toBe(`() => 1 && 2`)
+		).toBe(`() => 2`)
 	})
 
 	test('with binary expression', () => {
