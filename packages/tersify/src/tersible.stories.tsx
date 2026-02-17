@@ -1,6 +1,7 @@
 import { defineDocsParam, StoryCard, showDocSource, withStoryCard } from '@repobuddy/storybook'
 import type { Meta, StoryObj } from '@repobuddy/storybook/storybook-addon-tag-badges'
-import { Tersiblized, tersible } from './tersible.js'
+import dedent from 'dedent'
+import { tersible } from '#tersify'
 import source from './tersible.ts?raw'
 
 const meta = {
@@ -28,9 +29,7 @@ export const Specification: Story = {
 		withStoryCard({
 			content: (
 				<p>
-					<code>tersible(subject, tersify?)</code> injects <code>.tersify()</code> into an object.{' '}
-					<code>Tersiblized(Base, tersify)</code> returns a class that extends Base with{' '}
-					<code>.tersify()</code>.
+					<code>tersible(subject, tersify?)</code> injects <code>.tersify()</code> into the subject.
 				</p>
 			)
 		}),
@@ -46,11 +45,17 @@ export const TersibleObject: Story = {
 			story: 'Inject a custom .tersify() into a plain object. When omitted, default tersify is used.'
 		},
 		source: {
-			code: `const point = tersible({ x: 1, y: 2 }, function () { return \`Point(\${this.x},\${this.y})\` })
-point.tersify()  // "Point(1,2)"`
+			code: dedent`
+			const point = tersible(
+				{ x: 1, y: 2 },
+				function (this: { x: number; y: number }) {
+					return \`Point(\${this.x},\${this.y})\`
+				}
+			)
+			point.tersify()`
 		}
 	}),
-	decorators: [withStoryCard(), showDocSource()],
+	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
 	render: () => {
 		const point = tersible({ x: 1, y: 2 }, function (this: { x: number; y: number }) {
 			return `Point(${this.x},${this.y})`
@@ -63,41 +68,35 @@ point.tersify()  // "Point(1,2)"`
 	}
 }
 
-export const TersiblizedClass: Story = {
+export const TersibleFunction: Story = {
 	tags: ['props'],
-	name: 'Tersiblized(Base, tersify)',
+	name: 'tersible(function)',
 	parameters: defineDocsParam({
 		description: {
-			story: 'Create a class whose instances have .tersify() using a custom implementation.'
+			story: 'Inject a custom .tersify() into a function. When omitted, default tersify is used.'
 		},
 		source: {
-			code: `const Point = Tersiblized(
-  class { constructor(public x: number, public y: number) {} },
-  function () { return \`Point(\${this.x},\${this.y})\` }
-)
-const p = new Point(3, 4)
-p.tersify()  // "Point(3,4)"`
+			code: dedent`
+			const add = tersible(
+				function add(a: number, b: number) {
+					return a + b
+				},
+				() => 'add(a, b)'
+			)
+			add.tersify()`
 		}
 	}),
-	decorators: [withStoryCard(), showDocSource()],
+	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
 	render: () => {
-		const Point = Tersiblized(
-			class {
-				x: number
-				y: number
-				constructor(x: number, y: number) {
-					this.x = x
-					this.y = y
-				}
+		const add = tersible(
+			function add(a: number, b: number) {
+				return a + b
 			},
-			function (this: { x: number; y: number }) {
-				return `Point(${this.x},${this.y})`
-			}
+			() => 'add(a, b)'
 		)
-		const p = new Point(3, 4)
 		return (
 			<StoryCard appearance="output">
-				<pre>{p.tersify()}</pre>
+				<pre>{add.tersify()}</pre>
 			</StoryCard>
 		)
 	}

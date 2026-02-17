@@ -11,9 +11,9 @@ const config: StorybookConfig = {
 	],
 	framework: '@storybook/react-vite',
 	tags: {
-		unit: {
-			defaultFilterSelection: 'exclude'
-		}
+		// unit: {
+		// 	defaultFilterSelection: 'exclude'
+		// }
 	}
 }
 export default config
