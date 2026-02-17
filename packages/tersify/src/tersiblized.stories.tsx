@@ -1,5 +1,6 @@
 import { defineDocsParam, StoryCard, showDocSource, withStoryCard } from '@repobuddy/storybook'
 import type { Meta, StoryObj } from '@repobuddy/storybook/storybook-addon-tag-badges'
+import dedent from 'dedent'
 import { Tersiblized } from '#tersify'
 import source from './tersiblized.ts?raw'
 
@@ -30,7 +31,7 @@ export const Specification: Story = {
 				<p>
 					<code>Tersiblized(Base, tersify)</code> returns a class that extends <code>Base</code> with a{' '}
 					<code>.tersify(options?)</code> method. Use it when you want a class (not a plain object) whose
-					instances have a custom terse representation.
+					instances want a custom terse representation.
 				</p>
 			)
 		}),
@@ -46,24 +47,24 @@ export const TersiblizedPoint: Story = {
 			story: 'Create a class whose instances have .tersify() using a custom implementation.'
 		},
 		source: {
-			code: `const Point = Tersiblized(
-  class { constructor(public x: number, public y: number) {} },
-  function () { return \`Point(\${this.x},\${this.y})\` }
-)
-const p = new Point(3, 4)
-p.tersify()  // "Point(3,4)"`
+			code: dedent`const Point = Tersiblized(
+				class { constructor(public x: number, public y: number) {} },
+				function (this: { x: number; y: number }) {
+					return \`Point(\${this.x},\${this.y})\`
+				}
+			)
+			const p = new Point(3, 4)
+			p.tersify()`
 		}
 	}),
 	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
 	render: () => {
 		const Point = Tersiblized(
 			class {
-				x: number
-				y: number
-				constructor(x: number, y: number) {
-					this.x = x
-					this.y = y
-				}
+				constructor(
+					public x: number,
+					public y: number
+				) {}
 			},
 			function (this: { x: number; y: number }) {
 				return `Point(${this.x},${this.y})`
@@ -80,24 +81,24 @@ p.tersify()  // "Point(3,4)"`
 
 export const TersiblizedWithOptions: Story = {
 	tags: ['props'],
-	name: 'tersify(options)',
+	name: 'Tersiblized(Base, tersify(options))',
 	parameters: defineDocsParam({
 		description: {
 			story:
 				'The custom tersify function can accept optional TersifyOptions (e.g. maxLength) and use them in the output.'
 		},
 		source: {
-			code: `const Point = Tersiblized(
-  class { constructor(public x: number, public y: number) {} },
-  function (opts) {
-    const s = \`Point(\${this.x},\${this.y})\`
-    return (opts?.maxLength && s.length > opts.maxLength) ? s.slice(0, opts.maxLength) + '…' : s
-  }
-)
-new Point(1, 2).tersify({ maxLength: 8 })  // "Point(1,…"`
+			code: dedent`const Point = Tersiblized(
+				class { constructor(public x: number, public y: number) {} },
+				function (this: { x: number; y: number }, opts?: { maxLength?: number }) {
+					const s = \`Point(\${this.x},\${this.y})\`
+					return (opts?.maxLength && s.length > opts.maxLength) ? s.slice(0, opts.maxLength) + '…' : s
+				}
+			)
+			new Point(1, 2).tersify({ maxLength: 8 })`
 		}
 	}),
-	decorators: [withStoryCard(), showDocSource()],
+	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
 	render: () => {
 		const Point = Tersiblized(
 			class {
