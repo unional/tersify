@@ -1,6 +1,11 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"extends": ["@repobuddy/biome/recommended"],
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"files": {
 		"includes": [
 			"!.turbo",
