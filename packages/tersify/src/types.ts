@@ -6,9 +6,10 @@ export type TersifyOptions = {
 	 */
 	raw?: boolean | undefined
 	/**
-	 * When `'tab'`, output objects and arrays with newlines and tab indentation.
+	 * When `'tab'`, use tab indentation. When a number, use that many spaces per level.
+	 * Objects and arrays are formatted with newlines and the chosen indentation.
 	 */
-	indent?: 'tab' | undefined
+	indent?: 'tab' | number
 }
 
 export type Tersible<T = unknown> = T & {

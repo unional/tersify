@@ -153,33 +153,54 @@ export const MaxLengthOption: Story = {
 	)
 }
 
-export const IndentOption: Story = {
+export const IndentTab: Story = {
 	tags: ['props'],
-	name: 'options.indent',
+	name: 'options.indent (tab)',
 	parameters: defineDocsParam({
 		description: {
 			story: 'indent: "tab" formats objects and arrays with newlines and tab indentation.'
 		},
 		source: {
-			code: `tersify({ a: 1, b: 2 })
-tersify({ a: 1, b: 2 }, { indent: 'tab' })
-
+			code: `
 tersify([1, 2, 3], { indent: 'tab' })
 
 tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })`
 		}
 	}),
-	decorators: [withStoryCard(), showDocSource()],
+	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
 	render: () => (
 		<StoryCard appearance="output">
 			<pre>
-				{tersify({ a: 1, b: 2 })}
-				{'\n\n'}
-				{tersify({ a: 1, b: 2 }, { indent: 'tab' })}
-				{'\n\n'}
 				{tersify([1, 2, 3], { indent: 'tab' })}
 				{'\n\n'}
 				{tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })}
+			</pre>
+		</StoryCard>
+	)
+}
+
+export const IndentSpaces: Story = {
+	tags: ['props'],
+	name: 'options.indent (spaces)',
+	parameters: defineDocsParam({
+		description: {
+			story: 'indent: number uses that many spaces per level for objects and arrays.'
+		},
+		source: {
+			code: `tersify({ a: 1, b: 2 }, { indent: 2 })
+tersify([1, 2, 3], { indent: 2 })
+tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 4 })`
+		}
+	}),
+	decorators: [withStoryCard(), showDocSource({ placement: 'before' })],
+	render: () => (
+		<StoryCard appearance="output">
+			<pre>
+				{tersify({ a: 1, b: 2 }, { indent: 2 })}
+				{'\n\n'}
+				{tersify([1, 2, 3], { indent: 2 })}
+				{'\n\n'}
+				{tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 4 })}
 			</pre>
 		</StoryCard>
 	)

@@ -11,11 +11,15 @@ export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
 	return tersify(this, options)
 }
 
+function hasIndent(context: TersifyContext): boolean {
+	return context.indent === 'tab' || typeof context.indent === 'number'
+}
+
 export function tersify(obj: any, options?: Partial<TersifyOptions>): string {
 	const context = required<TersifyContext>(defaultOptions, options, {
 		path: [],
 		references: [],
-		...(options?.indent === 'tab' ? { indentDepth: 0 } : {})
+		...(options?.indent === 'tab' || typeof options?.indent === 'number' ? { indentDepth: 0 } : {})
 	})
 	return tersifyValue(context, obj, context.maxLength)
 }
@@ -29,7 +33,9 @@ function tersifyValue(context: TersifyContext, value: any, length: number) {
 	return func(context, value, length)
 }
 
-function getIndent(depth: number): string {
+function getIndent(context: TersifyContext, depth: number): string {
+	if (context.indent === 'tab') return '\t'.repeat(depth)
+	if (typeof context.indent === 'number') return ' '.repeat(depth * context.indent)
 	return '\t'.repeat(depth)
 }
 
@@ -119,15 +125,15 @@ function tersifyArray(context: TersifyContext, value: any[], length: number) {
 
 	if (value.length === 0) return '[]'
 
-	if (context.indent === 'tab') {
+	if (hasIndent(context)) {
 		const depth = context.indentDepth ?? 0
 		const childContext = { ...context, path: context.path, indentDepth: depth + 1 }
 		const childLength = context.maxLength
 		const entries = value.map((v, i) =>
 			tersifyValue({ ...childContext, path: [...context.path, i] }, v, childLength)
 		)
-		const inner = entries.map(s => getIndent(depth + 1) + s).join(',\n')
-		return `[\n${inner}\n${getIndent(depth)}]`
+		const inner = entries.map(s => getIndent(context, depth + 1) + s).join(',\n')
+		return `[\n${inner}\n${getIndent(context, depth)}]`
 	}
 
 	const bracketLen = 2
@@ -158,7 +164,7 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
 		return value.tersify({ maxLength: length })
 	}
 
-	if (context.indent === 'tab') {
+	if (hasIndent(context)) {
 		const keys = Object.keys(value)
 		if (keys.length === 0) return '{}'
 		const depth = context.indentDepth ?? 0
@@ -167,9 +173,9 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
 		const lines = keys.map((k, i) => {
 			const isLastKey = i === keys.length - 1
 			const propStr = getPropStr(childContext, value, k, childLength, isLastKey)
-			return getIndent(depth + 1) + propStr
+			return getIndent(context, depth + 1) + propStr
 		})
-		return `{\n${lines.join(',\n')}\n${getIndent(depth)}}`
+		return `{\n${lines.join(',\n')}\n${getIndent(context, depth)}}`
 	}
 
 	const bracketLen = 4
@@ -225,7 +231,7 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
 	const proto = Object.getPrototypeOf(value)
 	const name: string = proto?.constructor?.name ?? ''
 
-	if (context.indent === 'tab') {
+	if (hasIndent(context)) {
 		const keys = Object.keys(value)
 		if (keys.length === 0) return `${name} {}`
 		const depth = context.indentDepth ?? 0
@@ -234,9 +240,9 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
 		const lines = keys.map((k, i) => {
 			const isLastKey = i === keys.length - 1
 			const propStr = getPropStr(childContext, value, k, childLength, isLastKey)
-			return getIndent(depth + 1) + propStr
+			return getIndent(context, depth + 1) + propStr
 		})
-		return `${name} {\n${lines.join(',\n')}\n${getIndent(depth)}}`
+		return `${name} {\n${lines.join(',\n')}\n${getIndent(context, depth)}}`
 	}
 
 	const bracketLen = 2 // `{}`

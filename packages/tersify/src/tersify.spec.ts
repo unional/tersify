@@ -2485,6 +2485,14 @@ describe('object', () => {
 		)
 	})
 
+	test('indent: number uses that many spaces per level', () => {
+		expect(tersify({ a: 1, b: 2 }, { indent: 2 })).toBe('{\n  a: 1,\n  b: 2\n}')
+		expect(tersify({ a: 1, b: 2 }, { indent: 4 })).toBe('{\n    a: 1,\n    b: 2\n}')
+		expect(tersify({ a: { b: 1 }, c: true }, { indent: 2 })).toBe(
+			'{\n  a: {\n    b: 1\n  },\n  c: true\n}'
+		)
+	})
+
 	test('object with getter', () => {
 		expect(
 			tersify({
@@ -2949,6 +2957,11 @@ describe('array', () => {
 	test('indent: "tab" maintains indentation', () => {
 		expect(tersify([1, 2, 3], { indent: 'tab' })).toBe('[\n\t1,\n\t2,\n\t3\n]')
 		expect(tersify([1, [2, 3], 4], { indent: 'tab' })).toBe('[\n\t1,\n\t[\n\t\t2,\n\t\t3\n\t],\n\t4\n]')
+	})
+
+	test('indent: number uses that many spaces per level', () => {
+		expect(tersify([1, 2, 3], { indent: 2 })).toBe('[\n  1,\n  2,\n  3\n]')
+		expect(tersify([1, [2, 3]], { indent: 2 })).toBe('[\n  1,\n  [\n    2,\n    3\n  ]\n]')
 	})
 
 	test('with primitive values', () => {
