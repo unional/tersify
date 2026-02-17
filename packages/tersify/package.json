@@ -53,7 +53,7 @@
 		"cjs",
 		"esm",
 		"src",
-		"!src/**/*.spec.ts"
+		"!**/*.{spec,test,unit,accept,integrate,system,stories}.*"
 	],
 	"scripts": {
 		"build": "tsdown",
