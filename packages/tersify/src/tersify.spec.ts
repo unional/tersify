@@ -2478,6 +2478,13 @@ describe('object', () => {
 		expect(tersify({})).toBe('{}')
 	})
 
+	test('indent: "tab" maintains indentation', () => {
+		expect(tersify({ a: 1, b: 2 }, { indent: 'tab' })).toBe('{\n\ta: 1,\n\tb: 2\n}')
+		expect(tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })).toBe(
+			'{\n\ta: {\n\t\tb: 1,\n\t\tc: \'c\'\n\t},\n\td: true\n}'
+		)
+	})
+
 	test('object with getter', () => {
 		expect(
 			tersify({
@@ -2937,6 +2944,11 @@ describe('object', () => {
 describe('array', () => {
 	test('empty array as []', () => {
 		expect(tersify([])).toBe('[]')
+	})
+
+	test('indent: "tab" maintains indentation', () => {
+		expect(tersify([1, 2, 3], { indent: 'tab' })).toBe('[\n\t1,\n\t2,\n\t3\n]')
+		expect(tersify([1, [2, 3], 4], { indent: 'tab' })).toBe('[\n\t1,\n\t[\n\t\t2,\n\t\t3\n\t],\n\t4\n]')
 	})
 
 	test('with primitive values', () => {

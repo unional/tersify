@@ -12,7 +12,11 @@ export function defaultTersify(this: any, options: Partial<TersifyOptions>) {
 }
 
 export function tersify(obj: any, options?: Partial<TersifyOptions>): string {
-	const context = required<TersifyContext>(defaultOptions, options, { path: [], references: [] })
+	const context = required<TersifyContext>(defaultOptions, options, {
+		path: [],
+		references: [],
+		...(options?.indent === 'tab' ? { indentDepth: 0 } : {})
+	})
 	return tersifyValue(context, obj, context.maxLength)
 }
 
@@ -23,6 +27,10 @@ function tersifyValue(context: TersifyContext, value: any, length: number) {
 	if (!func) throw new Error(`Can't find fn for ${JSON.stringify(value)}`)
 
 	return func(context, value, length)
+}
+
+function getIndent(depth: number): string {
+	return '\t'.repeat(depth)
 }
 
 function getType(value: any) {
@@ -111,6 +119,17 @@ function tersifyArray(context: TersifyContext, value: any[], length: number) {
 
 	if (value.length === 0) return '[]'
 
+	if (context.indent === 'tab') {
+		const depth = context.indentDepth ?? 0
+		const childContext = { ...context, path: context.path, indentDepth: depth + 1 }
+		const childLength = context.maxLength
+		const entries = value.map((v, i) =>
+			tersifyValue({ ...childContext, path: [...context.path, i] }, v, childLength)
+		)
+		const inner = entries.map(s => getIndent(depth + 1) + s).join(',\n')
+		return `[\n${inner}\n${getIndent(depth)}]`
+	}
+
 	const bracketLen = 2
 	let entriesLen = 0
 	const commaAndSpaceLen = 2
@@ -137,6 +156,20 @@ function tersifyObject(context: TersifyContext, value: object, length: number) {
 
 	if (!context.raw && hasTersifyFn(value) && value.tersify !== defaultTersify) {
 		return value.tersify({ maxLength: length })
+	}
+
+	if (context.indent === 'tab') {
+		const keys = Object.keys(value)
+		if (keys.length === 0) return '{}'
+		const depth = context.indentDepth ?? 0
+		const childContext = { ...context, indentDepth: depth + 1 }
+		const childLength = context.maxLength
+		const lines = keys.map((k, i) => {
+			const isLastKey = i === keys.length - 1
+			const propStr = getPropStr(childContext, value, k, childLength, isLastKey)
+			return getIndent(depth + 1) + propStr
+		})
+		return `{\n${lines.join(',\n')}\n${getIndent(depth)}}`
 	}
 
 	const bracketLen = 4
@@ -191,6 +224,21 @@ function tersifyInstance(context: TersifyContext, value: object, length: number)
 
 	const proto = Object.getPrototypeOf(value)
 	const name: string = proto?.constructor?.name ?? ''
+
+	if (context.indent === 'tab') {
+		const keys = Object.keys(value)
+		if (keys.length === 0) return `${name} {}`
+		const depth = context.indentDepth ?? 0
+		const childContext = { ...context, indentDepth: depth + 1 }
+		const childLength = context.maxLength
+		const lines = keys.map((k, i) => {
+			const isLastKey = i === keys.length - 1
+			const propStr = getPropStr(childContext, value, k, childLength, isLastKey)
+			return getIndent(depth + 1) + propStr
+		})
+		return `${name} {\n${lines.join(',\n')}\n${getIndent(depth)}}`
+	}
+
 	const bracketLen = 2 // `{}`
 	const spaceLen = 1 // ' '
 

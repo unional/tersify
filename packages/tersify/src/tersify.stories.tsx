@@ -153,6 +153,38 @@ export const MaxLengthOption: Story = {
 	)
 }
 
+export const IndentOption: Story = {
+	tags: ['props'],
+	name: 'options.indent',
+	parameters: defineDocsParam({
+		description: {
+			story: 'indent: "tab" formats objects and arrays with newlines and tab indentation.'
+		},
+		source: {
+			code: `tersify({ a: 1, b: 2 })
+tersify({ a: 1, b: 2 }, { indent: 'tab' })
+
+tersify([1, 2, 3], { indent: 'tab' })
+
+tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })`
+		}
+	}),
+	decorators: [withStoryCard(), showDocSource()],
+	render: () => (
+		<StoryCard appearance="output">
+			<pre>
+				{tersify({ a: 1, b: 2 })}
+				{'\n\n'}
+				{tersify({ a: 1, b: 2 }, { indent: 'tab' })}
+				{'\n\n'}
+				{tersify([1, 2, 3], { indent: 'tab' })}
+				{'\n\n'}
+				{tersify({ a: { b: 1, c: 'c' }, d: true }, { indent: 'tab' })}
+			</pre>
+		</StoryCard>
+	)
+}
+
 export const RawOption: Story = {
 	tags: ['props'],
 	name: 'options.raw',
