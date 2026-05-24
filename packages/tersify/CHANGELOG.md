@@ -1,5 +1,11 @@
 # @repobuddy/tersify
 
+## 4.0.1
+
+### Patch Changes
+
+- ab6e5a8: Fix TS2742 "inferred type cannot be named" errors in generated declaration files.
+
 ## 4.0.0
 
 ### Major Changes
