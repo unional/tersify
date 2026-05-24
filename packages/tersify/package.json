@@ -60,6 +60,7 @@
 	],
 	"scripts": {
 		"build": "tsdown",
+		"build:types:tsc": "tsc -p tsconfig.smoke-types.json",
 		"clean": "rimraf cjs coverage dist esm lib libm tslib",
 		"coverage": "vitest run --coverage",
 		"lint": "pnpm run -w check",
@@ -67,6 +68,8 @@
 		"sb": "storybook dev -p 6006",
 		"sb:build": "storybook build",
 		"size": "size-limit",
+		"smoke:consumer:tsc": "node scripts/consumer-smoke.mjs tsc",
+		"smoke:consumer:tsdown": "node scripts/consumer-smoke.mjs tsdown",
 		"test": "vitest run",
 		"test:jsdom": "vitest run --project=jsdom",
 		"test:node": "vitest run --project=node",
