@@ -54,7 +54,7 @@ Vitest runs three projects (configured in `vitest.config.ts`):
 - `jsdom` — browser-like DOM environment  
 - `storybook` — browser tests via Playwright/Chromium against Storybook stories
 
-Coverage uses v8. Size is checked with `size-limit` (`.size-limit.json`).
+Coverage uses v8. Size is checked with `size-limit` (`.size-limit.mjs`). It measures both the browser path (which resolves the `browser` field and drops acorn) and the node path (which keeps it). Run `pnpm tersify size:why` for treemaps of what lands in each bundle; output goes to the gitignored `.size-why/`.
 
 ### Tooling
 

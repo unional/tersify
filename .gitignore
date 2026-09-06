@@ -61,3 +61,6 @@ packages/*/coverage
 
 *storybook.log
 storybook-static
+
+# size-limit --why output (treemaps + saved bundle)
+.size-why
