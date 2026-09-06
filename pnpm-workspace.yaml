@@ -3,6 +3,13 @@ packages:
 allowBuilds:
   esbuild: true
 
+# GHSA-mw96-cpmx-2vgc: rollup < 4.59.0 allows arbitrary file write via path
+# traversal. rollup reaches this repo only transitively, through storybook's vite
+# builder, so no direct dependency range can move it — this override raises the
+# floor for every consumer of it in the tree.
+overrides:
+  rollup: '>=4.59.0'
+
 # Supply-chain soak: refuse packages published less than 24h ago, so a compromised
 # release has a window to be caught and unpublished before it reaches a build.
 #
