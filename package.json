@@ -21,7 +21,8 @@
 		"test": "turbo run test",
 		"verify": "run-p knip verify:pkgs",
 		"verify:pkgs": "turbo run verify",
-		"version": "changeset version"
+		"version": "changeset version",
+		"web": "pnpm --filter=website"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.10",

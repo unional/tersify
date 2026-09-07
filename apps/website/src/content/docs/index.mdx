@@ -1,0 +1,43 @@
+---
+title: tersify
+description: Creates a terse string representation of any JavaScript value.
+template: splash
+hero:
+  tagline: One readable line for any value — built for error messages, logs, and assertions.
+  actions:
+    - text: Get Started
+      link: /tersify/getting-started/introduction/
+      icon: right-arrow
+    - text: Reference
+      link: /tersify/reference/
+      icon: open-book
+      variant: minimal
+    - text: GitHub
+      link: https://github.com/cyberuni/tersify
+      icon: github
+      variant: minimal
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+`tersify` turns any JavaScript value — a primitive, an object, an array, a class instance, a
+function — into a short string you can put in an error message without drowning the reader in it.
+`JSON.stringify` refuses functions, loses classes, and throws on cycles. `util.inspect` is Node-only
+and formats for a terminal. `tersify` is neither: it produces one compact, length-bounded string that
+works the same in Node and in the browser.
+
+## What it gives you
+
+<CardGrid>
+	<LinkCard title="Bounded output" href="/tersify/guides/options/" description="maxLength caps the result so a log line stays a log line." />
+	<LinkCard title="Everything renders" href="/tersify/reference/tersify/" description="Functions, classes, symbols, bigints, Buffers, Dates, RegExps." />
+	<LinkCard title="Cycles are safe" href="/tersify/guides/circular-references/" description="A revisited value renders as a reference instead of throwing." />
+	<LinkCard title="Your own format" href="/tersify/guides/custom-output/" description="Give a type a .tersify() method and tersify uses it." />
+</CardGrid>
+
+## Where to go next
+
+- [Introduction](/tersify/getting-started/introduction/) — the problem it solves and when to reach for it.
+- [Installation](/tersify/getting-started/installation/) — install, import, and the Node/browser split.
+- [Options](/tersify/guides/options/) — `maxLength`, `indent`, and `raw`.
+- [Reference](/tersify/reference/) — every export, one page each.

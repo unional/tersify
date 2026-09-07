@@ -1,0 +1,21 @@
+---
+title: Reference
+description: Everything tersify exports.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components'
+
+`tersify` exports three functions and two types.
+
+<CardGrid>
+	<LinkCard title="tersify" href="/tersify/reference/tersify/" description="Format any value as a terse string." />
+	<LinkCard title="tersible" href="/tersify/reference/tersible/" description="Attach a .tersify() method to a value." />
+	<LinkCard title="Tersiblized" href="/tersify/reference/tersiblized/" description="Class mixin that adds a .tersify() method." />
+	<LinkCard title="TersifyOptions" href="/tersify/reference/tersify-options/" description="The options object every entry point accepts." />
+	<LinkCard title="Tersible" href="/tersify/reference/tersible-type/" description="The type of a value that formats itself." />
+</CardGrid>
+
+```ts
+import { tersify, tersible, Tersiblized } from 'tersify'
+import type { TersifyOptions, Tersible } from 'tersify'
+```
