@@ -9,6 +9,7 @@
 	"files": {
 		"includes": [
 			"!.turbo",
+			"!**/.astro",
 			"!.vscode",
 			"!.vscode/*.code-workspace",
 			"!.vscode/*.txt",

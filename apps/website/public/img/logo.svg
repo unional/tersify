@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="tersify">
+  <!-- Family frame: the cyber-* command reticle. Identical in every cyber-* package. -->
+  <path class="s" d="M17 63V17h46"/>
+  <path class="s" d="M111 65v46H65"/>
+  <!-- Glyph slot (32..96): tersify cuts a long representation short. -->
+  <path class="s" d="M36 40h56"/>
+  <path class="s" d="M36 64h56"/>
+  <path class="s" d="M36 88h14"/>
+  <circle class="f" cx="70" cy="88" r="5"/>
+  <circle class="f" cx="88" cy="88" r="5"/>
+  <style>.f{fill:#000}.s{fill:none;stroke:#000;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}@media (prefers-color-scheme:dark){.f{fill:#fff}.s{stroke:#fff}}</style>
+</svg>

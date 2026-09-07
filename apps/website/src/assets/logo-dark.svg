@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="tersify">
+  <g fill="none" stroke="#f7f8f8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 63V17h46"/>
+    <path d="M111 65v46H65"/>
+    <path d="M36 40h56"/>
+    <path d="M36 64h56"/>
+    <path d="M36 88h14"/>
+  </g>
+  <g fill="#f7f8f8">
+    <circle cx="70" cy="88" r="5"/>
+    <circle cx="88" cy="88" r="5"/>
+  </g>
+</svg>

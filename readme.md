@@ -2,9 +2,17 @@
 
 Monorepo for tersify.
 
+## Documentation
+
+<https://cyberuni.github.io/tersify/>
+
 ## Packages
 
 - [tersify](packages/tersify) – Creates a terse representation of code
+
+## Apps
+
+- [website](apps/website) – Documentation site (Astro + Starlight)
 
 ## Development
 
@@ -26,3 +34,4 @@ pnpm verify
 | `pnpm lint`     | Lint all packages (runs Biome)      |
 | `pnpm verify`   | Clean, build, lint, test, size      |
 | `pnpm cs`       | Open changeset CLI                  |
+| `pnpm web dev`  | Run the docs site locally           |
