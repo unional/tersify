@@ -164,8 +164,8 @@ importers:
         specifier: ^0.22.14
         version: 0.22.14(@volar/typescript@2.4.28(typescript@7.0.2))(oxc-resolver@11.24.2)(typescript@7.0.2)
       type-plus:
-        specifier: 8.0.0-beta.8
-        version: 8.0.0-beta.8(typescript@7.0.2)
+        specifier: 8.0.0-beta.10
+        version: 8.0.0-beta.10(typescript@7.0.2)
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -4891,6 +4891,9 @@ packages:
   tersify@3.12.1:
     resolution: {integrity: sha512-VwzXGHZSOB4T27s4uvh9v8FYrNXyfVz0nBQi28TDwrZoQwT8ZJUp1W2Ff73ekN07stJSb0D+pr6iXeNeFqTI6Q==}
 
+  tersify@4.0.6:
+    resolution: {integrity: sha512-+z2dTeRvbPyI7qiAmBY+VgWnhhN9IuaGjgrPfeF33hI4A/Yd9KT11tbc4l8vfIA3L/5EWiE0swvxOfAckGRuzA==}
+
   tiny-inflate@1.0.3:
     resolution: {integrity: sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==}
 
@@ -5012,6 +5015,11 @@ packages:
   type-plus@7.6.2:
     resolution: {integrity: sha512-qUlXv9Y0/W56pg38m275IMD3WA03QbVoqNY16S3kmwtuA4gOT2iheyUdOp8NWrmXWpf7om98hzr7AZD/eW2jLA==}
 
+  type-plus@8.0.0-beta.10:
+    resolution: {integrity: sha512-ZdhzmQg7f8oxt5Cbivslk8o3zef8L3ibpKIeGH1ESf73y8ZEY1z9fe4Z3fTxcjmFOb8ESE1TbW/MCgEvpeLC4w==}
+    peerDependencies:
+      typescript: '>= 5.6.0'
+
   type-plus@8.0.0-beta.7:
     resolution: {integrity: sha512-LTV9UqBJ20I48Ba2L8N25EOowtrs40MLzsqQFfvAXnPAN9z0ny4CjduFfNIfW7euZ6wr6ImShEtrhR1virHiNw==}
 
@@ -5101,10 +5109,6 @@ packages:
 
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
-
-  unpartial@1.0.6:
-    resolution: {integrity: sha512-wY7h80NSwbITWPXBzd2SSEz0lltFzx5e0mH+M4u0TPebaCwJgujdsZd86oMp5oNIlYBg5RXzMn64/JOxwpFf3w==}
-    engines: {node: '>=6'}
 
   unpartial@1.0.7:
     resolution: {integrity: sha512-DeyxEI3KSlmDihGAk3Js/p/Ca886ymIz39pWH3VVV/LZ36MsRETylFS37fdzWBWDjMlzB63Rdy2KLCdetOMPig==}
@@ -8570,7 +8574,7 @@ snapshots:
   find-installed-packages@3.2.0:
     dependencies:
       temp: 0.9.4
-      unpartial: 1.0.6
+      unpartial: 1.0.7
 
   find-proc@0.1.0: {}
 
@@ -10472,7 +10476,7 @@ snapshots:
       color-map: 2.2.0
       standard-log: 12.1.2
       supports-color: 8.1.1
-      unpartial: 1.0.6
+      unpartial: 1.0.7
 
   standard-log@12.1.2:
     dependencies:
@@ -10603,7 +10607,12 @@ snapshots:
     dependencies:
       acorn: 8.18.0
       is-buffer: 2.0.5
-      unpartial: 1.0.6
+      unpartial: 1.0.7
+
+  tersify@4.0.6:
+    dependencies:
+      acorn: 8.18.0
+      unpartial: 1.0.7
 
   tiny-inflate@1.0.3: {}
 
@@ -10697,23 +10706,29 @@ snapshots:
   type-plus@5.6.0:
     dependencies:
       tersify: 3.12.1
-      unpartial: 1.0.6
+      unpartial: 1.0.7
 
   type-plus@7.6.2:
     dependencies:
       tersify: 3.12.1
-      unpartial: 1.0.6
+      unpartial: 1.0.7
+
+  type-plus@8.0.0-beta.10(typescript@7.0.2):
+    dependencies:
+      tersify: 4.0.6
+      typescript: 7.0.2
+      unpartial: 1.0.7
 
   type-plus@8.0.0-beta.7:
     dependencies:
       tersify: 3.12.1
-      unpartial: 1.0.6
+      unpartial: 1.0.7
 
   type-plus@8.0.0-beta.8(typescript@7.0.2):
     dependencies:
       tersify: 3.12.1
       typescript: 7.0.2
-      unpartial: 1.0.6
+      unpartial: 1.0.7
 
   typesafe-path@0.2.2: {}
 
@@ -10828,8 +10843,6 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
-
-  unpartial@1.0.6: {}
 
   unpartial@1.0.7: {}
 
