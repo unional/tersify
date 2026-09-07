@@ -1,6 +1,6 @@
 {
 	"name": "tersify",
-	"version": "4.0.6",
+	"version": "4.0.7",
 	"description": "Creates a terse representation of code",
 	"homepage": "https://github.com/cyberuni/tersify/tree/main/packages/tersify",
 	"bugs": {
